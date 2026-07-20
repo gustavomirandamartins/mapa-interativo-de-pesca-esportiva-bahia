@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Pesca Esportiva na Bahia · Fishing Show Brazil 2026</title>
+<meta name="description" content="Mapa interativo dos principais destinos de pesca esportiva do Estado da Bahia — Governo da Bahia · Fishing Show Brazil 2026.">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="app" class="app">
+
+  <header class="header">
+    <div class="header-brand">
+      <img src="assets/brasao-bahia.png" alt="Estado da Bahia" class="brand-logo">
+      <div class="brand-text">
+        <div class="eyebrow">Governo da Bahia · Fishing Show Brazil 2026</div>
+        <div class="title">Pesca Esportiva na Bahia</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btn-reset" class="btn-reset" type="button">↺ Mapa geral</button>
+    </div>
+  </header>
+
+  <div class="map-wrap">
+    <div id="pescamap" class="map"></div>
+    <div class="map-vignette"></div>
+
+    <!-- Filter dropdown -->
+    <div class="filter-panel">
+      <button id="filter-trigger" class="filter-trigger" type="button" aria-expanded="false">
+        <span class="filter-trigger-label">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon-shrink"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          Filtros
+          <span id="filter-count" class="filter-count-badge" hidden>0</span>
+        </span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="filter-chevron" class="icon-shrink"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div id="filter-body" class="filter-body" hidden>
+        <div class="filter-section-label">Filtrar por espécie-troféu</div>
+        <div id="trophy-chips" class="chip-row"></div>
+
+        <div class="filter-section-label">Melhor época (mês)</div>
+        <div id="month-chips" class="month-grid"></div>
+
+        <div class="filter-footer">
+          <div id="match-label" class="match-label">21 pontos mapeados</div>
+          <button id="btn-clear-filters" class="btn-clear" type="button" hidden>Limpar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend (always visible) -->
+    <div class="legend-panel">
+      <div class="legend-title">Legenda</div>
+      <div class="legend-rows">
+        <div id="legend-main" class="legend-row" data-kind="main">
+          <span class="legend-icon legend-icon-main">1</span>
+          <span>Destinos principais</span>
+        </div>
+        <div id="legend-secondary" class="legend-row" data-kind="secondary">
+          <span class="legend-icon legend-icon-sec"></span>
+          <span>Cidades e bases</span>
+        </div>
+        <div id="legend-zone" class="legend-row" data-kind="protected">
+          <span class="legend-icon legend-icon-zone"></span>
+          <span>Zona de proteção (pesca proibida)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zoom hint -->
+    <div id="zoom-hint" class="zoom-hint" hidden>
+      <span class="zoom-hint-dot"></span>
+      <span id="zoom-hint-text"></span>
+    </div>
+
+    <!-- Detail panel -->
+    <aside id="detail-panel" class="detail-panel" hidden></aside>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
