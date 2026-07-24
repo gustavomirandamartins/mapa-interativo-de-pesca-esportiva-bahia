@@ -45,10 +45,6 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 @keyframes panelInUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes idlePulse { 0%, 100% { opacity: .55; box-shadow: 0 6px 24px rgba(34, 167, 216, .4); } 50% { opacity: 1; box-shadow: 0 8px 34px rgba(34, 167, 216, .7); } }
 @keyframes pinPulse { 0% { box-shadow: 0 3px 10px rgba(10, 90, 128, .45), 0 0 0 0 rgba(34, 167, 216, .6); } 100% { box-shadow: 0 3px 10px rgba(10, 90, 128, .45), 0 0 0 18px rgba(34, 167, 216, 0); } }
-@keyframes legendPinPulse { 0% { box-shadow: 0 3px 10px rgba(10, 90, 128, .45), 0 0 0 0 rgba(255, 196, 0, .75); } 100% { box-shadow: 0 3px 10px rgba(10, 90, 128, .45), 0 0 0 14px rgba(255, 196, 0, 0); } }
-@keyframes legendSecPulse { 0% { box-shadow: 0 0 0 3px rgba(255, 196, 0, .4), 0 0 0 0 rgba(255, 196, 0, .75); } 100% { box-shadow: 0 0 0 3px rgba(255, 196, 0, .4), 0 0 0 12px rgba(255, 196, 0, 0); } }
-@keyframes protectedPulse { 0% { filter: drop-shadow(0 0 2px rgba(255, 196, 0, .85)); } 50% { filter: drop-shadow(0 0 14px rgba(255, 196, 0, 1)); } 100% { filter: drop-shadow(0 0 2px rgba(255, 196, 0, .85)); } }
-.protected-highlight { animation: protectedPulse 1.2s ease-in-out infinite; }
 
 /* App shell */
 .app {
@@ -186,7 +182,15 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   padding: 4px 6px; margin: -4px -6px; display: flex; align-items: center; gap: 12px;
 }
 .legend-row:hover { background: rgba(34, 167, 216, .1); }
-.legend-row.active { background: rgba(255, 196, 0, .16); box-shadow: 0 0 0 1px rgba(255, 196, 0, .4); }
+.legend-row.off { opacity: .42; }
+.legend-row.off:hover { opacity: .65; }
+.legend-icon-region {
+  width: 22px; height: 22px; flex: none; display: grid; place-items: center;
+}
+.legend-icon-region-dot {
+  width: 13px; height: 13px; border-radius: 50%; background: var(--sea2);
+  box-shadow: 0 0 0 4px rgba(34, 167, 216, .28), 0 1px 4px rgba(10, 90, 128, .4);
+}
 .legend-icon-main {
   width: 24px; height: 24px; flex: none; border-radius: 8px;
   background: linear-gradient(145deg, var(--sea1), var(--sea2)); color: #fff;

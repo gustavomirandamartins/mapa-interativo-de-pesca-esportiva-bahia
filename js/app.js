@@ -6,8 +6,8 @@
 
   const IDLE_SECONDS = 60;
   const SHOW_PROTECTED = true;
+  // Destinos principais e cidades/bases aparecem juntos a partir do mesmo zoom.
   const Z_MAIN = 7;
-  const Z_SECONDARY = 8.4;
   const BAHIA_BOUNDS = [[-18.9, -47.0], [-8.2, -36.9]];
 
   const el = {
@@ -20,6 +20,7 @@
     monthChips: document.getElementById('month-chips'),
     matchLabel: document.getElementById('match-label'),
     clearFiltersBtn: document.getElementById('btn-clear-filters'),
+    legendRegion: document.getElementById('legend-region'),
     legendMain: document.getElementById('legend-main'),
     legendSecondary: document.getElementById('legend-secondary'),
     legendZone: document.getElementById('legend-zone'),
@@ -31,13 +32,13 @@
   const state = {
     activeTrophy: null,
     activeMonth: null,
-    legendHighlight: null,
+    visible: { region: true, main: true, secondary: true, protected: true },
     selectedId: null,
     filtersOpen: false,
     matchCount: 21
   };
 
-  let map, regionLayer, poiLayer, markers = {}, protectedZone, bahiaBounds;
+  let map, regionLayer, poiLayer, markers = {}, protectedZone, protectedLabel, bahiaBounds;
   let halo, outline, mask;
   let activeId = null;
   let idleTimer, attractInterval, attractSelectTimer;
@@ -63,21 +64,27 @@
     });
   }
 
-  function mainIconHtml(p, active, highlighted) {
+  const LABEL_HALO = '0 0 4px #fff,0 0 8px #fff,0 0 11px #fff';
+
+  function mainIconHtml(p, active) {
     const num = p.sig.replace('SIG ', '').replace(/^0+/, '');
-    const pulse = highlighted ? ';animation:legendPinPulse 1.2s ease-in-out infinite'
-      : (active ? ';animation:pinPulse 1.5s ease-out infinite' : '');
-    return '<div style="width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#22a7d8,#0f7fb0);border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(10,90,128,.45),0 0 0 4px rgba(34,167,216,.18)' + pulse + ';display:grid;place-items:center;color:#fff;font-family:var(--font-heading);font-weight:700;font-size:16px">' + num + '</div>';
+    const pulse = active ? ';animation:pinPulse 1.5s ease-out infinite' : '';
+    return '<div style="position:relative;width:280px;height:38px">'
+      + '<div style="position:absolute;left:0;top:0;width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#22a7d8,#0f7fb0);border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(10,90,128,.45),0 0 0 4px rgba(34,167,216,.18)' + pulse + ';display:grid;place-items:center;color:#fff;font-family:var(--font-heading);font-weight:700;font-size:16px">' + num + '</div>'
+      + '<div style="position:absolute;left:47px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:var(--font-heading);font-weight:700;font-size:13px;color:#0a5a80;text-shadow:' + LABEL_HALO + '">' + p.name + '</div>'
+      + '</div>';
   }
-  function secIconHtml(highlighted) {
-    const pulse = highlighted ? ';animation:legendSecPulse 1.2s ease-in-out infinite' : '';
-    return '<div style="width:18px;height:18px;border-radius:50%;border:3px solid #0f7fb0;background:rgba(255,255,255,.94);box-shadow:0 0 0 3px rgba(34,167,216,.18),0 1px 4px rgba(10,90,128,.4)' + pulse + '"></div>';
+  function secIconHtml(p) {
+    return '<div style="position:relative;width:260px;height:18px">'
+      + '<div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;border:3px solid #0f7fb0;background:rgba(255,255,255,.94);box-shadow:0 0 0 3px rgba(34,167,216,.18),0 1px 4px rgba(10,90,128,.4)"></div>'
+      + '<div style="position:absolute;left:27px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:var(--font-body);font-weight:700;font-size:12.5px;color:#0a5a80;text-shadow:' + LABEL_HALO + '">' + p.name + '</div>'
+      + '</div>';
   }
-  function mainIcon(p, active, highlighted) {
-    return L.divIcon({ className: 'poi-icon', iconSize: [38, 38], iconAnchor: [19, 19], html: mainIconHtml(p, active, highlighted) });
+  function mainIcon(p, active) {
+    return L.divIcon({ className: 'poi-icon', iconSize: [280, 38], iconAnchor: [19, 19], html: mainIconHtml(p, active) });
   }
-  function secIcon(highlighted) {
-    return L.divIcon({ className: 'poi-icon', iconSize: [18, 18], iconAnchor: [9, 9], html: secIconHtml(highlighted) });
+  function secIcon(p) {
+    return L.divIcon({ className: 'poi-icon', iconSize: [260, 18], iconAnchor: [9, 9], html: secIconHtml(p) });
   }
 
   function tileConfig() {
@@ -117,8 +124,8 @@
 
     poiLayer = L.layerGroup().addTo(map);
     POIS.forEach((p) => {
-      const icon = p.main ? mainIcon(p) : secIcon();
-      const m = L.marker([p.lat, p.lng], { icon, riseOnHover: true });
+      const icon = p.main ? mainIcon(p) : secIcon(p);
+      const m = L.marker([p.lat, p.lng], { icon, riseOnHover: true, zIndexOffset: p.main ? 500 : 0 });
       m._poi = p;
       m.on('click', () => selectPoi(p.id));
       m.addTo(poiLayer);
@@ -128,7 +135,14 @@
     protectedZone = L.circle([-17.96, -38.70], {
       radius: 26000, color: '#e06a5f', weight: 1.5, dashArray: '6 5', fillColor: '#e06a5f', fillOpacity: 0.14
     });
-    if (SHOW_PROTECTED) protectedZone.addTo(map);
+    protectedLabel = L.marker([-17.96, -38.70], {
+      icon: L.divIcon({
+        className: 'poi-icon', iconSize: [170, 20], iconAnchor: [85, 10],
+        html: '<div style="text-align:center;white-space:nowrap;font-family:var(--font-heading);font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:#c0554a;text-shadow:' + LABEL_HALO + '">Zona de proteção</div>'
+      }),
+      interactive: false, keyboard: false
+    });
+    if (SHOW_PROTECTED) { protectedZone.addTo(map); protectedLabel.addTo(map); }
 
     map.on('zoomend', updateDisclosure);
     updateDisclosure();
@@ -180,33 +194,37 @@
   function updateDisclosure() {
     if (!map) return;
     const z = map.getZoom();
-    const showMain = z >= Z_MAIN;
-    const showSec = z >= Z_SECONDARY;
-    const hl = state.legendHighlight;
+    const showMain = z >= Z_MAIN && state.visible.main;
+    const showSec = z >= Z_MAIN && state.visible.secondary;
     let count = 0;
 
     Object.values(markers).forEach((m) => {
       const p = m._poi;
       const visByZoom = p.main ? showMain : showSec;
       const match = matchesFilters(p);
-      const forced = (hl === 'main' && p.main) || (hl === 'secondary' && !p.main);
-      const on = (visByZoom || forced) && match;
+      const on = visByZoom && match;
       const elm = m.getElement();
       if (elm) { elm.style.opacity = on ? '1' : '0'; elm.style.pointerEvents = on ? 'auto' : 'none'; elm.style.transition = 'opacity .3s'; }
-      if (match) count++;
-      const wantsHl = (hl === 'main' && p.main) || (hl === 'secondary' && !p.main);
-      if (p.main) m.setIcon(mainIcon(p, activeId === p.id, wantsHl));
-      else m.setIcon(secIcon(wantsHl));
+      if (match && (p.main ? state.visible.main : state.visible.secondary)) count++;
+      if (p.main) m.setIcon(mainIcon(p, activeId === p.id));
+      else m.setIcon(secIcon(p));
     });
 
+    // Macrorregiões agora persistem em qualquer zoom — só a legenda as esconde.
     if (regionLayer) {
       regionLayer.eachLayer((l) => {
         const e = l.getElement();
-        if (e) { e.style.opacity = z < Z_MAIN ? '1' : '0'; e.style.transition = 'opacity .3s'; e.style.pointerEvents = z < Z_MAIN ? 'auto' : 'none'; }
+        if (e) { e.style.opacity = state.visible.region ? '1' : '0'; e.style.transition = 'opacity .3s'; e.style.pointerEvents = state.visible.region ? 'auto' : 'none'; }
       });
     }
 
-    const level = z < Z_MAIN ? 'region' : (z < Z_SECONDARY ? 'main' : 'detail');
+    [protectedZone, protectedLabel].forEach((layer) => {
+      if (!layer) return;
+      const e = layer.getElement();
+      if (e) { e.style.opacity = state.visible.protected ? '1' : '0'; e.style.transition = 'opacity .3s'; e.style.pointerEvents = state.visible.protected ? 'auto' : 'none'; }
+    });
+
+    const level = z < Z_MAIN ? 'region' : 'detail';
     state.matchCount = count;
     renderMatchLabel();
     renderZoomHint(level);
@@ -304,28 +322,19 @@
     el.detailPanel.querySelector('.detail-close').addEventListener('click', closeDetail);
   }
 
-  // ---------- Legend highlight ----------
+  // ---------- Legend visibility toggles ----------
 
-  function toggleLegendHighlight(kind) {
-    state.legendHighlight = state.legendHighlight === kind ? null : kind;
-    renderLegendActive();
+  function toggleVisibility(kind) {
+    state.visible[kind] = !state.visible[kind];
+    renderLegendState();
     updateDisclosure();
-    updateProtectedHighlight();
   }
 
-  function updateProtectedHighlight() {
-    if (!protectedZone) return;
-    const on = state.legendHighlight === 'protected';
-    protectedZone.setStyle({ weight: on ? 3 : 1.5, fillOpacity: on ? 0.32 : 0.14 });
-    const elm = protectedZone.getElement();
-    if (elm) elm.classList.toggle('protected-highlight', on);
-    if (on) protectedZone.bringToFront();
-  }
-
-  function renderLegendActive() {
-    el.legendMain.classList.toggle('active', state.legendHighlight === 'main');
-    el.legendSecondary.classList.toggle('active', state.legendHighlight === 'secondary');
-    el.legendZone.classList.toggle('active', state.legendHighlight === 'protected');
+  function renderLegendState() {
+    el.legendRegion.classList.toggle('off', !state.visible.region);
+    el.legendMain.classList.toggle('off', !state.visible.main);
+    el.legendSecondary.classList.toggle('off', !state.visible.secondary);
+    el.legendZone.classList.toggle('off', !state.visible.protected);
   }
 
   // ---------- Reset view ----------
@@ -445,7 +454,7 @@
   }
 
   function renderZoomHint(level) {
-    const hints = { region: '', main: '', detail: 'Todos os pontos visíveis · toque num pino para detalhes' };
+    const hints = { region: '', detail: 'Todos os pontos visíveis · toque num pino para detalhes' };
     const text = hints[level] || '';
     if (text) {
       el.zoomHintText.textContent = text;
@@ -461,15 +470,16 @@
     el.resetBtn.addEventListener('click', resetView);
     el.filterTrigger.addEventListener('click', toggleFilters);
     el.clearFiltersBtn.addEventListener('click', clearFilters);
-    el.legendMain.addEventListener('click', () => toggleLegendHighlight('main'));
-    el.legendSecondary.addEventListener('click', () => toggleLegendHighlight('secondary'));
-    el.legendZone.addEventListener('click', () => toggleLegendHighlight('protected'));
+    el.legendRegion.addEventListener('click', () => toggleVisibility('region'));
+    el.legendMain.addEventListener('click', () => toggleVisibility('main'));
+    el.legendSecondary.addEventListener('click', () => toggleVisibility('secondary'));
+    el.legendZone.addEventListener('click', () => toggleVisibility('protected'));
 
     ['pointerdown', 'wheel', 'keydown'].forEach((evt) => document.addEventListener(evt, onActivity, { passive: true }));
 
     renderChips();
     renderFilterTrigger();
-    renderLegendActive();
+    renderLegendState();
   }
 
   function waitForLeaflet(tries) {
