@@ -72,9 +72,11 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   box-shadow: 0 3px 22px rgba(10, 90, 128, .14), inset 0 1px 0 rgba(255, 255, 255, .6);
   z-index: 1200;
 }
-.header-brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
 .brand-logo { height: 62px; width: auto; flex: none; display: block; filter: drop-shadow(0 2px 6px rgba(10, 90, 128, .22)); }
-.brand-text { line-height: 1.1; min-width: 0; }
+.brand-text {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  max-width: min(46%, 620px); min-width: 0; line-height: 1.1; text-align: center; pointer-events: none;
+}
 .eyebrow { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; color: var(--sea2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .title { font-family: var(--font-heading); font-weight: 700; font-size: 30px; color: #1b3346; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .header-actions { margin-left: auto; display: flex; align-items: center; gap: 16px; flex: none; }
@@ -279,6 +281,9 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 @media (max-width: 860px) {
   .header { padding: 12px 16px; gap: 14px; }
   .brand-logo { height: 46px; }
+  /* Não há espaço para centralizar o texto sem sobrepor logo/botão nessa largura:
+     volta ao fluxo normal, alinhado ao lado da logo. */
+  .brand-text { position: static; transform: none; text-align: left; max-width: none; pointer-events: auto; }
   .title { font-size: 21px; }
   .eyebrow { font-size: 9px; }
   .btn-reset { padding: 10px 16px; font-size: 13px; }
@@ -296,7 +301,6 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 }
 
 @media (max-width: 520px) {
-  .header-brand { gap: 10px; }
   .eyebrow { display: none; }
   .brand-logo { height: 38px; }
   .title { font-size: 18px; }

@@ -194,18 +194,21 @@
   function updateDisclosure() {
     if (!map) return;
     const z = map.getZoom();
-    const showMain = z >= Z_MAIN && state.visible.main;
-    const showSec = z >= Z_MAIN && state.visible.secondary;
+    const zoomOk = z >= Z_MAIN;
+    // Com um filtro de espécie/mês ativo, os pontos correspondentes aparecem mesmo
+    // se o zoom ainda não chegou no nível normal de detalhe (ex.: enquanto o mapa
+    // está voando para enquadrar pontos espalhados por regiões distantes).
+    const hasFilter = !!(state.activeTrophy || state.activeMonth);
     let count = 0;
 
     Object.values(markers).forEach((m) => {
       const p = m._poi;
-      const visByZoom = p.main ? showMain : showSec;
+      const categoryVisible = p.main ? state.visible.main : state.visible.secondary;
       const match = matchesFilters(p);
-      const on = visByZoom && match;
+      const on = categoryVisible && match && (hasFilter || zoomOk);
       const elm = m.getElement();
       if (elm) { elm.style.opacity = on ? '1' : '0'; elm.style.pointerEvents = on ? 'auto' : 'none'; elm.style.transition = 'opacity .3s'; }
-      if (match && (p.main ? state.visible.main : state.visible.secondary)) count++;
+      if (match && categoryVisible) count++;
       if (p.main) m.setIcon(mainIcon(p, activeId === p.id));
       else m.setIcon(secIcon(p));
     });
@@ -345,6 +348,21 @@
     map.flyToBounds(bahiaBounds || L.latLngBounds(BAHIA_BOUNDS), { paddingTopLeft: [18, 112], paddingBottomRight: [18, 18], duration: 1.6 });
   }
 
+  // Ao selecionar uma espécie ou mês, enquadra todos os pontos que correspondem
+  // ao(s) filtro(s) ativo(s) — em vez de só alterar a visibilidade dos pinos.
+  function focusOnMatches() {
+    if (!map) return;
+    if (!(state.activeTrophy || state.activeMonth)) return;
+    const matches = POIS.filter(matchesFilters);
+    if (matches.length === 0) return;
+    if (matches.length === 1) {
+      map.flyTo([matches[0].lat, matches[0].lng], 8, { duration: 1.4 });
+    } else {
+      const bounds = L.latLngBounds(matches.map((p) => [p.lat, p.lng]));
+      map.flyToBounds(bounds, { paddingTopLeft: [40, 132], paddingBottomRight: [40, 40], duration: 1.4 });
+    }
+  }
+
   // ---------- Idle / attract mode ----------
 
   function onActivity() {
@@ -394,12 +412,14 @@
     renderChips();
     renderFilterTrigger();
     updateDisclosure();
+    focusOnMatches();
   }
   function toggleMonth(n) {
     state.activeMonth = state.activeMonth === n ? null : n;
     renderChips();
     renderFilterTrigger();
     updateDisclosure();
+    focusOnMatches();
   }
   function clearFilters() {
     state.activeTrophy = null;

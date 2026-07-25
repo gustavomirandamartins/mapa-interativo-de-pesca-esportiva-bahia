@@ -1,10 +1,21 @@
 // Dados do mapa: troféus, meses, macrorregiões e pontos de interesse (SIG).
 // Portado de "Mapa Pesca Bahia.dc.html" (protótipo Claude Design).
 
+// Todas as espécies-troféu mencionadas nos cards (primária + secundárias de cada ponto),
+// para que o filtro cubra as 41 espécies distintas presentes nos dados, não só as 10
+// categorias principais.
 const TROPHIES = [
-  ['marlin', 'Marlin Azul'], ['olhodeboi', 'Olho-de-boi'], ['garoupa', 'Garoupa / Pargo'],
-  ['robalo', 'Robalo'], ['tarpon', 'Tarpon'], ['dourado-mar', 'Dourado-do-mar'],
-  ['tucunare', 'Tucunaré'], ['dourado-rio', 'Dourado (rio)'], ['surubim', 'Surubim'], ['pacu', 'Pacu / Piau']
+  ['marlin-azul', 'Marlin Azul'], ['marlin-branco', 'Marlin Branco'], ['peixe-vela', 'Peixe-Vela'],
+  ['dourado-mar', 'Dourado-do-mar'], ['garoupa', 'Garoupa'], ['vermelho-caranha', 'Vermelho-Caranha'],
+  ['pargo', 'Pargo'], ['robalo-flecha', 'Robalo-Flecha'], ['robalo-peva', 'Robalo-Peva'], ['robalo', 'Robalo'],
+  ['carapeba', 'Carapeba'], ['mero', 'Mero'], ['caranha', 'Caranha'], ['traira', 'Traíra'],
+  ['tarpon', 'Tarpon (Camurupim)'], ['xareu', 'Xaréu'], ['xareu-branco', 'Xaréu-branco'], ['xareu-amarelo', 'Xaréu-amarelo'],
+  ['pescada-amarela', 'Pescada-amarela'], ['tainha', 'Tainha'], ['corvina', 'Corvina'], ['corvina-doce', 'Corvina de água doce'],
+  ['parati', 'Parati'], ['tucunare', 'Tucunaré'], ['surubim', 'Surubim'], ['dourado-rio', 'Dourado-do-rio'],
+  ['pintado', 'Pintado'], ['matrinxa', 'Matrinxã'], ['bonito', 'Bonito'], ['barracuda', 'Barracuda'],
+  ['pacu', 'Pacu'], ['piau', 'Piau'], ['atum', 'Atum'], ['wahoo', 'Wahoo'], ['cavala', 'Cavala'],
+  ['olhodeboi', 'Olho-de-boi'], ['sororoca', 'Sororoca'], ['bicuara', 'Bicuara'], ['ariaco', 'Ariacó'],
+  ['tambaqui', 'Tambaqui'], ['tilapia', 'Tilápia']
 ];
 
 const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
@@ -21,7 +32,7 @@ const REGIONS = [
 const POIS = [
   { id: 'p1', main: true, sig: 'SIG 001', name: 'Banco Royal Charlotte', region: 'Litoral Sul', lat: -15.55, lng: -38.45,
     loc: '17 a 45 milhas offshore de Canavieiras', depth: 'Drop-off: 70 m a 300 m',
-    technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin'],
+    technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'dourado-mar'],
     level: 'Nível extremo', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Marlin Branco', 'Peixe-Vela', 'Dourado-do-mar'],
     operators: ['Charlote Fishing — píeres e escritório próprios; barcos Candela e Bazooka (6.900–9.300 BRL/dia para 4 pessoas), equipamento Accurate/Shimano/Penn.'],
@@ -31,7 +42,7 @@ const POIS = [
 
   { id: 'p2', main: true, sig: 'SIG 002', name: 'Arquipélago de Abrolhos', region: 'Litoral Sul', lat: -17.96, lng: -38.70,
     loc: '70 km de Caravelas — periferia do Parque Nacional', depth: 'Estruturas: 15 m a 60 m',
-    technique: 'Vertical Jigging ultrapesado (jigs até 300 g, PE 4–6)', trophy: 'Garoupa / Vermelho-Caranha', trophyKeys: ['garoupa'],
+    technique: 'Vertical Jigging ultrapesado (jigs até 300 g, PE 4–6)', trophy: 'Garoupa / Vermelho-Caranha', trophyKeys: ['garoupa', 'vermelho-caranha', 'pargo'],
     level: 'Nível alto', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Pargo', 'Vermelho-Caranha'],
     operators: ['Abrolhos Viagens / Mergulho', 'Abrolhos Adventure', 'Horizonte Aberto — catamarãs até 81 pés, Liveaboard 3–4 noites (~3.490 BRL/3 dias).'],
@@ -41,7 +52,7 @@ const POIS = [
 
   { id: 'p3', main: true, sig: 'SIG 003', name: 'Estuário do Rio Jaguaripe', region: 'Recôncavo', lat: -13.10, lng: -38.86,
     loc: 'Manguezais de Nazaré e Jaguaripe', depth: 'Calhas estuarinas: 2 m a 10 m',
-    technique: 'Isco vivo (derivação) / Baitcasting', trophy: 'Robalo-Flecha / Peva', trophyKeys: ['robalo'],
+    technique: 'Isco vivo (derivação) / Baitcasting', trophy: 'Robalo-Flecha / Peva', trophyKeys: ['robalo-flecha', 'robalo-peva', 'carapeba', 'mero', 'caranha', 'traira'],
     level: 'Nível moderado', months: [11, 12, 1, 2, 3], season: 'Novembro a Março',
     secondary: ['Carapeba', 'Mero', 'Caranha', 'Traíra'],
     operators: ['Charter Náutico — veleiros e lanchas 30–44 pés a partir de marinas de Salvador.'],
@@ -51,7 +62,7 @@ const POIS = [
 
   { id: 'p4', main: true, sig: 'SIG 004', name: 'Foz do Rio Real / Mangue Seco', region: 'Litoral Norte', lat: -11.47, lng: -37.36,
     loc: 'Mangue Seco — divisa BA/SE', depth: 'Canais de mangue: 2 m a 8 m',
-    technique: 'Baitcasting de precisão / Surfcasting', trophy: 'Tarpon (Camurupim) / Robalo', trophyKeys: ['tarpon', 'robalo'],
+    technique: 'Baitcasting de precisão / Surfcasting', trophy: 'Tarpon (Camurupim) / Robalo', trophyKeys: ['tarpon', 'robalo', 'xareu', 'pescada-amarela'],
     level: 'Nível moderado', months: [12, 1, 2, 3], season: 'Dezembro a Março',
     secondary: ['Xaréu', 'Pescada-amarela'],
     operators: ['Travessia de lancha a partir de Indiaroba (SE) ou acesso via Jandaíra.'],
@@ -61,7 +72,7 @@ const POIS = [
 
   { id: 'p5', main: true, sig: 'SIG 005', name: 'Baía de Camamu', region: 'Litoral Sul', lat: -13.92, lng: -38.90,
     loc: 'Mangue de Camamu e Barra Grande', depth: '3 m a 18 m',
-    technique: 'Isco vivo / Jig head / Plugs', trophy: 'Robalo / Carapeba', trophyKeys: ['robalo', 'garoupa'],
+    technique: 'Isco vivo / Jig head / Plugs', trophy: 'Robalo / Carapeba', trophyKeys: ['robalo', 'carapeba', 'garoupa', 'tainha', 'corvina', 'parati'],
     level: 'Nível moderado', months: [12, 1, 2, 3], season: 'Dezembro a Março',
     secondary: ['Garoupa', 'Tainha', 'Corvina', 'Parati'],
     operators: ['Tuna Pesca Maraú', 'Camamu Adventure', 'Princesinha Turismo'],
@@ -71,7 +82,7 @@ const POIS = [
 
   { id: 'p6', main: true, sig: 'SIG 006', name: 'Represa de Sobradinho', region: 'Vale do São Francisco', lat: -9.65, lng: -41.40,
     loc: 'Ilhas de Remanso e Canal do Salitre', depth: 'Variável: 10 m a 45 m',
-    technique: 'Baitcasting (hélice) / Espera de fundo', trophy: 'Tucunaré / Corvina', trophyKeys: ['tucunare'],
+    technique: 'Baitcasting (hélice) / Espera de fundo', trophy: 'Tucunaré / Corvina', trophyKeys: ['tucunare', 'corvina-doce'],
     level: 'Nível baixo — exige sonda/GPS', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: ['Corvina de água doce'],
     operators: ['Bases náuticas em Petrolina e Sobradinho.'],
@@ -81,7 +92,7 @@ const POIS = [
 
   { id: 'p7', main: true, sig: 'SIG 007', name: 'Canal de Paulo Afonso', region: 'Vale do São Francisco', lat: -9.40, lng: -38.21,
     loc: 'Base da hidroelétrica (PA-IV)', depth: 'Corredeiras hiper-oxigenadas (~10 m)',
-    technique: 'Fundo noturno / Plugs sub-superfície', trophy: 'Surubim / Dourado', trophyKeys: ['surubim'],
+    technique: 'Fundo noturno / Plugs sub-superfície', trophy: 'Surubim / Dourado', trophyKeys: ['surubim', 'dourado-rio', 'pintado'],
     level: 'Nível alto — perigo de correnteza e pedras', months: [6, 7, 8, 9, 10, 11, 12], season: 'Junho a Dezembro',
     secondary: ['Pintado', 'Dourado'],
     operators: ['Pousada Ilha Bela — base de estadia e apoio.'],
@@ -91,7 +102,7 @@ const POIS = [
 
   { id: 'p8', main: true, sig: 'SIG 008', name: 'Alto Rio Paraguaçu', region: 'Chapada Diamantina', lat: -12.80, lng: -41.33,
     loc: 'Andaraí / Poço do Gavião', depth: 'Cristalinidade extrema: 1 m a 15 m',
-    technique: 'Fly Fishing (classes #7 a #9)', trophy: 'Dourado / Matrinxã', trophyKeys: ['dourado-rio'],
+    technique: 'Fly Fishing (classes #7 a #9)', trophy: 'Dourado / Matrinxã', trophyKeys: ['dourado-rio', 'matrinxa'],
     level: 'Nível alto — sight casting', months: [5, 6, 7, 8, 9], season: 'Maio a Setembro',
     secondary: ['Matrinxã'],
     operators: ['Guias de fly fishing locais (região do Marimbus).'],
@@ -101,7 +112,7 @@ const POIS = [
 
   { id: 'p9', main: true, sig: 'SIG 009', name: 'Drop-off da Praia do Forte', region: 'Litoral Norte', lat: -12.52, lng: -37.85,
     loc: '7 a 10 milhas da linha de costa', depth: 'Depressão batimétrica: 45 m a 350 m',
-    technique: 'Trolling em velocidade de cruzeiro (6–8 nós)', trophy: 'Dourado-do-mar / Wahoo / Atum', trophyKeys: ['dourado-mar'],
+    technique: 'Trolling em velocidade de cruzeiro (6–8 nós)', trophy: 'Dourado-do-mar / Wahoo / Atum', trophyKeys: ['dourado-mar', 'wahoo', 'atum', 'cavala', 'bonito', 'barracuda'],
     level: 'Nível baixo a moderado — charter obrigatório', months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], season: 'Ano inteiro',
     secondary: ['Cavala', 'Bonito', 'Barracuda'],
     operators: ['Base Náutica Praia do Forte — lanchas 24 pés (Yamaha 200hp), fishfinder + GPS. Pacotes de 4h (08h ou 13h), 2.700–4.800 BRL/embarcação.'],
@@ -111,7 +122,7 @@ const POIS = [
 
   { id: 'p10', main: true, sig: 'SIG 010', name: 'Rio Grande (Oeste)', region: 'Oeste Baiano', lat: -12.10, lng: -45.10,
     loc: 'Poço do Cedro — Barreiras', depth: 'Remansos fluviais: 4 m a 12 m',
-    technique: 'Espera com ceva prévia (fruta / milho)', trophy: 'Pacu / Piau / Tucunaré', trophyKeys: ['pacu', 'tucunare'],
+    technique: 'Espera com ceva prévia (fruta / milho)', trophy: 'Pacu / Piau / Tucunaré', trophyKeys: ['pacu', 'piau', 'tucunare'],
     level: 'Nível baixo — acessível', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: ['Piau', 'Tucunaré'],
     operators: ['Campanhas INEMA / Codevasf de repovoamento alevínico.'],
@@ -121,39 +132,39 @@ const POIS = [
 
   // Secundários
   { id: 's1', main: false, name: 'Salvador — Baía de Todos os Santos', region: 'Recôncavo', lat: -12.97, lng: -38.51,
-    loc: 'Maior baía navegável do Brasil', trophy: 'Robalo-peva / Xaréu', trophyKeys: ['robalo'], level: 'Acesso urbano',
+    loc: 'Maior baía navegável do Brasil', trophy: 'Robalo-peva / Xaréu', trophyKeys: ['robalo-peva', 'xareu', 'carapeba', 'tainha'], level: 'Acesso urbano',
     secondary: ['Carapeba', 'Tainha'], operators: ['Charter Náutico (Bahia Marina, Porto de Salvador)'], lodging: [], rules: '',
     blurb: 'Manguezais e canais de águas quentes o ano todo. Camarão vivo lançado nas raízes na maré enchente; rotas pela Ilha de Maré, Ilha dos Frades e Forte de São Marcelo.' },
   { id: 's2', main: false, name: 'Baía de Aratu', region: 'Recôncavo', lat: -12.80, lng: -38.42,
-    loc: 'Ecossistema labiríntico ligado à BTS', trophy: 'Robalo / Xaréu', trophyKeys: ['robalo'], level: 'Acesso fácil',
+    loc: 'Ecossistema labiríntico ligado à BTS', trophy: 'Robalo / Xaréu', trophyKeys: ['robalo', 'xareu'], level: 'Acesso fácil',
     secondary: [], operators: [], lodging: [], rules: '',
     blurb: 'Canais mais profundos ideais para jig heads armados com shads macios. Substratos lodosos e manguezais servem de berçário.' },
   { id: 's3', main: false, name: 'Barragem Pedra do Cavalo', region: 'Recôncavo', lat: -12.57, lng: -38.98,
-    loc: 'Cachoeira / São Félix', trophy: 'Tucunaré / Traíra', trophyKeys: ['tucunare'], level: 'Água doce',
+    loc: 'Cachoeira / São Félix', trophy: 'Tucunaré / Traíra', trophyKeys: ['tucunare', 'traira', 'tambaqui', 'tilapia', 'corvina-doce'], level: 'Água doce',
     secondary: ['Tambaqui', 'Tilápia', 'Corvina de água doce'], operators: [], lodging: [], rules: '',
     blurb: 'Represa alternativa à oscilação das marés, com populações robustas de Tucunarés, Traíras e Tambaquis.' },
   { id: 's4', main: false, name: 'Ilhéus', region: 'Litoral Sul', lat: -14.79, lng: -39.03,
-    loc: 'Rio Cachoeira e mar recifal (8 milhas)', trophy: 'Olho-de-boi / Garoupa', trophyKeys: ['olhodeboi', 'garoupa', 'robalo'], level: 'Nível alto (jigging)',
+    loc: 'Rio Cachoeira e mar recifal (8 milhas)', trophy: 'Olho-de-boi / Garoupa', trophyKeys: ['olhodeboi', 'garoupa', 'xareu-branco', 'xareu-amarelo', 'robalo'], level: 'Nível alto (jigging)',
     secondary: ['Xaréu-branco', 'Xaréu-amarelo', 'Robalo'], operators: ['Ilhéus Pesca Oceânica', 'FF Pesca — barcos ZETA 28 pés, carretos elétricos'], lodging: [], rules: '',
     blurb: 'A 8 milhas começa o reino do gigantesco Olho-de-boi e das Garoupas. Vertical/Speed Jigging arranca os peixes do leito marinho.' },
   { id: 's5', main: false, name: 'Canavieiras', region: 'Litoral Sul', lat: -15.68, lng: -38.95,
-    loc: 'Rios Pardo, Patipe, Una e Jequitinhonha', trophy: 'Robalo / Xaréu', trophyKeys: ['robalo', 'marlin'], level: 'Base costeira',
+    loc: 'Rios Pardo, Patipe, Una e Jequitinhonha', trophy: 'Robalo / Xaréu', trophyKeys: ['robalo', 'xareu'], level: 'Base costeira',
     secondary: ['Xaréu'], operators: ['Charlote Fishing (base do Banco Royal Charlotte)'], lodging: [], rules: '',
     blurb: 'Porta de entrada para o Banco Royal Charlotte. O interior estuarino sustenta pesca costeira ao Robalo e Xaréu.' },
   { id: 's6', main: false, name: "Porto Seguro / Arraial d'Ajuda", region: 'Litoral Sul', lat: -16.45, lng: -39.07,
-    loc: 'Recifes de Coroa Alta (5–15 km)', trophy: 'Robalo / Sororoca', trophyKeys: ['robalo'], level: 'Nível moderado',
+    loc: 'Recifes de Coroa Alta (5–15 km)', trophy: 'Robalo / Sororoca', trophyKeys: ['robalo', 'sororoca', 'bicuara', 'ariaco', 'barracuda', 'bonito'], level: 'Nível moderado',
     secondary: ['Bicuara', 'Ariacó', 'Barracuda', 'Bonito'], operators: ["Arraial d'Ajuda Passeios", 'Porto Pesca (Cap. Robson)', 'Porto Seguro Passeios'], lodging: [], rules: '',
     blurb: 'Microjigging (30–60 g) e fly marinho nos recifes calcários. Saídas às 04h para a atividade máxima; pacotes privativos até 3.500 BRL para dez pessoas.' },
   { id: 's7', main: false, name: 'Caravelas', region: 'Litoral Sul', lat: -17.73, lng: -39.26,
-    loc: 'Rampa de lançamento para Abrolhos', trophy: 'Garoupa / Pargo', trophyKeys: ['garoupa'], level: 'Base Liveaboard',
+    loc: 'Rampa de lançamento para Abrolhos', trophy: 'Garoupa / Pargo', trophyKeys: ['garoupa', 'pargo', 'vermelho-caranha'], level: 'Base Liveaboard',
     secondary: ['Vermelho-Caranha'], operators: ['Abrolhos Adventure', 'Horizonte Aberto'], lodging: [], rules: '',
     blurb: 'A 870 km de Salvador, é a base das expedições Liveaboard de 3–4 noites rumo aos parcéis de Abrolhos.' },
   { id: 's8', main: false, name: 'Itacaré', region: 'Litoral Sul', lat: -14.28, lng: -38.99,
-    loc: 'Costão rochoso e cultura do surf', trophy: 'Robalo / Xaréu', trophyKeys: ['robalo'], level: 'Acesso fácil',
+    loc: 'Costão rochoso e cultura do surf', trophy: 'Robalo / Xaréu', trophyKeys: ['robalo', 'xareu'], level: 'Acesso fácil',
     secondary: ['Xaréu'], operators: [], lodging: [], rules: '',
     blurb: 'Junta o apelo do surf à pesca nas proximidades rochosas do litoral sul.' },
   { id: 's9', main: false, name: 'Península de Maraú / Barra Grande', region: 'Litoral Sul', lat: -13.80, lng: -38.94,
-    loc: 'Taipu de Fora e Algodões', trophy: 'Robalo / Xaréu', trophyKeys: ['robalo', 'garoupa'], level: 'Nível moderado',
+    loc: 'Taipu de Fora e Algodões', trophy: 'Robalo / Xaréu', trophyKeys: ['robalo', 'xareu', 'garoupa', 'atum'], level: 'Nível moderado',
     secondary: ['Garoupa', 'Atum'], operators: ['Tuna Pesca Maraú', 'Maraú Turismo'], lodging: [], rules: '',
     blurb: 'Recifes virgens perfeitos para surfcasting e spinning de praia direcionados ao Xaréu; ecoturismo integrado (escuna, mergulho, cachoeiras).' },
   { id: 's10', main: false, name: 'Represa de Itaparica', region: 'Vale do São Francisco', lat: -9.15, lng: -38.31,
@@ -161,7 +172,7 @@ const POIS = [
     secondary: [], operators: [], lodging: [], rules: '',
     blurb: 'Lago que oculta florestas submersas. Isca artificial de hélice (surface prop) provoca boa resposta de ataque do Tucunaré, espécie introduzida na bacia.' },
   { id: 's11', main: false, name: 'Luís Eduardo Magalhães', region: 'Oeste Baiano', lat: -12.09, lng: -45.80,
-    loc: 'Rio de Ondas e Ribeirão Boa Sorte', trophy: 'Pacu / Tucunaré', trophyKeys: ['pacu', 'tucunare'], level: 'Acesso fácil',
+    loc: 'Rio de Ondas e Ribeirão Boa Sorte', trophy: 'Pacu / Tucunaré', trophyKeys: ['pacu', 'tucunare', 'piau'], level: 'Acesso fácil',
     secondary: ['Piau'], operators: [], lodging: [], rules: '',
     blurb: 'Polo agrícola do Cerrado, irrigado pelas artérias hídricas do oeste baiano. Alvo de campanhas de repovoamento do INEMA/Codevasf.' }
 ];
