@@ -84,6 +84,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   background: rgba(250, 253, 255, .96); border: 1px solid rgba(255, 255, 255, .7); border-radius: 28px;
   box-shadow: 0 30px 80px rgba(10, 40, 60, .45); animation: panelInUp .4s cubic-bezier(.2, .8, .2, 1);
 }
+.intro-logo { height: 64px; width: auto; display: block; margin: 0 auto 20px; filter: drop-shadow(0 2px 6px rgba(10, 90, 128, .22)); }
 .intro-title {
   font-family: var(--font-heading); font-weight: 800; font-size: 32px; letter-spacing: .01em;
   color: #153044; margin-bottom: 16px;
@@ -444,6 +445,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   .attract-off-indicator { top: 100px; right: 16px; font-size: 10.5px; padding: 5px 11px; }
 
   .intro-card { padding: 32px 26px; }
+  .intro-logo { height: 48px; margin-bottom: 14px; }
   .intro-title { font-size: 24px; }
   .intro-stats { font-size: 13px; }
 }

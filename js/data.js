@@ -15,16 +15,12 @@ const REGIONS = [
   // que fica bem próximo do centróide da zona.
   { name: 'Lagos e Cânions do São Francisco', mapLabel: 'Lagos e Cânions', lat: -9.30, lng: -38.35, labelOffset: [-90, -10] },
   { name: 'Vale do São Francisco', lat: -9.55, lng: -40.60, labelOffset: [-40, -45] },
-  { name: 'Costa dos Coqueiros', lat: -12.15, lng: -37.85, labelOffset: [-72, -22] },
-  // Vizinhança mais densa do mapa (Salvador/Recôncavo): rótulos de Aratu, Salvador,
-  // APA Baía de Todos os Santos e Costa dos Coqueiros convergem para o mesmo trecho de
-  // costa. labelOffset joga o texto da zona para um vão livre a noroeste do ponto real,
-  // com linha de chamada tracejada indicando a posição verdadeira.
-  { name: 'Bahia de Todos os Santos', lat: -12.75, lng: -38.62, labelOffset: [-140, -45] },
-  // labelOffset joga o rótulo sobre o mar, longe dos pinos de Camamu/Maraú e de
-  // Caminhos do Jiquiriça, vizinhos do centróide.
-  { name: 'Costa do Dendê', lat: -13.75, lng: -39.05, labelOffset: [-58, -40] },
-  { name: 'Costa das Baleias', lat: -17.55, lng: -39.35, labelOffset: [0, -45] },
+  // labelOffset joga o rótulo para o lado do mar (leste), não para o interior —
+  // evita colidir com os rótulos de zonas/POIs vizinhos em terra.
+  { name: 'Costa dos Coqueiros', lat: -12.15, lng: -37.85, labelOffset: [95, -21] },
+  { name: 'Baía de Todos-os-Santos', lat: -12.75, lng: -38.62, labelOffset: [140, 70] },
+  { name: 'Costa do Dendê', lat: -13.75, lng: -39.05, labelOffset: [95, 73] },
+  { name: 'Costa das Baleias', lat: -17.55, lng: -39.35, labelOffset: [100, -45] },
   { name: 'Caminhos do Oeste', lat: -12.20, lng: -45.30 },
   { name: 'Caminhos do Sertão', lat: -10.90, lng: -39.90 },
   { name: 'Costa do Cacau', lat: -14.95, lng: -39.10 },
@@ -67,7 +63,7 @@ const POIS = [
     // plataforma abaixo de 100 m, dentro da faixa de 70–300 m do drop-off) — confirmar
     // ocorrência real com operadores locais.
     secondary: ['Marlin Branco', 'Peixe-Vela', 'Dourado-do-mar', 'Cherne'],
-    operators: ['Charlote Fishing — píeres e escritório próprios; barcos Candela e Bazooka (6.900–9.300 BRL/dia para 4 pessoas), equipamento Accurate/Shimano/Penn.'],
+    operators: ['Charlote Fishing — píeres e escritório próprios; barcos Candela e Bazooka (até 4 pessoas), equipamento Accurate/Shimano/Penn.'],
     lodging: ['Canavieiras'],
     rules: 'Catch & Release obrigatório para todas as espécies de bico.',
     blurb: 'Planalto submarino cuja ressurgência concentra os maiores peixes de bico da América do Sul. O recorde mundial IGFA de Marlin Azul (636 kg) foi capturado ao largo de Vitória/ES em 1992 — não neste banco, que mantém reputação própria pela consistência de exemplares.' },
@@ -82,12 +78,12 @@ const POIS = [
     // VALIDAR: Badejo adicionado por afinidade de habitat com a Garoupa nas mesmas
     // estruturas recifais — confirmar ocorrência real com operadores locais.
     secondary: ['Pargo', 'Vermelho-Caranha', 'Badejo'],
-    operators: ['Abrolhos Viagens / Mergulho', 'Abrolhos Adventure', 'Horizonte Aberto — catamarãs até 81 pés, Liveaboard 3–4 noites (~3.490 BRL/3 dias).'],
+    operators: ['Abrolhos Viagens / Mergulho', 'Abrolhos Adventure', 'Horizonte Aberto — catamarãs até 81 pés, Liveaboard 3–4 noites.'],
     lodging: ['Caravelas'],
-    rules: 'Pesca PROIBIDA dentro do Parque Nacional Marinho (ICMBio); permitida apenas nos parcéis periféricos. Ingresso diário 13 BRL.',
+    rules: 'Pesca PROIBIDA dentro do Parque Nacional Marinho (ICMBio); permitida apenas nos parcéis periféricos.',
     blurb: 'Formações coralíneas em cogumelo ("chapeirões"), as mais complexas do Atlântico Sul. À mínima hesitação após o toque, o peixe refugia-se no coral e corta a linha.' },
 
-  { id: 'p3', main: true, sig: 'SIG 003', name: 'Estuário do Rio Jaguaripe', region: 'Bahia de Todos os Santos', lat: -13.10, lng: -38.86,
+  { id: 'p3', main: true, sig: 'SIG 003', name: 'Estuário do Rio Jaguaripe', region: 'Baía de Todos-os-Santos', lat: -13.10, lng: -38.86,
     loc: 'Manguezais de Nazaré e Jaguaripe', depth: 'Calhas estuarinas: 2 m a 10 m',
     technique: 'Isco vivo (derivação) / Baitcasting', trophy: 'Camurim / Camurim-pena', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'mero', 'vermelho-caranha', 'traira'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [11, 12, 1, 2, 3], season: 'Novembro a Março',
@@ -154,7 +150,7 @@ const POIS = [
     // VALIDAR: Albacorinha adicionada — é o atum mais frequente na plataforma baiana
     // (ver nota da espécie), plausível junto com Albacora-laje no mesmo trolling.
     secondary: ['Cavala', 'Bonito-listrado', 'Bicuda', 'Albacorinha'],
-    operators: ['Base Náutica Praia do Forte — lanchas 24 pés (Yamaha 200hp), fishfinder + GPS. Pacotes de 4h (08h ou 13h), 2.700–4.800 BRL/embarcação.'],
+    operators: ['Base Náutica Praia do Forte — lanchas 24 pés (Yamaha 200hp), fishfinder + GPS. Pacotes de 4h (08h ou 13h).'],
     lodging: ['Mata de São João'],
     rules: '',
     blurb: 'Declives batimétricos dramáticos a poucas milhas da costa. Iscas arrastadas provocam pelágicos de topo; pacotes incluem material, alimentação e capitão.' },
@@ -172,19 +168,19 @@ const POIS = [
   // Secundários
   // VALIDAR: months/season abaixo são propostos por analogia com a sazonalidade regional
   // e com os POIs principais próximos — confirmar com operadores locais antes de publicar.
-  { id: 's1', main: false, name: 'Salvador — Baía de Todos os Santos', region: 'Bahia de Todos os Santos', lat: -12.97, lng: -38.51,
+  { id: 's1', main: false, name: 'Salvador — Baía de Todos os Santos', region: 'Baía de Todos-os-Santos', lat: -12.97, lng: -38.51,
     loc: 'Maior baía navegável do Brasil', trophy: 'Camurim-pena / Xaréu', trophyKeys: ['camurim-pena', 'xareu', 'carapeba', 'curima'],
     dificuldade: 'Baixa', acesso: 'Acesso urbano', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Carapeba', 'Curimã'], operators: ['Charter Náutico (Bahia Marina, Porto de Salvador)'], lodging: [], rules: '',
     blurb: 'Manguezais e canais de águas quentes o ano todo. Camarão vivo lançado nas raízes na maré enchente; rotas pela Ilha de Maré, Ilha dos Frades e Forte de São Marcelo.' },
-  { id: 's2', main: false, name: 'Baía de Aratu', region: 'Bahia de Todos os Santos', lat: -12.80, lng: -38.42,
+  { id: 's2', main: false, name: 'Baía de Aratu', region: 'Baía de Todos-os-Santos', lat: -12.80, lng: -38.42,
     loc: 'Ecossistema labiríntico ligado à BTS', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'camurim-pena', 'xareu'],
     dificuldade: 'Baixa', acesso: 'Acesso urbano', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Camurim-pena'], operators: [], lodging: [], rules: '',
     blurb: 'Canais mais profundos ideais para jig heads armados com shads macios. Substratos lodosos e manguezais servem de berçário.' },
-  // VALIDAR: Cachoeira/São Félix são classificadas em Bahia de Todos os Santos, mas
+  // VALIDAR: Cachoeira/São Félix são classificadas em Baía de Todos-os-Santos, mas
   // a represa também é próxima de Caminhos do Jiquiriça — confirmar zona oficial.
-  { id: 's3', main: false, name: 'Barragem Pedra do Cavalo', region: 'Bahia de Todos os Santos', lat: -12.57, lng: -38.98,
+  { id: 's3', main: false, name: 'Barragem Pedra do Cavalo', region: 'Baía de Todos-os-Santos', lat: -12.57, lng: -38.98,
     loc: 'Cachoeira / São Félix', trophy: 'Tucunaré / Traíra', trophyKeys: ['tucunare', 'traira', 'tambaqui', 'tilapia', 'corvina-de-agua-doce'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [4, 5, 6, 7, 8, 9, 10], season: 'Abril a Outubro',
     secondary: ['Tambaqui', 'Tilápia', 'Corvina de água doce'], operators: [], lodging: [], rules: '',
@@ -206,7 +202,7 @@ const POIS = [
     loc: 'Recifes de Coroa Alta (5–15 km)', trophy: 'Camurim / Sororoca', trophyKeys: ['camurim', 'sororoca', 'biquara', 'ariaco', 'bicuda', 'bonito-listrado'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Biquara', 'Ariacó', 'Bicuda', 'Bonito-listrado'], operators: ["Arraial d'Ajuda Passeios", 'Porto Pesca (Cap. Robson)', 'Porto Seguro Passeios'], lodging: [], rules: '',
-    blurb: 'Microjigging (30–60 g) e fly marinho nos recifes calcários. Saídas às 04h para a atividade máxima; pacotes privativos até 3.500 BRL para dez pessoas.' },
+    blurb: 'Microjigging (30–60 g) e fly marinho nos recifes calcários. Saídas às 04h para a atividade máxima; pacotes privativos para até dez pessoas.' },
   { id: 's7', main: false, name: 'Caravelas', region: 'Costa das Baleias', lat: -17.73, lng: -39.26,
     loc: 'Rampa de lançamento para Abrolhos', trophy: 'Garoupa / Pargo', trophyKeys: ['garoupa', 'pargo', 'vermelho-caranha', 'cioba'],
     dificuldade: 'Alta', acesso: 'Base liveaboard', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
@@ -243,7 +239,7 @@ const REGION_LABELS = {
   'Lagos e Cânions do São Francisco': 'Lagos e Cânions do São Francisco',
   'Vale do São Francisco': 'Vale do São Francisco',
   'Costa dos Coqueiros': 'Costa dos Coqueiros',
-  'Bahia de Todos os Santos': 'Bahia de Todos os Santos',
+  'Baía de Todos-os-Santos': 'Baía de Todos-os-Santos',
   'Costa do Dendê': 'Costa do Dendê',
   'Costa das Baleias': 'Costa das Baleias',
   'Caminhos do Oeste': 'Caminhos do Oeste',
