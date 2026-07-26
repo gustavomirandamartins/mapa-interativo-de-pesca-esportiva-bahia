@@ -6,14 +6,21 @@
 <title>Pesca Esportiva na Bahia · Fishing Show Brazil 2026</title>
 <meta name="description" content="Mapa interativo dos principais destinos de pesca esportiva do Estado da Bahia — Governo da Bahia · Fishing Show Brazil 2026.">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <div id="app" class="app">
+
+  <!-- Tela de abertura -->
+  <div id="intro-screen" class="intro-screen">
+    <div class="intro-card">
+      <div class="intro-title">Pesca Esportiva na Bahia</div>
+      <div id="intro-stats" class="intro-stats"></div>
+      <button id="intro-btn" class="intro-btn" type="button">Explorar o mapa</button>
+    </div>
+  </div>
 
   <header class="header">
     <img src="assets/BAHIA_TURISMO.png" alt="Bahia Turismo" class="brand-logo">
@@ -22,11 +29,15 @@
       <div class="title">Pesca Esportiva na Bahia</div>
     </div>
     <div class="header-actions">
+      <div class="view-tabs" role="tablist">
+        <button id="tab-mapa" class="view-tab is-active" type="button" role="tab" aria-selected="true">Mapa</button>
+        <button id="tab-especies" class="view-tab" type="button" role="tab" aria-selected="false">Espécies</button>
+      </div>
       <button id="btn-reset" class="btn-reset" type="button">↺ Mapa geral</button>
     </div>
   </header>
 
-  <div class="map-wrap">
+  <div id="map-wrap" class="map-wrap">
     <div id="pescamap" class="map"></div>
     <div class="map-vignette"></div>
 
@@ -61,7 +72,7 @@
       <div class="legend-rows">
         <div id="legend-region" class="legend-row" data-kind="region">
           <span class="legend-icon legend-icon-region"><span class="legend-icon-region-dot"></span></span>
-          <span>Macrorregiões</span>
+          <span>Zonas Turísticas</span>
         </div>
         <div id="legend-main" class="legend-row" data-kind="main">
           <span class="legend-icon legend-icon-main">1</span>
@@ -71,25 +82,39 @@
           <span class="legend-icon legend-icon-sec"></span>
           <span>Cidades e bases</span>
         </div>
-        <div id="legend-zone" class="legend-row" data-kind="protected">
-          <span class="legend-icon legend-icon-zone"></span>
-          <span>Zona de proteção (pesca proibida)</span>
+        <div id="legend-proibida" class="legend-row" data-kind="proibida">
+          <span class="legend-icon legend-icon-proibida"></span>
+          <span>Pesca proibida</span>
+        </div>
+        <div id="legend-restrita" class="legend-row" data-kind="restrita">
+          <span class="legend-icon legend-icon-restrita"></span>
+          <span>Área protegida — restrições</span>
         </div>
       </div>
     </div>
 
-    <!-- Zoom hint -->
-    <div id="zoom-hint" class="zoom-hint" hidden>
-      <span class="zoom-hint-dot"></span>
-      <span id="zoom-hint-text"></span>
-    </div>
-
     <!-- Detail panel -->
     <aside id="detail-panel" class="detail-panel" hidden></aside>
+
+    <!-- Indicador discreto: só aparece quando o modo automático é desligado manualmente (tecla A) -->
+    <div id="attract-off-indicator" class="attract-off-indicator" hidden>Modo automático desligado (A)</div>
   </div>
+
+  <!-- Espécies -->
+  <section id="species-view" class="species-view" hidden>
+    <div class="species-toolbar">
+      <div class="species-search-wrap">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="species-search-icon"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="species-search" class="species-search" type="search" placeholder="Buscar por nome, nome nacional, científico ou apelido...">
+      </div>
+    </div>
+    <div id="species-groups" class="species-groups"></div>
+    <aside id="species-detail-panel" class="detail-panel species-detail-panel" hidden></aside>
+  </section>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="js/species.js"></script>
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
 </body>

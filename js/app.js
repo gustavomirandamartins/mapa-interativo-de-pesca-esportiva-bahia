@@ -4,13 +4,45 @@
 (function () {
   'use strict';
 
-  const IDLE_SECONDS = 60;
+  const IDLE_SECONDS = 180;
+  // VALIDAR: confirmar a extensão do litoral baiano na fonte oficial (SEI-BA / IBGE) antes de publicar.
+  const KM_LITORAL_BAHIA = 1180;
   const SHOW_PROTECTED = true;
+  const PROTECTED_STYLE = {
+    proibida: { color: '#e06a5f', weight: 1.5, dashArray: '6 5', fillColor: '#e06a5f', fillOpacity: 0.18, textColor: '#c0554a' },
+    restrita: { color: '#d9962c', weight: 1.2, fillColor: '#d9962c', fillOpacity: 0.10, textColor: '#a8721f' }
+  };
   // Destinos principais e cidades/bases aparecem juntos a partir do mesmo zoom.
   const Z_MAIN = 7;
   const BAHIA_BOUNDS = [[-18.9, -47.0], [-8.2, -36.9]];
 
+  const HABITAT_GROUPS = [
+    ['oceanico', 'Oceânicas'],
+    ['recifal', 'Recifais'],
+    ['estuarino', 'Estuarinas e costeiras'],
+    ['dulcicola', 'Água doce']
+  ];
+  const HABITAT_LABELS = { oceanico: 'Oceânica', recifal: 'Recifal', estuarino: 'Estuarina / costeira', dulcicola: 'Água doce' };
+  const STATUS_BADGE = {
+    proibida: { label: 'Pesca proibida', cls: 'species-badge-proibida' },
+    ameacada: { label: 'Ameaçada', cls: 'species-badge-ameacada' },
+    introduzida: { label: 'Introduzida', cls: 'species-badge-introduzida' }
+  };
+
+  // key -> [POI, ...] que citam essa espécie em trophyKeys.
+  const SPECIES_POIS = {};
+  POIS.forEach((p) => (p.trophyKeys || []).forEach((k) => {
+    (SPECIES_POIS[k] = SPECIES_POIS[k] || []).push(p);
+  }));
+
   const el = {
+    mapWrap: document.getElementById('map-wrap'),
+    tabMapa: document.getElementById('tab-mapa'),
+    tabEspecies: document.getElementById('tab-especies'),
+    speciesView: document.getElementById('species-view'),
+    speciesSearch: document.getElementById('species-search'),
+    speciesGroups: document.getElementById('species-groups'),
+    speciesDetailPanel: document.getElementById('species-detail-panel'),
     resetBtn: document.getElementById('btn-reset'),
     filterTrigger: document.getElementById('filter-trigger'),
     filterChevron: document.getElementById('filter-chevron'),
@@ -23,22 +55,27 @@
     legendRegion: document.getElementById('legend-region'),
     legendMain: document.getElementById('legend-main'),
     legendSecondary: document.getElementById('legend-secondary'),
-    legendZone: document.getElementById('legend-zone'),
-    zoomHint: document.getElementById('zoom-hint'),
-    zoomHintText: document.getElementById('zoom-hint-text'),
-    detailPanel: document.getElementById('detail-panel')
+    legendProibida: document.getElementById('legend-proibida'),
+    legendRestrita: document.getElementById('legend-restrita'),
+    detailPanel: document.getElementById('detail-panel'),
+    introScreen: document.getElementById('intro-screen'),
+    introStats: document.getElementById('intro-stats'),
+    introBtn: document.getElementById('intro-btn'),
+    attractIndicator: document.getElementById('attract-off-indicator')
   };
 
   const state = {
+    view: 'mapa',
     activeTrophy: null,
     activeMonth: null,
-    visible: { region: true, main: true, secondary: true, protected: true },
+    visible: { region: true, main: true, secondary: true, proibida: true, restrita: true },
     selectedId: null,
     filtersOpen: false,
-    matchCount: 21
+    matchCount: 21,
+    attractEnabled: true
   };
 
-  let map, regionLayer, poiLayer, markers = {}, protectedZone, protectedLabel, bahiaBounds;
+  let map, regionLayer, poiLayer, markers = {}, protectedLayer, bahiaBounds;
   let halo, outline, mask;
   let activeId = null;
   let idleTimer, attractInterval, attractSelectTimer;
@@ -89,7 +126,13 @@
 
   function tileConfig() {
     // Estilo náutico (Esri Ocean Basemap) — padrão do protótipo original.
-    return { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', opts: { maxZoom: 13, attribution: '© Esri — Ocean Basemap' } };
+    // Cache local (gerado por scripts/fetch-tiles.js) primeiro, para funcionar sem rede
+    // na apresentação; cada tile que faltar localmente cai para a URL remota do Esri.
+    return {
+      localUrl: 'assets/tiles/{z}/{x}/{y}.jpg',
+      remoteUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
+      opts: { maxZoom: 13, attribution: '© Esri — Ocean Basemap' }
+    };
   }
 
   // ---------- Map init ----------
@@ -106,16 +149,33 @@
     map.fitBounds(bounds, { padding: [20, 20] });
 
     const t = tileConfig();
-    L.tileLayer(t.url, t.opts).addTo(map);
+    const tiles = L.tileLayer(t.localUrl, t.opts).addTo(map);
+    tiles.on('tileerror', (e) => {
+      const { z, x, y } = e.coords;
+      e.tile.src = t.remoteUrl.replace('{z}', z).replace('{y}', y).replace('{x}', x);
+    });
     setTimeout(() => map.invalidateSize(), 120);
 
     regionLayer = L.layerGroup().addTo(map);
     REGIONS.forEach((r) => {
+      // Rótulo posicionado por transform em torno do ponto (0,0) do ícone, não por
+      // fluxo normal. Por padrão fica logo abaixo do ponto; quando `labelOffset` é
+      // informado (zonas com vizinhança muito densa perto de Salvador), o texto é
+      // deslocado para um espaço livre e uma linha de chamada tracejada liga o ponto
+      // real ao rótulo, para não sobrepor outros rótulos próximos.
+      const [dx, dy] = r.labelOffset || [0, 11];
+      const hasOffset = !!r.labelOffset;
+      const labelTransform = hasOffset ? 'translate(-50%,-50%)' : 'translate(-50%,0)';
+      const leaderLine = hasOffset
+        ? '<svg style="position:absolute;left:0;top:0;overflow:visible;pointer-events:none" width="1" height="1">'
+          + '<line x1="0" y1="0" x2="' + dx + '" y2="' + dy + '" stroke="#0f7fb0" stroke-width="1.5" stroke-dasharray="3 4" opacity="0.6"/></svg>'
+        : '';
       const icon = L.divIcon({
-        className: 'region-icon', iconSize: [210, 46], iconAnchor: [105, 23],
-        html: '<div style="text-align:center;pointer-events:auto;cursor:pointer">'
-          + '<div style="width:13px;height:13px;margin:0 auto 5px;border-radius:50%;background:#0f7fb0;box-shadow:0 0 0 4px rgba(34,167,216,.28),0 1px 4px rgba(10,90,128,.4)"></div>'
-          + '<div style="font-family:var(--font-heading);font-weight:700;font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:#0a5a80;text-shadow:0 0 5px #fff,0 0 9px #fff,0 0 12px #fff">' + r.name + '</div></div>'
+        className: 'region-icon', iconSize: [0, 0], iconAnchor: [0, 0],
+        html: '<div style="position:relative;cursor:pointer">'
+          + leaderLine
+          + '<div style="position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;background:#0f7fb0;box-shadow:0 0 0 4px rgba(34,167,216,.28),0 1px 4px rgba(10,90,128,.4)"></div>'
+          + '<div style="position:absolute;left:' + dx + 'px;top:' + dy + 'px;transform:' + labelTransform + ';white-space:nowrap;text-align:center;font-family:var(--font-heading);font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:#0a5a80;text-shadow:0 0 5px #fff,0 0 9px #fff,0 0 12px #fff">' + (r.mapLabel || r.name) + '</div></div>'
       });
       const m = L.marker([r.lat, r.lng], { icon, interactive: true, keyboard: false });
       m.on('click', () => map.flyTo([r.lat, r.lng], 8, { duration: 1.6 }));
@@ -132,17 +192,26 @@
       markers[p.id] = m;
     });
 
-    protectedZone = L.circle([-17.96, -38.70], {
-      radius: 26000, color: '#e06a5f', weight: 1.5, dashArray: '6 5', fillColor: '#e06a5f', fillOpacity: 0.14
+    protectedLayer = L.layerGroup();
+    PROTECTED_AREAS.forEach((area) => {
+      const style = PROTECTED_STYLE[area.tipo];
+      const circle = L.circle([area.lat, area.lng], {
+        radius: area.raio, color: style.color, weight: style.weight,
+        dashArray: style.dashArray, fillColor: style.fillColor, fillOpacity: style.fillOpacity
+      });
+      circle._areaType = area.tipo;
+      const label = L.marker([area.lat, area.lng], {
+        icon: L.divIcon({
+          className: 'poi-icon', iconSize: [210, 20], iconAnchor: [105, 10],
+          html: '<div style="text-align:center;white-space:nowrap;font-family:var(--font-heading);font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:' + style.textColor + ';text-shadow:' + LABEL_HALO + '">' + area.nome + '</div>'
+        }),
+        interactive: false, keyboard: false
+      });
+      label._areaType = area.tipo;
+      circle.addTo(protectedLayer);
+      label.addTo(protectedLayer);
     });
-    protectedLabel = L.marker([-17.96, -38.70], {
-      icon: L.divIcon({
-        className: 'poi-icon', iconSize: [170, 20], iconAnchor: [85, 10],
-        html: '<div style="text-align:center;white-space:nowrap;font-family:var(--font-heading);font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:#c0554a;text-shadow:' + LABEL_HALO + '">Zona de proteção</div>'
-      }),
-      interactive: false, keyboard: false
-    });
-    if (SHOW_PROTECTED) { protectedZone.addTo(map); protectedLabel.addTo(map); }
+    if (SHOW_PROTECTED) protectedLayer.addTo(map);
 
     map.on('zoomend', updateDisclosure);
     updateDisclosure();
@@ -167,7 +236,9 @@
 
       halo.bringToFront();
       outline.bringToFront();
-      if (protectedZone && SHOW_PROTECTED) protectedZone.bringToFront();
+      if (protectedLayer && SHOW_PROTECTED) {
+        protectedLayer.eachLayer((l) => { if (l.bringToFront) l.bringToFront(); });
+      }
       updateDisclosure();
     } catch (e) { /* mantém limites estáticos como fallback */ }
   }
@@ -221,16 +292,16 @@
       });
     }
 
-    [protectedZone, protectedLabel].forEach((layer) => {
-      if (!layer) return;
-      const e = layer.getElement();
-      if (e) { e.style.opacity = state.visible.protected ? '1' : '0'; e.style.transition = 'opacity .3s'; e.style.pointerEvents = state.visible.protected ? 'auto' : 'none'; }
-    });
+    if (protectedLayer) {
+      protectedLayer.eachLayer((l) => {
+        const visible = state.visible[l._areaType];
+        const e = l.getElement();
+        if (e) { e.style.opacity = visible ? '1' : '0'; e.style.transition = 'opacity .3s'; e.style.pointerEvents = visible ? 'auto' : 'none'; }
+      });
+    }
 
-    const level = z < Z_MAIN ? 'region' : 'detail';
     state.matchCount = count;
     renderMatchLabel();
-    renderZoomHint(level);
   }
 
   // ---------- Selection / detail panel ----------
@@ -256,6 +327,11 @@
     state.selectedId = null;
     el.detailPanel.hidden = true;
     el.detailPanel.innerHTML = '';
+  }
+
+  function fishImg(key, alt) {
+    return `<img src="assets/fish/${key}.avif" alt="${alt}" loading="lazy"
+      onerror="this.onerror=null;this.src='assets/fish/_placeholder.svg';this.classList.add('img-fallback')">`;
   }
 
   function renderDetailPanel(p) {
@@ -311,7 +387,8 @@
       <div class="detail-body">
         <div class="detail-tags">
           <span class="tag-trophy">${p.trophy || ''}</span>
-          <span class="tag-level">${p.level || ''}</span>
+          <span class="tag-level">${p.dificuldade || ''}</span>
+          <span class="tag-access">${p.acesso || ''}</span>
         </div>
         <p class="detail-blurb">${p.blurb || ''}</p>
         ${grid}
@@ -337,7 +414,8 @@
     el.legendRegion.classList.toggle('off', !state.visible.region);
     el.legendMain.classList.toggle('off', !state.visible.main);
     el.legendSecondary.classList.toggle('off', !state.visible.secondary);
-    el.legendZone.classList.toggle('off', !state.visible.protected);
+    el.legendProibida.classList.toggle('off', !state.visible.proibida);
+    el.legendRestrita.classList.toggle('off', !state.visible.restrita);
   }
 
   // ---------- Reset view ----------
@@ -371,10 +449,10 @@
   }
   function resetIdle() {
     clearTimeout(idleTimer);
-    idleTimer = setTimeout(startAttract, IDLE_SECONDS * 1000);
+    if (state.attractEnabled) idleTimer = setTimeout(startAttract, IDLE_SECONDS * 1000);
   }
   function startAttract() {
-    if (attracting || !map) return;
+    if (attracting || !map || !state.attractEnabled) return;
     attracting = true; attractIndex = 0; attractOut = true;
     attractStep();
     attractInterval = setInterval(attractStep, 5400);
@@ -399,6 +477,79 @@
     clearInterval(attractInterval);
     clearTimeout(attractSelectTimer);
     attracting = false;
+  }
+  // Tecla A: liga/desliga o modo automático manualmente (independente do idle timer).
+  function toggleAttract() {
+    state.attractEnabled = !state.attractEnabled;
+    if (!state.attractEnabled) {
+      stopAttract();
+      clearTimeout(idleTimer);
+    } else {
+      resetIdle();
+    }
+    el.attractIndicator.hidden = state.attractEnabled;
+  }
+
+  // ---------- Atalhos de teclado ----------
+
+  // POIs atualmente mostrados no mapa (respeita filtro ativo, zoom e toggles da legenda).
+  function visiblePois() {
+    if (!map) return [];
+    const z = map.getZoom();
+    const zoomOk = z >= Z_MAIN;
+    const hasFilter = !!(state.activeTrophy || state.activeMonth);
+    return POIS.filter((p) => {
+      const categoryVisible = p.main ? state.visible.main : state.visible.secondary;
+      return categoryVisible && matchesFilters(p) && (hasFilter || zoomOk);
+    });
+  }
+
+  function navigatePoi(dir) {
+    const list = visiblePois();
+    if (!list.length || !map) return;
+    const idx = list.findIndex((p) => p.id === activeId);
+    const nextIdx = idx === -1 ? (dir > 0 ? 0 : list.length - 1) : (idx + dir + list.length) % list.length;
+    const p = list[nextIdx];
+    switchView('mapa');
+    map.flyTo([p.lat, p.lng], p.main ? 8 : 9, { duration: 1.2 });
+    selectPoi(p.id);
+  }
+
+  function jumpToMain(n) {
+    const p = POIS.find((x) => x.main && x.id === 'p' + n);
+    if (!p || !map) return;
+    switchView('mapa');
+    map.flyTo([p.lat, p.lng], 8, { duration: 1.2 });
+    selectPoi(p.id);
+  }
+
+  function handleKeydown(e) {
+    if (!el.introScreen.hidden) { closeIntro(); return; }
+
+    const target = e.target;
+    const inField = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+    if (inField) return;
+
+    const key = e.key;
+    if (key >= '0' && key <= '9') { jumpToMain(key === '0' ? 10 : Number(key)); return; }
+    if (key === 'ArrowRight') { navigatePoi(1); return; }
+    if (key === 'ArrowLeft') { navigatePoi(-1); return; }
+    if (key === 'Escape') { switchView('mapa'); resetView(); return; }
+    if (key === 'f' || key === 'F') { toggleFilters(); return; }
+    if (key === 'e' || key === 'E') { switchView(state.view === 'mapa' ? 'especies' : 'mapa'); return; }
+    if (key === 'a' || key === 'A') { toggleAttract(); return; }
+  }
+
+  // ---------- Tela de abertura ----------
+
+  function renderIntroStats() {
+    el.introStats.textContent = KM_LITORAL_BAHIA.toLocaleString('pt-BR') + ' km de litoral · '
+      + SPECIES.length + ' espécies-troféu · ' + POIS.length + ' destinos · ' + REGIONS.length + ' zonas turísticas';
+  }
+
+  function closeIntro() {
+    el.introScreen.hidden = true;
+    resetIdle();
   }
 
   // ---------- Filters UI ----------
@@ -431,13 +582,32 @@
 
   function renderChips() {
     el.trophyChips.innerHTML = '';
-    TROPHIES.forEach(([k, label]) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'pill' + (state.activeTrophy === k ? ' is-on' : '');
-      btn.textContent = label;
-      btn.addEventListener('click', () => toggleTrophy(k));
-      el.trophyChips.appendChild(btn);
+    HABITAT_GROUPS.forEach(([habitatKey, label]) => {
+      const items = SPECIES
+        .filter((s) => s.habitat === habitatKey)
+        .slice()
+        .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+      if (!items.length) return;
+
+      const group = document.createElement('div');
+      group.className = 'chip-group';
+      const heading = document.createElement('div');
+      heading.className = 'chip-group-label';
+      heading.textContent = label;
+      group.appendChild(heading);
+
+      const row = document.createElement('div');
+      row.className = 'chip-row';
+      items.forEach((s) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pill' + (state.activeTrophy === s.key ? ' is-on' : '');
+        btn.textContent = s.nome;
+        btn.addEventListener('click', () => toggleTrophy(s.key));
+        row.appendChild(btn);
+      });
+      group.appendChild(row);
+      el.trophyChips.appendChild(group);
     });
 
     el.monthChips.innerHTML = '';
@@ -473,15 +643,162 @@
     renderMatchLabel();
   }
 
-  function renderZoomHint(level) {
-    const hints = { region: '', detail: 'Todos os pontos visíveis · toque num pino para detalhes' };
-    const text = hints[level] || '';
-    if (text) {
-      el.zoomHintText.textContent = text;
-      el.zoomHint.hidden = false;
-    } else {
-      el.zoomHint.hidden = true;
+  // ---------- Espécies ----------
+
+  function normalize(str) {
+    return (str || '').toString()
+      .normalize('NFD').replace(/\p{Diacritic}/gu, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
+
+  function switchView(view) {
+    state.view = view;
+    const isMap = view === 'mapa';
+    el.mapWrap.hidden = !isMap;
+    el.speciesView.hidden = isMap;
+    el.resetBtn.hidden = !isMap;
+    el.tabMapa.classList.toggle('is-active', isMap);
+    el.tabEspecies.classList.toggle('is-active', !isMap);
+    el.tabMapa.setAttribute('aria-selected', String(isMap));
+    el.tabEspecies.setAttribute('aria-selected', String(!isMap));
+    if (isMap && map) map.invalidateSize();
+  }
+
+  function speciesMatchesQuery(s, q) {
+    if (!q) return true;
+    const hay = normalize([s.nome, s.nomeNacional, s.cientifico].concat(s.aliases || []).join(' '));
+    return hay.includes(q);
+  }
+
+  function speciesCardHtml(s) {
+    const count = (SPECIES_POIS[s.key] || []).length;
+    const badge = STATUS_BADGE[s.status];
+    const nationalLine = (s.nomeNacional && s.nomeNacional !== s.nome)
+      ? `<div class="species-card-national">${s.nomeNacional}</div>` : '';
+    return `
+      <div class="species-card" data-key="${s.key}">
+        <div class="species-card-img-wrap">${fishImg(s.key, s.nome)}</div>
+        <div class="species-card-body">
+          <div class="species-card-name">${s.nome}</div>
+          ${nationalLine}
+          <div class="species-card-meta">
+            <span class="species-card-count">${count} destinos na Bahia</span>
+            ${badge ? `<span class="species-badge ${badge.cls}">${badge.label}</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderSpeciesGroups(q) {
+    const html = HABITAT_GROUPS.map(([habitatKey, label]) => {
+      const items = SPECIES.filter((s) => s.habitat === habitatKey && speciesMatchesQuery(s, q));
+      if (!items.length) return '';
+      return `
+        <div class="species-group">
+          <div class="species-group-title">${label}</div>
+          <div class="species-grid">${items.map(speciesCardHtml).join('')}</div>
+        </div>`;
+    }).join('');
+    el.speciesGroups.innerHTML = html || '<div class="species-empty">Nenhuma espécie encontrada.</div>';
+    el.speciesGroups.querySelectorAll('.species-card').forEach((card) => {
+      card.addEventListener('click', () => renderSpeciesDetail(SPECIES.find((s) => s.key === card.dataset.key)));
+    });
+  }
+
+  function monthsBarHtml(meses) {
+    const empty = !meses || meses.length === 0;
+    const cells = MONTHS.map((label, i) => {
+      const on = !empty && meses.includes(i + 1);
+      return `<span class="species-month-cell${on ? ' is-on' : ''}">${label}</span>`;
+    }).join('');
+    const note = empty ? '<div class="species-months-empty-note">Captura proibida o ano todo</div>' : '';
+    return `<div class="species-months">${cells}</div>${note}`;
+  }
+
+  function wherePescarHtml(s) {
+    const pois = SPECIES_POIS[s.key] || [];
+    if (!pois.length) {
+      return `
+        <div class="detail-section">
+          <div class="detail-section-label">Onde pescar na Bahia</div>
+          <div class="species-poi-empty">Ocorre na Bahia — sem destino mapeado</div>
+        </div>`;
     }
+    const byRegion = {};
+    pois.forEach((p) => { (byRegion[p.region] = byRegion[p.region] || []).push(p); });
+    const regionsHtml = Object.keys(REGION_LABELS).filter((k) => byRegion[k]).map((regionKey) => {
+      const items = byRegion[regionKey].map((p) => `
+        <div class="species-poi-item" data-poi-id="${p.id}">
+          <span class="species-poi-item-name">${p.name}</span>
+          <span class="species-poi-item-arrow">→</span>
+        </div>`).join('');
+      return `
+        <div class="species-poi-region">
+          <div class="species-poi-region-title">${REGION_LABELS[regionKey]}</div>
+          ${items}
+        </div>`;
+    }).join('');
+    return `
+      <div class="detail-section">
+        <div class="detail-section-label">Onde pescar na Bahia</div>
+        ${regionsHtml}
+      </div>`;
+  }
+
+  function renderSpeciesDetail(s) {
+    if (!s) return;
+    const badge = STATUS_BADGE[s.status];
+    const subtitleParts = [];
+    if (s.nomeNacional && s.nomeNacional !== s.nome) subtitleParts.push(s.nomeNacional);
+    if (s.cientifico) subtitleParts.push(`<em>${s.cientifico}</em>`);
+    const aliasesLine = (s.aliases && s.aliases.length)
+      ? `<div class="species-detail-aliases">Também conhecido como: ${s.aliases.join(', ')}</div>` : '';
+    const notaBox = s.nota
+      ? `<div class="detail-rules-box"><div class="detail-rules-label">Nota</div><div class="detail-rules-text">${s.nota}</div></div>` : '';
+
+    el.speciesDetailPanel.innerHTML = `
+      <div class="species-detail-img">${fishImg(s.key, s.nome)}</div>
+      <div class="detail-head">
+        <div class="detail-head-main">
+          <h2 class="detail-title">${s.nome}</h2>
+          <div class="detail-loc">${subtitleParts.join(' · ')}</div>
+        </div>
+        <button class="detail-close" type="button" aria-label="Fechar">×</button>
+      </div>
+      <div class="detail-body">
+        ${badge ? `<div class="detail-tags"><span class="species-badge ${badge.cls}">${badge.label}</span></div>` : ''}
+        ${aliasesLine}
+        <div class="detail-grid">
+          <div class="detail-card"><div class="detail-card-label">Habitat</div><div class="detail-card-value">${HABITAT_LABELS[s.habitat] || s.habitat}</div></div>
+          <div class="detail-card"><div class="detail-card-label">Porte</div><div class="detail-card-value">${s.porte || ''}</div></div>
+          <div class="detail-card span-2"><div class="detail-card-label">Técnica</div><div class="detail-card-value">${s.tecnica || ''}</div></div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-label">Melhor época</div>
+          ${monthsBarHtml(s.meses)}
+        </div>
+        ${notaBox}
+        ${wherePescarHtml(s)}
+      </div>`;
+
+    el.speciesDetailPanel.hidden = false;
+    el.speciesDetailPanel.querySelector('.detail-close').addEventListener('click', closeSpeciesDetail);
+    el.speciesDetailPanel.querySelectorAll('.species-poi-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        const poi = POIS.find((x) => x.id === item.dataset.poiId);
+        if (!poi) return;
+        switchView('mapa');
+        map.flyTo([poi.lat, poi.lng], 8, { duration: 1.2 });
+        selectPoi(poi.id);
+      });
+    });
+  }
+
+  function closeSpeciesDetail() {
+    el.speciesDetailPanel.hidden = true;
+    el.speciesDetailPanel.innerHTML = '';
   }
 
   // ---------- Wire up static UI ----------
@@ -493,13 +810,21 @@
     el.legendRegion.addEventListener('click', () => toggleVisibility('region'));
     el.legendMain.addEventListener('click', () => toggleVisibility('main'));
     el.legendSecondary.addEventListener('click', () => toggleVisibility('secondary'));
-    el.legendZone.addEventListener('click', () => toggleVisibility('protected'));
+    el.legendProibida.addEventListener('click', () => toggleVisibility('proibida'));
+    el.legendRestrita.addEventListener('click', () => toggleVisibility('restrita'));
+    el.tabMapa.addEventListener('click', () => switchView('mapa'));
+    el.tabEspecies.addEventListener('click', () => switchView('especies'));
+    el.speciesSearch.addEventListener('input', () => renderSpeciesGroups(normalize(el.speciesSearch.value)));
+    el.introScreen.addEventListener('click', closeIntro);
+    document.addEventListener('keydown', handleKeydown);
 
     ['pointerdown', 'wheel', 'keydown'].forEach((evt) => document.addEventListener(evt, onActivity, { passive: true }));
 
     renderChips();
     renderFilterTrigger();
     renderLegendState();
+    renderSpeciesGroups('');
+    renderIntroStats();
   }
 
   function waitForLeaflet(tries) {
