@@ -40,6 +40,7 @@
   SPECIES.forEach((s) => { SPECIES_BY_NAME[normalize(s.nome)] = s; });
 
   const el = {
+    header: document.getElementById('header'),
     mapWrap: document.getElementById('map-wrap'),
     tabMapa: document.getElementById('tab-mapa'),
     tabEspecies: document.getElementById('tab-especies'),
@@ -287,13 +288,35 @@
     resetIdle();
   }
 
+  // Altura real do cabeçalho (duas linhas: logo+título, abas), medida em runtime.
+  // Sem isso, o enquadramento do "mapa geral" tratava o cabeçalho como se não
+  // ocupasse espaço algum: o zoom mínimo e o fitBounds usavam toda a altura do
+  // container, deixando a porção norte da Bahia atrás do cabeçalho — e como o
+  // zoom mínimo já vinha calculado "justo" demais, não dava pra afastar (nem
+  // arrastar) o suficiente pra revelá-la, sobretudo no celular.
+  function headerPad(extra) {
+    const h = el.header ? el.header.getBoundingClientRect().height : 112;
+    return h + extra;
+  }
+
+  // Publica a altura do cabeçalho em --header-h, para os painéis do mapa (filtro,
+  // espécies, indicador de attract mode) se encaixarem abaixo dele em qualquer
+  // largura, sem um valor fixo por breakpoint.
+  function syncHeaderHeight() {
+    if (!el.header) return;
+    const h = el.header.getBoundingClientRect().height;
+    if (h > 0) document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+
   // getBoundsZoom() só é confiável com o container já medido: num contexto sem
   // layout (aba oculta, painel ainda fechado) ele devolve o maxZoom, e o
   // setMinZoom seguinte deixaria o mapa travado no zoom máximo para sempre.
   function frameBahia(b) {
     map.invalidateSize();
-    if (map.getSize().x > 0) map.setMinZoom(map.getBoundsZoom(b));
-    map.fitBounds(b, { padding: [18, 18] });
+    const paddingTL = L.point(18, headerPad(14));
+    const paddingBR = L.point(18, 18);
+    if (map.getSize().x > 0) map.setMinZoom(map.getBoundsZoom(b, false, paddingTL.add(paddingBR)));
+    map.fitBounds(b, { paddingTopLeft: paddingTL, paddingBottomRight: paddingBR });
   }
 
   async function loadBahia() {
@@ -574,7 +597,7 @@
   function resetView() {
     if (!map) return;
     closeDetail();
-    map.flyToBounds(bahiaBounds || L.latLngBounds(BAHIA_BOUNDS), { paddingTopLeft: [18, 112], paddingBottomRight: [18, 18], duration: 1.6 });
+    map.flyToBounds(bahiaBounds || L.latLngBounds(BAHIA_BOUNDS), { paddingTopLeft: [18, headerPad(14)], paddingBottomRight: [18, 18], duration: 1.6 });
   }
 
   // Ao selecionar uma espécie ou mês, enquadra todos os pontos que correspondem
@@ -588,7 +611,7 @@
       map.flyTo([matches[0].lat, matches[0].lng], 8, { duration: 1.4 });
     } else {
       const bounds = L.latLngBounds(matches.map((p) => [p.lat, p.lng]));
-      map.flyToBounds(bounds, { paddingTopLeft: [40, 132], paddingBottomRight: [40, 40], duration: 1.4 });
+      map.flyToBounds(bounds, { paddingTopLeft: [40, headerPad(34)], paddingBottomRight: [40, 40], duration: 1.4 });
     }
   }
 
@@ -986,6 +1009,19 @@
     renderLegendState();
     renderLegendOpenState();
     renderSpeciesGroups('');
+
+    syncHeaderHeight();
+    // A troca da fonte de sistema para Baloo 2/Nunito depois do primeiro layout
+    // muda a altura do cabeçalho (line-height diferente) — sem isso, --header-h
+    // fica com o valor medido antes da fonte carregar até o próximo resize.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncHeaderHeight);
+    // O cabeçalho quebra para o layout de largura estreita em ~860/1060px — ao
+    // cruzar essas faixas (ou girar o celular) --header-h precisa ser reavaliado.
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(syncHeaderHeight, 150);
+    });
   }
 
   function waitForLeaflet(tries) {
