@@ -234,6 +234,27 @@ const POIS = [
     blurb: 'Polo agrícola do Cerrado, irrigado pelas artérias hídricas do oeste baiano. Alvo de campanhas de repovoamento do INEMA/Codevasf.' }
 ];
 
+// Sedes dos municípios citados em `lodging`, para que cada item de Hospedagem
+// no card do destino leve o mapa até o município correspondente.
+// VALIDAR: coordenadas aproximadas da sede municipal (não do limite oficial) —
+// conferir com base do IBGE antes da publicação institucional.
+const MUNICIPIOS = {
+  'Canavieiras': { lat: -15.675, lng: -38.947 },
+  'Caravelas': { lat: -17.732, lng: -39.262 },
+  'Nazaré': { lat: -13.035, lng: -39.000 },
+  'Jaguaripe': { lat: -13.113, lng: -38.895 },
+  'Jandaíra': { lat: -11.564, lng: -37.784 },
+  'Camamu': { lat: -13.945, lng: -39.106 },
+  'Maraú': { lat: -14.104, lng: -39.014 },
+  'Sobradinho': { lat: -9.462, lng: -40.822 },
+  'Petrolina': { lat: -9.389, lng: -40.502 },
+  'Paulo Afonso': { lat: -9.406, lng: -38.216 },
+  'Andaraí': { lat: -12.807, lng: -41.331 },
+  'Lençóis': { lat: -12.561, lng: -41.390 },
+  'Mata de São João': { lat: -12.531, lng: -38.300 },
+  'Barreiras': { lat: -12.153, lng: -44.990 }
+};
+
 const REGION_LABELS = {
   'Chapada Diamantina': 'Chapada Diamantina',
   'Lagos e Cânions do São Francisco': 'Lagos e Cânions do São Francisco',

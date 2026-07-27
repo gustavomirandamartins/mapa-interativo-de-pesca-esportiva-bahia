@@ -5,8 +5,6 @@
   'use strict';
 
   const IDLE_SECONDS = 180;
-  // VALIDAR: confirmar a extensão do litoral baiano na fonte oficial (SEI-BA / IBGE) antes de publicar.
-  const KM_LITORAL_BAHIA = 1180;
   const SHOW_PROTECTED = true;
   const PROTECTED_STYLE = {
     proibida: { color: '#e06a5f', weight: 1.5, dashArray: '6 5', fillColor: '#e06a5f', fillOpacity: 0.18, textColor: '#c0554a' },
@@ -35,6 +33,12 @@
     (SPECIES_POIS[k] = SPECIES_POIS[k] || []).push(p);
   }));
 
+  // Nome de exibição normalizado -> espécie. Os campos `trophy` e `secondary` dos
+  // POIs guardam rótulos legíveis, não chaves; este índice é o que permite
+  // transformar cada nome de peixe do card de destino em link para o card da espécie.
+  const SPECIES_BY_NAME = {};
+  SPECIES.forEach((s) => { SPECIES_BY_NAME[normalize(s.nome)] = s; });
+
   const el = {
     mapWrap: document.getElementById('map-wrap'),
     tabMapa: document.getElementById('tab-mapa'),
@@ -43,6 +47,7 @@
     speciesSearch: document.getElementById('species-search'),
     speciesGroups: document.getElementById('species-groups'),
     speciesDetailPanel: document.getElementById('species-detail-panel'),
+    speciesBackdrop: document.getElementById('species-modal-backdrop'),
     resetBtn: document.getElementById('btn-reset'),
     filterTrigger: document.getElementById('filter-trigger'),
     filterChevron: document.getElementById('filter-chevron'),
@@ -52,6 +57,9 @@
     monthChips: document.getElementById('month-chips'),
     matchLabel: document.getElementById('match-label'),
     clearFiltersBtn: document.getElementById('btn-clear-filters'),
+    legendToggle: document.getElementById('legend-toggle'),
+    legendChevron: document.getElementById('legend-chevron'),
+    legendRows: document.getElementById('legend-rows'),
     legendRegion: document.getElementById('legend-region'),
     legendMain: document.getElementById('legend-main'),
     legendSecondary: document.getElementById('legend-secondary'),
@@ -59,7 +67,6 @@
     legendRestrita: document.getElementById('legend-restrita'),
     detailPanel: document.getElementById('detail-panel'),
     introScreen: document.getElementById('intro-screen'),
-    introStats: document.getElementById('intro-stats'),
     introBtn: document.getElementById('intro-btn'),
     attractIndicator: document.getElementById('attract-off-indicator')
   };
@@ -71,6 +78,7 @@
     visible: { region: true, main: true, secondary: true, proibida: true, restrita: true },
     selectedId: null,
     filtersOpen: false,
+    legendOpen: false,
     matchCount: 21,
     attractEnabled: true
   };
@@ -178,7 +186,9 @@
           + '<div style="position:absolute;left:' + dx + 'px;top:' + dy + 'px;transform:' + labelTransform + ';white-space:nowrap;text-align:center;font-family:var(--font-heading);font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:#0a5a80;text-shadow:0 0 5px #fff,0 0 9px #fff,0 0 12px #fff">' + (r.mapLabel || r.name) + '</div></div>'
       });
       const m = L.marker([r.lat, r.lng], { icon, interactive: true, keyboard: false });
-      m.on('click', () => map.flyTo([r.lat, r.lng], 8, { duration: 1.6 }));
+      // Zonas turísticas não têm card próprio: aproxima a área e fecha o card que
+      // estivesse aberto, para o painel não continuar descrevendo outro lugar.
+      m.on('click', () => { closeDetail(); map.flyTo([r.lat, r.lng], 8, { duration: 1.6 }); });
       m.addTo(regionLayer);
     });
 
@@ -200,6 +210,9 @@
         dashArray: style.dashArray, fillColor: style.fillColor, fillOpacity: style.fillOpacity
       });
       circle._areaType = area.tipo;
+      // Mesma regra das zonas turísticas: sem card próprio, o clique só enquadra a
+      // área protegida e fecha o card aberto.
+      circle.on('click', () => { closeDetail(); map.flyToBounds(circle.getBounds(), { padding: [60, 60], duration: 1.6 }); });
       const label = L.marker([area.lat, area.lng], {
         icon: L.divIcon({
           className: 'poi-icon', iconSize: [210, 20], iconAnchor: [105, 10],
@@ -219,6 +232,15 @@
     resetIdle();
   }
 
+  // getBoundsZoom() só é confiável com o container já medido: num contexto sem
+  // layout (aba oculta, painel ainda fechado) ele devolve o maxZoom, e o
+  // setMinZoom seguinte deixaria o mapa travado no zoom máximo para sempre.
+  function frameBahia(b) {
+    map.invalidateSize();
+    if (map.getSize().x > 0) map.setMinZoom(map.getBoundsZoom(b));
+    map.fitBounds(b, { padding: [18, 18] });
+  }
+
   async function loadBahia() {
     try {
       const geom = await (await fetch('assets/bahia.geojson')).json();
@@ -226,8 +248,14 @@
       const b = gj.getBounds();
       bahiaBounds = b;
       map.setMaxBounds(b.pad(0.14));
-      map.setMinZoom(map.getBoundsZoom(b));
-      map.fitBounds(b, { padding: [18, 18] });
+      frameBahia(b);
+      // Carregou sem tamanho: refaz o enquadramento assim que o container medir.
+      if (map.getSize().x === 0 && window.ResizeObserver) {
+        const ro = new ResizeObserver(() => {
+          if (map.getSize().x > 0) { ro.disconnect(); frameBahia(b); }
+        });
+        ro.observe(map.getContainer());
+      }
 
       halo = L.geoJSON(geom, { interactive: false, style: { color: '#22a7d8', weight: 9, opacity: 0.16, fill: false } }).addTo(map);
       outline = L.geoJSON(geom, { interactive: false, style: { color: '#0f7fb0', weight: 2.5, opacity: 0.95, fill: false } }).addTo(map);
@@ -334,6 +362,38 @@
       onerror="this.onerror=null;this.src='assets/fish/_placeholder.svg';this.classList.add('img-fallback')">`;
   }
 
+  // Nome de peixe citado no card de destino vira link para o card da espécie —
+  // quando o rótulo casa com alguma espécie do catálogo.
+  function speciesTagHtml(name, cls) {
+    const s = SPECIES_BY_NAME[normalize(name)];
+    return s
+      ? `<span class="${cls} is-link" data-species-key="${s.key}" role="button" tabindex="0">${name}</span>`
+      : `<span class="${cls}">${name}</span>`;
+  }
+
+  function openSpeciesByKey(key) {
+    const s = SPECIES.find((x) => x.key === key);
+    if (!s) return;
+    switchView('especies');
+    renderSpeciesDetail(s);
+  }
+
+  // Município da Hospedagem: se existe um POI com o mesmo nome, abre o card dele;
+  // caso contrário apenas aproxima o mapa da sede municipal.
+  function goToMunicipio(nome) {
+    const c = MUNICIPIOS[nome];
+    if (!c || !map) return;
+    switchView('mapa');
+    const poi = POIS.find((x) => normalize(x.name) === normalize(nome));
+    if (poi) {
+      map.flyTo([poi.lat, poi.lng], 9, { duration: 1.4 });
+      selectPoi(poi.id);
+    } else {
+      closeDetail();
+      map.flyTo([c.lat, c.lng], 10, { duration: 1.4 });
+    }
+  }
+
   function renderDetailPanel(p) {
     const sigBadge = p.sig ? `<span class="detail-sig-badge">${p.sig}</span>` : '';
     const grid = p.isMain ? `
@@ -354,7 +414,7 @@
     const secondary = p.hasSecondary ? `
       <div class="detail-section">
         <div class="detail-section-label">Espécies secundárias</div>
-        <div class="detail-pill-row">${p.secondary.map((sp) => `<span class="tag-secondary">${sp}</span>`).join('')}</div>
+        <div class="detail-pill-row">${p.secondary.map((sp) => speciesTagHtml(sp, 'tag-secondary')).join('')}</div>
       </div>` : '';
     const operators = p.hasOperators ? `
       <div class="detail-section">
@@ -364,7 +424,9 @@
     const lodging = p.hasLodging ? `
       <div class="detail-section">
         <div class="detail-section-label">Hospedagem</div>
-        <div class="detail-pill-row">${p.lodging.map((h) => `<span class="tag-lodging">${h}</span>`).join('')}</div>
+        <div class="detail-pill-row">${p.lodging.map((h) => (MUNICIPIOS[h]
+          ? `<span class="tag-lodging is-link" data-municipio="${h}" role="button" tabindex="0">${h}</span>`
+          : `<span class="tag-lodging">${h}</span>`)).join('')}</div>
       </div>` : '';
     const rules = p.hasRules ? `
       <div class="detail-rules-box">
@@ -386,7 +448,7 @@
       </div>
       <div class="detail-body">
         <div class="detail-tags">
-          <span class="tag-trophy">${p.trophy || ''}</span>
+          ${(p.trophy || '').split('/').map((t) => t.trim()).filter(Boolean).map((t) => speciesTagHtml(t, 'tag-trophy')).join('')}
           <span class="tag-level">${p.dificuldade || ''}</span>
           <span class="tag-access">${p.acesso || ''}</span>
         </div>
@@ -400,6 +462,12 @@
 
     el.detailPanel.hidden = false;
     el.detailPanel.querySelector('.detail-close').addEventListener('click', closeDetail);
+    el.detailPanel.querySelectorAll('[data-species-key]').forEach((node) => {
+      node.addEventListener('click', () => openSpeciesByKey(node.dataset.speciesKey));
+    });
+    el.detailPanel.querySelectorAll('[data-municipio]').forEach((node) => {
+      node.addEventListener('click', () => goToMunicipio(node.dataset.municipio));
+    });
   }
 
   // ---------- Legend visibility toggles ----------
@@ -408,6 +476,18 @@
     state.visible[kind] = !state.visible[kind];
     renderLegendState();
     updateDisclosure();
+  }
+
+  // A legenda começa recolhida para liberar o canto do mapa; o cabeçalho abre e fecha.
+  function toggleLegend() {
+    state.legendOpen = !state.legendOpen;
+    renderLegendOpenState();
+  }
+
+  function renderLegendOpenState() {
+    el.legendRows.hidden = !state.legendOpen;
+    el.legendChevron.classList.toggle('is-open', state.legendOpen);
+    el.legendToggle.setAttribute('aria-expanded', String(state.legendOpen));
   }
 
   function renderLegendState() {
@@ -534,18 +614,17 @@
     if (key >= '0' && key <= '9') { jumpToMain(key === '0' ? 10 : Number(key)); return; }
     if (key === 'ArrowRight') { navigatePoi(1); return; }
     if (key === 'ArrowLeft') { navigatePoi(-1); return; }
-    if (key === 'Escape') { switchView('mapa'); resetView(); return; }
+    // Esc fecha primeiro o card de espécie aberto; só depois reseta para o mapa geral.
+    if (key === 'Escape') {
+      if (!el.speciesDetailPanel.hidden) { closeSpeciesDetail(); return; }
+      switchView('mapa'); resetView(); return;
+    }
     if (key === 'f' || key === 'F') { toggleFilters(); return; }
     if (key === 'e' || key === 'E') { switchView(state.view === 'mapa' ? 'especies' : 'mapa'); return; }
     if (key === 'a' || key === 'A') { toggleAttract(); return; }
   }
 
   // ---------- Tela de abertura ----------
-
-  function renderIntroStats() {
-    el.introStats.textContent = KM_LITORAL_BAHIA.toLocaleString('pt-BR') + ' km de litoral · '
-      + SPECIES.length + ' espécies-troféu · ' + POIS.length + ' destinos · ' + REGIONS.length + ' zonas turísticas';
-  }
 
   function closeIntro() {
     el.introScreen.hidden = true;
@@ -656,6 +735,9 @@
   function switchView(view) {
     state.view = view;
     const isMap = view === 'mapa';
+    // O card de espécie é um modal fixo na viewport: sem isso ele continuaria
+    // flutuando sobre o mapa depois de sair da aba Espécies.
+    if (isMap) closeSpeciesDetail();
     el.mapWrap.hidden = !isMap;
     el.speciesView.hidden = isMap;
     el.resetBtn.hidden = !isMap;
@@ -759,13 +841,15 @@
       ? `<div class="detail-rules-box"><div class="detail-rules-label">Nota</div><div class="detail-rules-text">${s.nota}</div></div>` : '';
 
     el.speciesDetailPanel.innerHTML = `
-      <div class="species-detail-img">${fishImg(s.key, s.nome)}</div>
+      <div class="species-detail-img">
+        ${fishImg(s.key, s.nome)}
+        <button class="detail-close species-detail-close" type="button" aria-label="Fechar">×</button>
+      </div>
       <div class="detail-head">
         <div class="detail-head-main">
           <h2 class="detail-title">${s.nome}</h2>
           <div class="detail-loc">${subtitleParts.join(' · ')}</div>
         </div>
-        <button class="detail-close" type="button" aria-label="Fechar">×</button>
       </div>
       <div class="detail-body">
         ${badge ? `<div class="detail-tags"><span class="species-badge ${badge.cls}">${badge.label}</span></div>` : ''}
@@ -784,11 +868,14 @@
       </div>`;
 
     el.speciesDetailPanel.hidden = false;
+    el.speciesBackdrop.hidden = false;
+    el.speciesDetailPanel.scrollTop = 0;
     el.speciesDetailPanel.querySelector('.detail-close').addEventListener('click', closeSpeciesDetail);
     el.speciesDetailPanel.querySelectorAll('.species-poi-item').forEach((item) => {
       item.addEventListener('click', () => {
         const poi = POIS.find((x) => x.id === item.dataset.poiId);
         if (!poi) return;
+        closeSpeciesDetail();
         switchView('mapa');
         map.flyTo([poi.lat, poi.lng], 8, { duration: 1.2 });
         selectPoi(poi.id);
@@ -798,6 +885,7 @@
 
   function closeSpeciesDetail() {
     el.speciesDetailPanel.hidden = true;
+    el.speciesBackdrop.hidden = true;
     el.speciesDetailPanel.innerHTML = '';
   }
 
@@ -807,6 +895,7 @@
     el.resetBtn.addEventListener('click', resetView);
     el.filterTrigger.addEventListener('click', toggleFilters);
     el.clearFiltersBtn.addEventListener('click', clearFilters);
+    el.legendToggle.addEventListener('click', toggleLegend);
     el.legendRegion.addEventListener('click', () => toggleVisibility('region'));
     el.legendMain.addEventListener('click', () => toggleVisibility('main'));
     el.legendSecondary.addEventListener('click', () => toggleVisibility('secondary'));
@@ -816,6 +905,7 @@
     el.tabEspecies.addEventListener('click', () => switchView('especies'));
     el.speciesSearch.addEventListener('input', () => renderSpeciesGroups(normalize(el.speciesSearch.value)));
     el.introScreen.addEventListener('click', closeIntro);
+    el.speciesBackdrop.addEventListener('click', closeSpeciesDetail);
     document.addEventListener('keydown', handleKeydown);
 
     ['pointerdown', 'wheel', 'keydown'].forEach((evt) => document.addEventListener(evt, onActivity, { passive: true }));
@@ -823,8 +913,8 @@
     renderChips();
     renderFilterTrigger();
     renderLegendState();
+    renderLegendOpenState();
     renderSpeciesGroups('');
-    renderIntroStats();
   }
 
   function waitForLeaflet(tries) {

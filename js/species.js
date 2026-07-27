@@ -1,5 +1,9 @@
 // Catálogo de espécies-troféu do mapa de pesca esportiva na Bahia.
 // Carregado antes de js/data.js — data.js referencia SPECIES/TROPHIES.
+//
+// O campo `nota` é renderizado no card público da espécie: só entra ali
+// curiosidade ou informação de interesse do visitante. Pendências de revisão
+// (VALIDAR) e histórico do refactor de chaves ficam em comentário, nunca no dado.
 
 const SPECIES = [
   // ---------- OCEÂNICAS ----------
@@ -31,7 +35,7 @@ const SPECIES = [
     cientifico:'Thunnus albacares', aliases:['albacora','yellowfin'],
     habitat:'oceanico', porte:'até 2,0 m · 150 kg', status:'nativo',
     meses:[1,2,3,4,5,6,7,8,9,10,11,12], tecnica:'Corrico, jigging vertical, isca viva',
-    nota:'Substitui a categoria genérica "Atum" dos dados anteriores.' },
+    nota:'' },
 
   { key:'albacorinha', nome:'Albacorinha', nomeNacional:'Atum-de-barbatana-negra',
     cientifico:'Thunnus atlanticus', aliases:['albacora-preta','blackfin'],
@@ -43,7 +47,7 @@ const SPECIES = [
     cientifico:'Katsuwonus pelamis', aliases:['bonito','gaiado','skipjack'],
     habitat:'oceanico', porte:'até 1,0 m · 20 kg', status:'nativo',
     meses:[1,2,3,4,5,6,7,8,9,10,11,12], tecnica:'Corrico rápido / spinning em cardume',
-    nota:'Substitui a categoria ambígua "Bonito", que agregava três espécies distintas.' },
+    nota:'' },
 
   { key:'wahoo', nome:'Wahoo', nomeNacional:'Cavala-empinge',
     cientifico:'Acanthocybium solandri', aliases:['guarapicu','cavala-da-índia','cavala-aipim'],
@@ -68,31 +72,37 @@ const SPECIES = [
     cientifico:'Epinephelus marginatus', aliases:['garoupa-legítima'],
     habitat:'recifal', porte:'até 1,5 m · 60 kg', status:'ameacada',
     meses:[10,11,12,1,2,3], tecnica:'Jigging vertical, isca natural de fundo',
-    nota:'VALIDAR: consta de lista de espécies ameaçadas do MMA — confirmar portaria vigente e eventuais restrições de captura.' },
+    // VALIDAR: consta de lista de espécies ameaçadas do MMA — confirmar portaria
+    // vigente e eventuais restrições de captura antes da publicação.
+    nota:'' },
 
   { key:'badejo', nome:'Badejo', nomeNacional:'Badejo-quadrado',
     cientifico:'Mycteroperca bonaci', aliases:['badejo-preto','sirigado'],
     habitat:'recifal', porte:'até 1,3 m · 55 kg', status:'ameacada',
     meses:[10,11,12,1,2,3], tecnica:'Jigging vertical, isca de fundo',
-    nota:'VALIDAR: verificar status na lista MMA vigente.' },
+    // VALIDAR: verificar status na lista MMA vigente.
+    nota:'' },
 
   { key:'cherne', nome:'Cherne', nomeNacional:'Cherne-verdadeiro',
     cientifico:'Hyporthodus niveatus', aliases:['cherne-poveiro'],
     habitat:'recifal', porte:'até 1,2 m · 50 kg', status:'ameacada',
     meses:[5,6,7,8,9], tecnica:'Pesca de fundo profunda, carretilha elétrica',
-    nota:'Habita quebra de plataforma, abaixo de 100 m. VALIDAR status MMA.' },
+    // VALIDAR: verificar status na lista MMA vigente.
+    nota:'Habita a quebra da plataforma continental, abaixo dos 100 m de profundidade.' },
 
   { key:'mero', nome:'Mero', nomeNacional:'Mero',
     cientifico:'Epinephelus itajara', aliases:['canapu','meroaçu'],
     habitat:'recifal', porte:'até 2,5 m · 400 kg', status:'proibida',
     meses:[], tecnica:'—',
-    nota:'PESCA PROIBIDA. Moratória federal desde 2002, sucessivamente renovada. VALIDAR portaria vigente. Manter no mapa apenas com selo de proibição — nunca como espécie-alvo.' },
+    // VALIDAR: confirmar a portaria de moratória vigente. Manter no mapa apenas com
+    // selo de proibição — nunca apresentar como espécie-alvo.
+    nota:'PESCA PROIBIDA. Moratória federal desde 2002, sucessivamente renovada.' },
 
   { key:'vermelho-caranha', nome:'Vermelho-Caranha', nomeNacional:'Caranha',
     cientifico:'Lutjanus cyanopterus', aliases:['caranha','caranho','cubera'],
     habitat:'recifal', porte:'até 1,6 m · 60 kg', status:'nativo',
     meses:[10,11,12,1,2,3], tecnica:'Jigging pesado, isca natural',
-    nota:'Fusão das chaves antigas "caranha" e "vermelho-caranha" — eram a mesma espécie.' },
+    nota:'' },
 
   { key:'pargo', nome:'Pargo', nomeNacional:'Pargo-vermelho',
     cientifico:'Lutjanus purpureus', aliases:['vermelho','pargo-verdadeiro'],
@@ -128,13 +138,14 @@ const SPECIES = [
     cientifico:'Haemulon plumierii', aliases:['abiquara','cambuba','corcoroca','pirambu','xira'],
     habitat:'recifal', porte:'até 45 cm · 2 kg', status:'nativo',
     meses:[1,2,3,4,5,6,7,8,9,10,11,12], tecnica:'Isca natural leve, microjigging',
-    nota:'Corrige a grafia "Bicuara" dos dados anteriores. Não confundir com bicuda (barracuda).' },
+    nota:'Não confundir com a bicuda (barracuda), espécie totalmente distinta.' },
 
   { key:'arabaiana', nome:'Arabaiana', nomeNacional:'Olho-de-boi',
     cientifico:'Seriola spp. (S. dumerili, S. rivoliana)', aliases:['olho-de-boi','olhete','pitangola','tapiranga','urubaiana'],
     habitat:'recifal', porte:'até 1,8 m · 70 kg', status:'nativo',
     meses:[9,10,11,12,1,2,3], tecnica:'Speed jigging, isca viva',
-    nota:'Associada à síndrome de Haff ("doença da urina preta") em episódios registrados no Brasil. VALIDAR se cabe alerta de consumo no card.' },
+    // VALIDAR: decidir se cabe um alerta de consumo destacado no card.
+    nota:'Associada à síndrome de Haff ("doença da urina preta") em episódios registrados no Brasil.' },
 
   { key:'bicuda', nome:'Bicuda', nomeNacional:'Barracuda',
     cientifico:'Sphyraena barracuda', aliases:['barracuda','bicuda-preta'],
@@ -214,19 +225,21 @@ const SPECIES = [
     cientifico:'Pseudoplatystoma corruscans', aliases:['pintado','surubim-do-são-francisco','moleque'],
     habitat:'dulcicola', porte:'até 1,6 m · 80 kg', status:'nativo',
     meses:[6,7,8,9,10], tecnica:'Pesca de fundo noturna, plugs sub-superfície',
-    nota:'Fusão das chaves antigas "surubim" e "pintado" — são nomes regionais do mesmo peixe. Na Bahia/São Francisco diz-se surubim; "pintado" é Pantanal/Paraná.' },
+    nota:'Na Bahia e no rio São Francisco o nome corrente é surubim; "pintado" designa o mesmo peixe no Pantanal e na bacia do Paraná.' },
 
   { key:'dourado-do-rio', nome:'Dourado-do-rio', nomeNacional:'Dourado',
     cientifico:'Salminus franciscanus (bacia do São Francisco)', aliases:['dourado','piraju','valente'],
     habitat:'dulcicola', porte:'até 1,0 m · 20 kg', status:'nativo',
     meses:[5,6,7,8,9,10], tecnica:'Fly fishing, plugs, isca viva',
-    nota:'VALIDAR: o dourado do São Francisco é S. franciscanus; o do Paraguaçu/Chapada pode ser outra espécie do gênero. Confirmar antes de publicar.' },
+    // VALIDAR: o dourado do São Francisco é S. franciscanus; o do Paraguaçu/Chapada
+    // pode ser outra espécie do gênero. Confirmar antes de publicar.
+    nota:'' },
 
   { key:'matrinxa', nome:'Matrinxã', nomeNacional:'Matrinxã',
     cientifico:'Brycon orthotaenia (bacia do São Francisco)', aliases:['jatuarana','piabanha'],
     habitat:'dulcicola', porte:'até 60 cm · 5 kg', status:'nativo',
     meses:[5,6,7,8,9], tecnica:'Fly fishing, isca vegetal, ceva',
-    nota:'VALIDAR: NÃO é Brycon amazonicus (matrinxã amazônica). A espécie do São Francisco é distinta.' },
+    nota:'A matrinxã do São Francisco é espécie distinta da matrinxã amazônica (Brycon amazonicus).' },
 
   { key:'traira', nome:'Traíra', nomeNacional:'Traíra',
     cientifico:'Hoplias malabaricus', aliases:['lobó','tarairá'],
@@ -244,7 +257,10 @@ const SPECIES = [
     cientifico:'Myleus micans', aliases:['pacu-prata','pacu-manteiga'],
     habitat:'dulcicola', porte:'até 40 cm · 3 kg', status:'nativo',
     meses:[4,5,6,7,8,9,10], tecnica:'Espera com ceva (fruta, milho fermentado)',
-    nota:'VALIDAR: o pacu nativo do São Francisco/Oeste Baiano é Myleus micans. O Piaractus mesopotamicus, comum em pesqueiros, é INTRODUZIDO na bacia — se os pontos se referirem a ele, reclassificar status.' },
+    // VALIDAR: o pacu nativo do São Francisco/Oeste Baiano é Myleus micans. O Piaractus
+    // mesopotamicus, comum em pesqueiros, é INTRODUZIDO na bacia — se os pontos se
+    // referirem a ele, reclassificar o status da espécie.
+    nota:'' },
 
   { key:'tucunare', nome:'Tucunaré', nomeNacional:'Tucunaré',
     cientifico:'Cichla spp.', aliases:['tucunaré-açu','peacock bass'],

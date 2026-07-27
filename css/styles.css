@@ -85,11 +85,11 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   box-shadow: 0 30px 80px rgba(10, 40, 60, .45); animation: panelInUp .4s cubic-bezier(.2, .8, .2, 1);
 }
 .intro-logo { height: 64px; width: auto; display: block; margin: 0 auto 20px; filter: drop-shadow(0 2px 6px rgba(10, 90, 128, .22)); }
+.intro-welcome { font-size: 15px; font-weight: 700; letter-spacing: .02em; color: var(--sea2); margin-bottom: 4px; }
 .intro-title {
   font-family: var(--font-heading); font-weight: 800; font-size: 32px; letter-spacing: .01em;
-  color: #153044; margin-bottom: 16px;
+  color: #153044; margin-bottom: 30px;
 }
-.intro-stats { font-size: 15px; font-weight: 700; color: var(--sea2); margin-bottom: 30px; line-height: 1.5; }
 .intro-btn {
   font-family: var(--font-heading); font-weight: 700; font-size: 17px; color: #fff; cursor: pointer;
   padding: 15px 34px; border: none; border-radius: 999px;
@@ -131,13 +131,15 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 .eyebrow { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; color: var(--sea2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .title { font-family: var(--font-heading); font-weight: 700; font-size: 30px; color: #1b3346; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .header-actions { margin-left: auto; display: flex; align-items: center; gap: 16px; flex: none; }
+/* Botão "ver toda a Bahia": ícone de enquadrar, sem rótulo — o texto competia com
+   as abas Mapa/Espécies pela atenção no cabeçalho. */
 .btn-reset {
-  display: inline-flex; align-items: center; gap: 9px;
-  font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: var(--sea-deep);
-  cursor: pointer; padding: 12px 21px; border-radius: 999px;
+  display: inline-grid; place-items: center; flex: none;
+  width: 42px; height: 42px; color: var(--sea-deep);
+  cursor: pointer; padding: 0; border-radius: 13px;
   border: 1px solid rgba(34, 167, 216, .42); background: rgba(255, 255, 255, .6);
   backdrop-filter: blur(8px); box-shadow: 0 2px 14px rgba(10, 90, 128, .2);
-  transition: all .18s; white-space: nowrap;
+  transition: all .18s;
 }
 .btn-reset:hover { background: #fff; color: var(--sea2); box-shadow: 0 0 0 3px rgba(34, 167, 216, .24), 0 5px 20px rgba(34, 167, 216, .45); }
 
@@ -229,8 +231,18 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   box-shadow: 0 14px 44px rgba(10, 90, 128, .24), inset 0 1px 0 rgba(255, 255, 255, .7);
   padding: 18px 22px; z-index: 1000;
 }
-.legend-title { font-size: 11px; letter-spacing: .13em; text-transform: uppercase; font-weight: 700; color: var(--sea-deep); margin-bottom: 12px; }
-.legend-rows { display: flex; flex-direction: column; gap: 12px; font-size: 13px; font-weight: 600; color: #33566b; }
+/* A legenda nasce recolhida (só o cabeçalho) e cresce para cima ao ser clicada —
+   o painel é ancorado pelo rodapé, então expandir não empurra nada. */
+.legend-toggle {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; padding: 0; background: none; border: none; cursor: pointer;
+  color: var(--sea-deep); font-family: var(--font-body);
+}
+.legend-toggle:hover { color: var(--sea2); }
+.legend-title { font-size: 11px; letter-spacing: .13em; text-transform: uppercase; font-weight: 700; color: inherit; }
+#legend-chevron { transition: transform .22s; }
+#legend-chevron.is-open { transform: rotate(180deg); }
+.legend-rows { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; font-size: 13px; font-weight: 600; color: #33566b; }
 .legend-row {
   transition: background .18s, box-shadow .18s; cursor: pointer; border-radius: 10px;
   padding: 4px 6px; margin: -4px -6px; display: flex; align-items: center; gap: 12px;
@@ -320,6 +332,14 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 .detail-rules-box { padding: 13px 15px; border-radius: 16px; background: rgba(224, 106, 95, .1); border: 1px solid rgba(224, 106, 95, .4); }
 .detail-rules-label { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: #c0554a; margin-bottom: 5px; }
 .detail-rules-text { font-size: 13.5px; font-weight: 600; line-height: 1.48; color: #9a463d; }
+/* Respiro entre a caixa de Nota e a seção "Onde pescar na Bahia" que a segue. */
+.detail-rules-box + .detail-section { margin-top: 18px; }
+
+/* Espécies e municípios navegáveis dentro do card de um destino. */
+.tag-secondary.is-link, .tag-lodging.is-link, .tag-trophy.is-link { cursor: pointer; transition: all .15s; }
+.tag-secondary.is-link:hover { background: #fff; border-color: rgba(34, 167, 216, .55); color: var(--sea-deep); box-shadow: 0 3px 10px rgba(34, 167, 216, .25); }
+.tag-lodging.is-link:hover { background: rgba(34, 167, 216, .26); box-shadow: 0 3px 10px rgba(34, 167, 216, .3); }
+.tag-trophy.is-link:hover { box-shadow: 0 0 0 3px rgba(34, 167, 216, .25), 0 4px 14px rgba(34, 167, 216, .55); }
 
 /* View tabs (Mapa / Espécies) */
 .view-tabs {
@@ -379,9 +399,36 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 .species-badge-ameacada { background: rgba(217, 150, 44, .15); color: #a8721f; border: 1px solid rgba(217, 150, 44, .4); }
 .species-badge-introduzida { background: rgba(90, 120, 140, .15); color: #4d6577; border: 1px solid rgba(90, 120, 140, .35); }
 
-/* Species detail panel (extends .detail-panel) */
-.species-detail-img { flex: none; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; background: #e8f4f9; padding: 6%; }
+/* Species detail panel (extends .detail-panel) — modal flutuante centrado na
+   viewport. Antes herdava o posicionamento absoluto de .detail-panel dentro de
+   #species-view, que rola: o card ficava preso no topo da grade e sumia de vista. */
+.species-modal-backdrop {
+  position: fixed; inset: 0; z-index: 2050;
+  background: rgba(10, 40, 60, .5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  animation: idleFade .2s ease-out;
+}
+.species-detail-panel {
+  position: fixed; top: 50%; left: 50%; right: auto; bottom: auto;
+  transform: translate(-50%, -50%);
+  width: min(560px, calc(100vw - 32px)); max-height: min(88vh, 900px);
+  background: rgba(250, 253, 255, .97); z-index: 2060;
+  animation: speciesModalIn .3s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes speciesModalIn {
+  from { opacity: 0; transform: translate(-50%, -47%) scale(.97); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.species-detail-img { position: relative; flex: none; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; background: #e8f4f9; padding: 6%; }
 .species-detail-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* Fechar fica sobre a imagem, no canto superior direito — não ao lado do nome. */
+.species-detail-close {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  width: 36px; height: 36px; font-size: 20px;
+  background: rgba(255, 255, 255, .82); backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(10, 90, 128, .18);
+}
+.species-detail-panel .detail-head { padding-top: 16px; }
 .species-detail-aliases { font-size: 12.5px; font-weight: 600; color: #5c7889; margin: -6px 0 16px; }
 
 .species-months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 5px; margin-bottom: 8px; }
@@ -426,7 +473,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   .brand-text { position: static; transform: none; text-align: left; max-width: none; pointer-events: auto; }
   .title { font-size: 21px; }
   .eyebrow { font-size: 9px; }
-  .btn-reset { padding: 10px 16px; font-size: 13px; }
+  .btn-reset { width: 38px; height: 38px; }
 
   .filter-panel, .legend-panel { width: calc(100% - 32px); max-width: 322px; }
   .filter-panel { top: 96px; left: 16px; max-height: calc(100% - 116px); }
@@ -442,12 +489,20 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
     animation: panelInUp .3s cubic-bezier(.2, .8, .2, 1);
   }
 
+  /* Depois de .detail-panel de propósito: no celular o card de espécie vira folha
+     inferior, e precisa zerar o transform de centralização do desktop. */
+  .species-detail-panel {
+    top: auto; bottom: 0; left: 0; right: 0; transform: none;
+    width: 100%; max-height: 86vh; border-radius: 24px 24px 0 0;
+    animation: panelInUp .3s cubic-bezier(.2, .8, .2, 1);
+  }
+
   .attract-off-indicator { top: 100px; right: 16px; font-size: 10.5px; padding: 5px 11px; }
 
   .intro-card { padding: 32px 26px; }
   .intro-logo { height: 48px; margin-bottom: 14px; }
-  .intro-title { font-size: 24px; }
-  .intro-stats { font-size: 13px; }
+  .intro-welcome { font-size: 13px; }
+  .intro-title { font-size: 24px; margin-bottom: 24px; }
 }
 
 @media (max-width: 520px) {

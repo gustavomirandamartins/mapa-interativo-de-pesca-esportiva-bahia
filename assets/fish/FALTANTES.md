@@ -1,23 +1,21 @@
-# Imagens faltantes em `assets/fish/`
+# Imagens em `assets/fish/`
 
-Gerado após o renome dos assets na Etapa 3 do refactor de espécies
-(`node scripts/check-data.js`, item 3). Nomes científicos conforme `js/species.js`.
+**Situação atual: nenhuma imagem faltando.** As 44 espécies de `js/species.js` têm
+arquivo `<chave>.avif` correspondente — confirmado por `node scripts/check-data.js`
+(itens 3 e 4 zerados).
 
-| Chave (nome do arquivo) | Nome de exibição | Nome científico |
-|---|---|---|
-| `xareu` | Xaréu | *Caranx hippos* |
-| `xareu-branco` | Xaréu-branco | *Caranx latus* |
-| `sororoca` | Sororoca | *Scomberomorus brasiliensis* |
-| `biquara` | Biquara | *Haemulon plumierii* |
-| `ariaco` | Ariacó | *Lutjanus synagris* |
-| `tambaqui` | Tambaqui | *Colossoma macropomum* |
-| `tilapia` | Tilápia | *Oreochromis niloticus* |
-| `albacorinha` | Albacorinha | *Thunnus atlanticus* |
-| `guaiuba` | Guaiúba | *Ocyurus chrysurus* |
-| `dentao` | Dentão | *Lutjanus jocu* |
-| `cioba` | Cioba | *Lutjanus analis* |
-| `badejo` | Badejo | *Mycteroperca bonaci* |
-| `cherne` | Cherne | *Hyporthodus niveatus* |
+O fallback para `_placeholder.svg` continua em `fishImg()` (`js/app.js`) como rede de
+segurança: se uma chave nova for criada em `js/species.js` antes da foto existir, o
+card mostra o placeholder em vez de uma imagem quebrada.
 
-Até a produção das fotos, `fishImg()` (`js/app.js`) recai em
-`assets/fish/_placeholder.svg` para essas 13 espécies.
+## Histórico
+
+As 13 espécies abaixo ficaram sem foto entre a Etapa 3 do refactor e julho de 2026,
+quando as imagens foram entregues:
+
+`xareu`, `xareu-branco`, `sororoca`, `biquara`, `ariaco`, `tambaqui`, `tilapia`,
+`albacorinha`, `guaiuba`, `dentao`, `cioba`, `badejo`, `cherne`.
+
+A imagem do Badejo (*Mycteroperca bonaci*) chegou nomeada `robalo.avif` — nome de outra
+espécie, que no catálogo é o `camurim` (robalo-flecha) e já tinha foto própria. O arquivo
+foi renomeado para `badejo.avif`, que era a única chave ainda descoberta.

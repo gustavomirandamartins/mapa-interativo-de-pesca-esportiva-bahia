@@ -74,3 +74,21 @@ Resumo das alterações do refactor de espécies e das etapas seguintes, na orde
 ### Nota sobre a divergência "8 vs. 9 pontos" no filtro de Camurim
 
 O item de verificação pedia 8 pontos para o filtro `camurim`; o resultado real é **9**. A diferença é o ponto principal `p3` (Estuário do Rio Jaguaripe) — o próprio "Santuário do Robalo-Flecha" da Etapa 2, com `camurim` desde a migração original, e não parte da tabela de redistribuição de 8 pontos daquela etapa (que tratava da chave genérica `robalo`, não do Jaguaripe). Removê-lo do filtro estaria errado — ele é o destino mais relevante para essa espécie. Reportando aqui em vez de forçar o número para bater com o checklist.
+
+## Pós-merge — ajustes de apresentação
+
+- **Logo e banner de boas-vindas.** Logo Bahia Turismo acima do card de abertura. Depois, os contadores ("1.180 km de litoral · 44 espécies-troféu…") foram removidos e substituídos pela linha "Bem-vindo ao mapa interativo da" entre a logo e o título. `KM_LITORAL_BAHIA` e `renderIntroStats()` saíram junto.
+- **Rótulos de zonas costeiras.** "Bahia de Todos os Santos" corrigido para "Baía de Todos-os-Santos" (região, POIs e legenda). Costa dos Coqueiros, Baía de Todos-os-Santos, Costa do Dendê e Costa das Baleias passaram a deslocar o rótulo para o lado do mar em vez do interior.
+- **Valores em BRL** removidos de operadoras, regras e descrições de destinos.
+
+## Pós-merge — card de espécie, navegação e legenda
+
+- **Card de espécie flutuante.** `#species-detail-panel` saiu de dentro de `#species-view` (que rola) e virou modal fixo centrado na viewport, com backdrop. Antes herdava o posicionamento absoluto de `.detail-panel` dentro do container rolável e ficava preso no topo da grade, frequentemente fora de vista. Fecha com clique fora, no `×` ou com `Esc`; no celular vira folha inferior.
+- **Botão de fechar sobre a imagem**, no canto superior direito, em vez de ao lado do nome da espécie.
+- **Campo `nota` limpo.** Removido do dado tudo que era bookkeeping do refactor ("Substitui a categoria genérica *Atum*", "Fusão das chaves antigas…") e os marcadores `VALIDAR`, que estavam sendo renderizados no card público. As pendências viraram comentário em `js/species.js`; espécies sem curiosidade real ficam sem caixa de Nota. Espaço adicionado entre a Nota e "Onde pescar na Bahia".
+- **Navegação a partir do card de destino.** Cada nome de peixe (troféu e secundárias) leva ao card da espécie; cada município da Hospedagem leva ao mapa — abrindo o card do POI homônimo quando existe (Canavieiras, Caravelas) ou aproximando a sede municipal quando não (novo `MUNICIPIOS` em `js/data.js`, coordenadas aproximadas marcadas `VALIDAR`). Auditado: 100% dos nomes de peixe e dos municípios resolvem.
+- **Locais sem card** (Zona Turística, pesca proibida, área protegida) agora fecham o card aberto ao serem clicados, em vez de deixar o painel descrevendo outro lugar.
+- **Legenda recolhível**, fechada por padrão, expandindo para cima ao clicar no cabeçalho. "Área protegida — restrições" virou "Área protegida".
+- **Botão "Mapa geral"** substituído por um botão de ícone (enquadrar), com `title`/`aria-label` "Ver toda a Bahia".
+- **Imagens das espécies completas.** As 12 fotos que faltavam foram integradas; a 13ª chegou nomeada `robalo.avif` mas a ilustração é um serranídeo — renomeada para `badejo.avif`, a única chave ainda sem imagem. `check-data.js` agora reporta 0 espécies sem imagem e 0 imagens órfãs (44/44).
+- **Robustez do enquadramento inicial.** `getBoundsZoom()` num container ainda sem layout (aba oculta, painel fechado) devolve o `maxZoom`, e o `setMinZoom()` seguinte travava o mapa no zoom máximo permanentemente. O `minZoom` só é fixado com o container medido, e um `ResizeObserver` refaz o enquadramento quando o tamanho real aparece.
