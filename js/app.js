@@ -292,15 +292,18 @@
     resetIdle();
   }
 
-  // Altura real do cabeçalho (duas linhas: logo+título, abas), medida em runtime.
-  // Sem isso, o enquadramento do "mapa geral" tratava o cabeçalho como se não
-  // ocupasse espaço algum: o zoom mínimo e o fitBounds usavam toda a altura do
-  // container, deixando a porção norte da Bahia atrás do cabeçalho — e como o
-  // zoom mínimo já vinha calculado "justo" demais, não dava pra afastar (nem
-  // arrastar) o suficiente pra revelá-la, sobretudo no celular.
+  // Altura do cabeçalho + do gatilho de Filtros (a pílula fechada, sempre visível,
+  // flutuando por cima do mapa logo abaixo do cabeçalho — ver .filter-panel no CSS,
+  // top: calc(var(--header-h) + 20px)), medidas em runtime. Sem somar as duas, o
+  // enquadramento do "mapa geral" tratava essa faixa do topo como se não ocupasse
+  // espaço algum: o zoom mínimo e o fitBounds usavam toda a altura do container,
+  // deixando a porção norte da Bahia atrás do cabeçalho e/ou da pílula de Filtros —
+  // e como o zoom mínimo já vinha calculado "justo" demais, não dava pra afastar
+  // (nem arrastar) o suficiente pra revelá-la, sobretudo no celular.
   function headerPad(extra) {
     const h = el.header ? el.header.getBoundingClientRect().height : 112;
-    return h + extra;
+    const filterH = el.filterTrigger ? el.filterTrigger.getBoundingClientRect().height : 0;
+    return h + 20 + filterH + extra;
   }
 
   // Publica a altura do cabeçalho em --header-h, para os painéis do mapa (filtro,
