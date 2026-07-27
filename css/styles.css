@@ -223,26 +223,17 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   box-shadow: 0 3px 12px rgba(34, 167, 216, .5);
 }
 
-/* Legend */
+/* Legend — mesma estrutura visual do painel de Filtros: gatilho em pílula de vidro
+   + corpo destacado. A diferença é a direção: o painel é ancorado pelo rodapé, então
+   column-reverse faz o corpo crescer para cima ao abrir, sem empurrar o gatilho. */
 .legend-panel {
   position: absolute; bottom: 20px; left: 20px; width: 322px;
-  background: rgba(250, 253, 255, .55); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, .62); border-radius: 22px;
-  box-shadow: 0 14px 44px rgba(10, 90, 128, .24), inset 0 1px 0 rgba(255, 255, 255, .7);
-  padding: 18px 22px; z-index: 1000;
+  max-height: calc(100% - 132px); display: flex; flex-direction: column-reverse; z-index: 1000;
 }
-/* A legenda nasce recolhida (só o cabeçalho) e cresce para cima ao ser clicada —
-   o painel é ancorado pelo rodapé, então expandir não empurra nada. */
-.legend-toggle {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  width: 100%; padding: 0; background: none; border: none; cursor: pointer;
-  color: var(--sea-deep); font-family: var(--font-body);
-}
-.legend-toggle:hover { color: var(--sea2); }
-.legend-title { font-size: 11px; letter-spacing: .13em; text-transform: uppercase; font-weight: 700; color: inherit; }
+.legend-body { margin-top: 0; margin-bottom: 10px; animation: panelInUp .26s cubic-bezier(.2, .8, .2, 1); }
 #legend-chevron { transition: transform .22s; }
 #legend-chevron.is-open { transform: rotate(180deg); }
-.legend-rows { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; font-size: 13px; font-weight: 600; color: #33566b; }
+.legend-rows { display: flex; flex-direction: column; gap: 12px; font-size: 13px; font-weight: 600; color: #33566b; }
 .legend-row {
   transition: background .18s, box-shadow .18s; cursor: pointer; border-radius: 10px;
   padding: 4px 6px; margin: -4px -6px; display: flex; align-items: center; gap: 12px;
@@ -477,7 +468,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 
   .filter-panel, .legend-panel { width: calc(100% - 32px); max-width: 322px; }
   .filter-panel { top: 96px; left: 16px; max-height: calc(100% - 116px); }
-  .legend-panel { left: 16px; bottom: 16px; padding: 14px 18px; }
+  .legend-panel { left: 16px; bottom: 16px; max-height: calc(100% - 116px); }
 
   .view-tab { padding: 7px 14px; font-size: 13px; }
   .species-view { padding: 108px 18px 28px; }

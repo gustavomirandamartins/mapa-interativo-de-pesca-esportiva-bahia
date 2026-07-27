@@ -71,30 +71,37 @@
 
     <!-- Legend (always visible) -->
     <div class="legend-panel">
-      <button id="legend-toggle" class="legend-toggle" type="button" aria-expanded="false" aria-controls="legend-rows">
-        <span class="legend-title">Legenda</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" id="legend-chevron" class="icon-shrink"><polyline points="18 15 12 9 6 15"></polyline></svg>
+      <button id="legend-toggle" class="filter-trigger" type="button" aria-expanded="false" aria-controls="legend-body">
+        <span class="filter-trigger-label">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon-shrink"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          Legenda
+        </span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="legend-chevron" class="icon-shrink"><polyline points="18 15 12 9 6 15"></polyline></svg>
       </button>
-      <div id="legend-rows" class="legend-rows" hidden>
-        <div id="legend-region" class="legend-row" data-kind="region">
-          <span class="legend-icon legend-icon-region"><span class="legend-icon-region-dot"></span></span>
-          <span>Zonas Turísticas</span>
-        </div>
-        <div id="legend-main" class="legend-row" data-kind="main">
-          <span class="legend-icon legend-icon-main">1</span>
-          <span>Destinos principais</span>
-        </div>
-        <div id="legend-secondary" class="legend-row" data-kind="secondary">
-          <span class="legend-icon legend-icon-sec"></span>
-          <span>Cidades e bases</span>
-        </div>
-        <div id="legend-proibida" class="legend-row" data-kind="proibida">
-          <span class="legend-icon legend-icon-proibida"></span>
-          <span>Pesca proibida</span>
-        </div>
-        <div id="legend-restrita" class="legend-row" data-kind="restrita">
-          <span class="legend-icon legend-icon-restrita"></span>
-          <span>Área protegida</span>
+
+      <div id="legend-body" class="filter-body legend-body" hidden>
+        <div class="filter-section-label">Camadas do mapa</div>
+        <div class="legend-rows">
+          <div id="legend-region" class="legend-row" data-kind="region">
+            <span class="legend-icon legend-icon-region"><span class="legend-icon-region-dot"></span></span>
+            <span>Zonas Turísticas</span>
+          </div>
+          <div id="legend-main" class="legend-row" data-kind="main">
+            <span class="legend-icon legend-icon-main">1</span>
+            <span>Destinos principais</span>
+          </div>
+          <div id="legend-secondary" class="legend-row" data-kind="secondary">
+            <span class="legend-icon legend-icon-sec"></span>
+            <span>Cidades e bases</span>
+          </div>
+          <div id="legend-proibida" class="legend-row" data-kind="proibida">
+            <span class="legend-icon legend-icon-proibida"></span>
+            <span>Pesca proibida</span>
+          </div>
+          <div id="legend-restrita" class="legend-row" data-kind="restrita">
+            <span class="legend-icon legend-icon-restrita"></span>
+            <span>Área protegida</span>
+          </div>
         </div>
       </div>
     </div>

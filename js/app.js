@@ -59,7 +59,7 @@
     clearFiltersBtn: document.getElementById('btn-clear-filters'),
     legendToggle: document.getElementById('legend-toggle'),
     legendChevron: document.getElementById('legend-chevron'),
-    legendRows: document.getElementById('legend-rows'),
+    legendBody: document.getElementById('legend-body'),
     legendRegion: document.getElementById('legend-region'),
     legendMain: document.getElementById('legend-main'),
     legendSecondary: document.getElementById('legend-secondary'),
@@ -485,8 +485,9 @@
   }
 
   function renderLegendOpenState() {
-    el.legendRows.hidden = !state.legendOpen;
+    el.legendBody.hidden = !state.legendOpen;
     el.legendChevron.classList.toggle('is-open', state.legendOpen);
+    el.legendToggle.classList.toggle('is-open', state.legendOpen);
     el.legendToggle.setAttribute('aria-expanded', String(state.legendOpen));
   }
 
