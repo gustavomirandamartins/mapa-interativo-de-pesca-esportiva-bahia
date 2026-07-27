@@ -55,6 +55,21 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 }
 .leaflet-control-zoom a + a { margin-top: 7px; }
 .poi-icon, .region-icon { background: none; border: none; }
+/* A caixa do ícone de POI é bem maior que o pino, para caber o anel de peixes.
+   Só os elementos visíveis (.poi-hit) capturam clique — a área transparente em
+   volta precisa deixar passar cliques do mapa e dos marcadores vizinhos. */
+/* Precisa casar a especificidade de .leaflet-marker-icon.leaflet-interactive (0,2,0)
+   do leaflet.css, senão a caixa inteira continua clicável. */
+.leaflet-marker-icon.poi-icon { pointer-events: none; }
+.poi-icon .poi-hit { pointer-events: auto; cursor: pointer; }
+.poi-icon.is-hidden .poi-hit { pointer-events: none; }
+.poi-fish {
+  position: absolute; transform: translate(-50%, -50%);
+  object-fit: contain; display: block;
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px #fff) drop-shadow(0 2px 4px rgba(10, 90, 128, .35));
+  transition: transform .15s;
+}
+.poi-fish:hover { transform: translate(-50%, -50%) scale(1.18); }
 
 /* Animations */
 @keyframes panelIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -331,6 +346,25 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
 .tag-secondary.is-link:hover { background: #fff; border-color: rgba(34, 167, 216, .55); color: var(--sea-deep); box-shadow: 0 3px 10px rgba(34, 167, 216, .25); }
 .tag-lodging.is-link:hover { background: rgba(34, 167, 216, .26); box-shadow: 0 3px 10px rgba(34, 167, 216, .3); }
 .tag-trophy.is-link:hover { box-shadow: 0 0 0 3px rgba(34, 167, 216, .25), 0 4px 14px rgba(34, 167, 216, .55); }
+
+/* Espécies com foto no card de destino — troféu em card grande, secundária em chip. */
+.detail-fish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.detail-fish-card {
+  cursor: pointer; text-align: center; padding: 9px 8px 8px;
+  background: rgba(255, 255, 255, .55); border: 1px solid rgba(15, 127, 176, .18);
+  border-radius: 14px; transition: all .15s;
+}
+.detail-fish-card:hover { background: #fff; border-color: rgba(34, 167, 216, .5); box-shadow: 0 5px 16px rgba(34, 167, 216, .28); transform: translateY(-2px); }
+.detail-fish-card-img img { width: 100%; height: 54px; object-fit: contain; display: block; }
+.detail-fish-card-name { margin-top: 7px; font-family: var(--font-heading); font-weight: 700; font-size: 12.5px; line-height: 1.15; color: #153044; }
+.detail-fish-chip {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  padding: 4px 12px 4px 7px; border-radius: 999px;
+  background: rgba(255, 255, 255, .55); border: 1px solid rgba(15, 127, 176, .2);
+  font-size: 12px; font-weight: 700; color: #3a5666; transition: all .15s;
+}
+.detail-fish-chip img { width: 40px; height: 24px; object-fit: contain; display: block; }
+.detail-fish-chip:hover { background: #fff; border-color: rgba(34, 167, 216, .55); color: var(--sea-deep); box-shadow: 0 3px 10px rgba(34, 167, 216, .25); }
 
 /* View tabs (Mapa / Espécies) */
 .view-tabs {

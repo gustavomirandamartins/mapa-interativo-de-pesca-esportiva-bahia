@@ -111,25 +111,80 @@
 
   const LABEL_HALO = '0 0 4px #fff,0 0 8px #fff,0 0 11px #fff';
 
+  // Espécies do ponto em ordem de destaque: as citadas em `trophy` primeiro (maiores
+  // no mapa), depois as demais de `trophyKeys` (menores). `trophyKeys` reúne as duas
+  // categorias sem distinguir qual é a chamariz do destino.
+  function poiSpeciesRanked(p) {
+    const keys = p.trophyKeys || [];
+    const primary = (p.trophy || '').split('/').map((t) => t.trim()).filter(Boolean)
+      .map((t) => SPECIES_BY_NAME[normalize(t)])
+      .filter((s) => s && keys.indexOf(s.key) !== -1)
+      .map((s) => s.key);
+    return primary.map((k) => ({ key: k, primary: true }))
+      .concat(keys.filter((k) => primary.indexOf(k) === -1).map((k) => ({ key: k, primary: false })));
+  }
+
+  // Anel de ilustrações em volta do pino — sem moldura, só a silhueta com halo
+  // branco, para o peixe ser o elemento mais visível do marcador. O setor de baixo
+  // fica livre (arco de 300°, de 120° a 420°): é onde entra o nome do ponto.
+  function pinFishRingHtml(list, cx, cy, radius, big, small) {
+    if (!list.length) return '';
+    const n = list.length;
+    return list.map((item, i) => {
+      const deg = n === 1 ? 270 : 120 + (300 / (n - 1)) * i;
+      const rad = deg * Math.PI / 180;
+      const size = item.primary ? big : small;
+      const x = Math.round(cx + Math.cos(rad) * radius);
+      const y = Math.round(cy + Math.sin(rad) * radius);
+      return '<img class="poi-hit poi-fish" src="assets/fish/' + item.key + '.avif" alt=""'
+        + ' style="left:' + x + 'px;top:' + y + 'px;width:' + size[0] + 'px;height:' + size[1] + 'px"'
+        + ' onerror="this.style.display=\'none\'">';
+    }).join('');
+  }
+
+  // Caixa do ícone bem maior que o pino para caber o anel. O container tem
+  // pointer-events:none (via .poi-icon) e só os filhos .poi-hit capturam clique,
+  // senão essa área transparente engoliria cliques do mapa e dos vizinhos.
+  const MAIN_GEO = { w: 400, h: 300, cx: 200, cy: 140, big: [62, 38], small: [44, 27] };
+  const SEC_GEO = { w: 340, h: 250, cx: 170, cy: 115, big: [46, 29], small: [34, 21] };
+
   function mainIconHtml(p, active) {
     const num = p.sig.replace('SIG ', '').replace(/^0+/, '');
     const pulse = active ? ';animation:pinPulse 1.5s ease-out infinite' : '';
-    return '<div style="position:relative;width:280px;height:38px">'
-      + '<div style="position:absolute;left:0;top:0;width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#22a7d8,#0f7fb0);border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(10,90,128,.45),0 0 0 4px rgba(34,167,216,.18)' + pulse + ';display:grid;place-items:center;color:#fff;font-family:var(--font-heading);font-weight:700;font-size:16px">' + num + '</div>'
-      + '<div style="position:absolute;left:47px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:var(--font-heading);font-weight:700;font-size:13px;color:#0a5a80;text-shadow:' + LABEL_HALO + '">' + p.name + '</div>'
+    const g = MAIN_GEO;
+    const list = poiSpeciesRanked(p);
+    const radius = 46 + list.length * 5;
+    return '<div style="position:relative;width:' + g.w + 'px;height:' + g.h + 'px">'
+      + pinFishRingHtml(list, g.cx, g.cy, radius, g.big, g.small)
+      + '<div class="poi-hit" style="position:absolute;left:' + g.cx + 'px;top:' + g.cy + 'px;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#22a7d8,#0f7fb0);border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(10,90,128,.45),0 0 0 4px rgba(34,167,216,.18)' + pulse + ';display:grid;place-items:center;color:#fff;font-family:var(--font-heading);font-weight:700;font-size:16px">' + num + '</div>'
+      + '<div class="poi-hit" style="position:absolute;left:' + g.cx + 'px;top:' + (g.cy + radius + 20) + 'px;transform:translateX(-50%);white-space:nowrap;font-family:var(--font-heading);font-weight:700;font-size:13px;color:#0a5a80;text-shadow:' + LABEL_HALO + '">' + p.name + '</div>'
       + '</div>';
   }
   function secIconHtml(p) {
-    return '<div style="position:relative;width:260px;height:18px">'
-      + '<div style="position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;border:3px solid #0f7fb0;background:rgba(255,255,255,.94);box-shadow:0 0 0 3px rgba(34,167,216,.18),0 1px 4px rgba(10,90,128,.4)"></div>'
-      + '<div style="position:absolute;left:27px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:var(--font-body);font-weight:700;font-size:12.5px;color:#0a5a80;text-shadow:' + LABEL_HALO + '">' + p.name + '</div>'
+    const g = SEC_GEO;
+    const list = poiSpeciesRanked(p);
+    const radius = 34 + list.length * 4.5;
+    return '<div style="position:relative;width:' + g.w + 'px;height:' + g.h + 'px">'
+      + pinFishRingHtml(list, g.cx, g.cy, radius, g.big, g.small)
+      + '<div class="poi-hit" style="position:absolute;left:' + g.cx + 'px;top:' + g.cy + 'px;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;border:3px solid #0f7fb0;background:rgba(255,255,255,.94);box-shadow:0 0 0 3px rgba(34,167,216,.18),0 1px 4px rgba(10,90,128,.4)"></div>'
+      + '<div class="poi-hit" style="position:absolute;left:' + g.cx + 'px;top:' + (g.cy + radius + 16) + 'px;transform:translateX(-50%);white-space:nowrap;font-family:var(--font-body);font-weight:700;font-size:12.5px;color:#0a5a80;text-shadow:' + LABEL_HALO + '">' + p.name + '</div>'
       + '</div>';
   }
   function mainIcon(p, active) {
-    return L.divIcon({ className: 'poi-icon', iconSize: [280, 38], iconAnchor: [19, 19], html: mainIconHtml(p, active) });
+    return L.divIcon({ className: 'poi-icon', iconSize: [MAIN_GEO.w, MAIN_GEO.h], iconAnchor: [MAIN_GEO.cx, MAIN_GEO.cy], html: mainIconHtml(p, active) });
   }
   function secIcon(p) {
-    return L.divIcon({ className: 'poi-icon', iconSize: [260, 18], iconAnchor: [9, 9], html: secIconHtml(p) });
+    return L.divIcon({ className: 'poi-icon', iconSize: [SEC_GEO.w, SEC_GEO.h], iconAnchor: [SEC_GEO.cx, SEC_GEO.cy], html: secIconHtml(p) });
+  }
+
+  // Troca o ícone só quando o estado visual muda de fato — antes cada zoomend
+  // recriava as 21 imagens dos pinos, com risco de piscada a cada animação.
+  function setPoiIcon(m, p) {
+    const isActive = p.main && activeId === p.id;
+    const sig = (p.main ? 'm' : 's') + (isActive ? '1' : '0');
+    if (m._iconSig === sig) return;
+    m._iconSig = sig;
+    m.setIcon(p.main ? mainIcon(p, isActive) : secIcon(p));
   }
 
   function tileConfig() {
@@ -306,10 +361,11 @@
       const match = matchesFilters(p);
       const on = categoryVisible && match && (hasFilter || zoomOk);
       const elm = m.getElement();
-      if (elm) { elm.style.opacity = on ? '1' : '0'; elm.style.pointerEvents = on ? 'auto' : 'none'; elm.style.transition = 'opacity .3s'; }
+      // Classe em vez de style inline: o clique é capturado pelos filhos .poi-hit,
+      // e um pointer-events:auto inline aqui reativaria a caixa inteira do ícone.
+      if (elm) { elm.style.opacity = on ? '1' : '0'; elm.classList.toggle('is-hidden', !on); elm.style.transition = 'opacity .3s'; }
       if (match && categoryVisible) count++;
-      if (p.main) m.setIcon(mainIcon(p, activeId === p.id));
-      else m.setIcon(secIcon(p));
+      setPoiIcon(m, p);
     });
 
     // Macrorregiões agora persistem em qualquer zoom — só a legenda as esconde.
@@ -337,21 +393,19 @@
   function selectPoi(id) {
     const p = POIS.find((x) => x.id === id);
     if (!p) return;
-    if (activeId && markers[activeId] && POIS.find((x) => x.id === activeId).main) {
-      markers[activeId].setIcon(mainIcon(POIS.find((x) => x.id === activeId), false));
-    }
+    const prev = activeId && markers[activeId];
     activeId = id;
-    if (p.main) markers[id].setIcon(mainIcon(p, true));
+    if (prev) setPoiIcon(prev, prev._poi);
+    setPoiIcon(markers[id], p);
     markers[id].setZIndexOffset(1000);
     state.selectedId = id;
     renderDetailPanel(enrich(p));
   }
 
   function closeDetail() {
-    if (activeId && markers[activeId] && POIS.find((x) => x.id === activeId).main) {
-      markers[activeId].setIcon(mainIcon(POIS.find((x) => x.id === activeId), false));
-    }
+    const prev = activeId && markers[activeId];
     activeId = null;
+    if (prev) setPoiIcon(prev, prev._poi);
     state.selectedId = null;
     el.detailPanel.hidden = true;
     el.detailPanel.innerHTML = '';
@@ -362,19 +416,29 @@
       onerror="this.onerror=null;this.src='assets/fish/_placeholder.svg';this.classList.add('img-fallback')">`;
   }
 
-  // Nome de peixe citado no card de destino vira link para o card da espécie —
-  // quando o rótulo casa com alguma espécie do catálogo.
-  function speciesTagHtml(name, cls) {
+  // Espécies citadas no card de destino, com foto e clicáveis — card grande para
+  // as espécies-troféu, chip menor para as secundárias. Cai para a pílula de texto
+  // se o rótulo não casar com o catálogo.
+  function speciesFishCardHtml(name) {
     const s = SPECIES_BY_NAME[normalize(name)];
-    return s
-      ? `<span class="${cls} is-link" data-species-key="${s.key}" role="button" tabindex="0">${name}</span>`
-      : `<span class="${cls}">${name}</span>`;
+    if (!s) return `<span class="tag-trophy">${name}</span>`;
+    return `
+      <div class="detail-fish-card" data-species-key="${s.key}" role="button" tabindex="0">
+        <div class="detail-fish-card-img">${fishImg(s.key, name)}</div>
+        <div class="detail-fish-card-name">${name}</div>
+      </div>`;
+  }
+  function speciesFishChipHtml(name) {
+    const s = SPECIES_BY_NAME[normalize(name)];
+    if (!s) return `<span class="tag-secondary">${name}</span>`;
+    return `<span class="detail-fish-chip" data-species-key="${s.key}" role="button" tabindex="0">${fishImg(s.key, name)}<span>${name}</span></span>`;
   }
 
   function openSpeciesByKey(key) {
     const s = SPECIES.find((x) => x.key === key);
     if (!s) return;
-    switchView('especies');
+    // O card de espécie é um modal fixo: abre por cima do mapa, sem trocar de aba —
+    // ao fechar, o visitante volta exatamente onde estava.
     renderSpeciesDetail(s);
   }
 
@@ -411,10 +475,16 @@
           <div class="detail-card-value">${p.technique || ''}</div>
         </div>
       </div>` : '';
+    const trophyNames = (p.trophy || '').split('/').map((t) => t.trim()).filter(Boolean);
+    const trophySection = trophyNames.length ? `
+      <div class="detail-section">
+        <div class="detail-section-label">Espécies-troféu</div>
+        <div class="detail-fish-grid">${trophyNames.map(speciesFishCardHtml).join('')}</div>
+      </div>` : '';
     const secondary = p.hasSecondary ? `
       <div class="detail-section">
         <div class="detail-section-label">Espécies secundárias</div>
-        <div class="detail-pill-row">${p.secondary.map((sp) => speciesTagHtml(sp, 'tag-secondary')).join('')}</div>
+        <div class="detail-pill-row">${p.secondary.map(speciesFishChipHtml).join('')}</div>
       </div>` : '';
     const operators = p.hasOperators ? `
       <div class="detail-section">
@@ -448,10 +518,10 @@
       </div>
       <div class="detail-body">
         <div class="detail-tags">
-          ${(p.trophy || '').split('/').map((t) => t.trim()).filter(Boolean).map((t) => speciesTagHtml(t, 'tag-trophy')).join('')}
           <span class="tag-level">${p.dificuldade || ''}</span>
           <span class="tag-access">${p.acesso || ''}</span>
         </div>
+        ${trophySection}
         <p class="detail-blurb">${p.blurb || ''}</p>
         ${grid}
         ${secondary}
