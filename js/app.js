@@ -775,7 +775,7 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'pill' + (state.activeTrophy === s.key ? ' is-on' : '');
-        btn.textContent = s.nome;
+        btn.innerHTML = `<span class="pill-img">${fishImg(s.key, '')}</span><span>${s.nome}</span>`;
         btn.addEventListener('click', () => toggleTrophy(s.key));
         row.appendChild(btn);
       });
