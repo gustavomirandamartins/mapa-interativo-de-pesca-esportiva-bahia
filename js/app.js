@@ -283,6 +283,10 @@
     if (SHOW_PROTECTED) protectedLayer.addTo(map);
 
     map.on('zoomend', updateDisclosure);
+    // Clique em área vazia do mapa (não num pino, zona ou área protegida — esses
+    // têm handler próprio e o Leaflet não propaga o clique deles até aqui) fecha
+    // o card de destino aberto.
+    map.on('click', () => { if (state.selectedId) closeDetail(); });
     updateDisclosure();
     loadBahia();
     resetIdle();
