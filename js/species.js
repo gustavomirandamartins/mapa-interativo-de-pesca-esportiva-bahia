@@ -228,18 +228,10 @@ const SPECIES = [
     nota:'Na Bahia e no rio São Francisco o nome corrente é surubim; "pintado" designa o mesmo peixe no Pantanal e na bacia do Paraná.' },
 
   { key:'dourado-do-rio', nome:'Dourado-do-rio', nomeNacional:'Dourado',
-    cientifico:'Salminus franciscanus (bacia do São Francisco)', aliases:['dourado','piraju','valente'],
+    cientifico:'Salminus franciscanus', aliases:['dourado','piraju','valente'],
     habitat:'dulcicola', porte:'até 1,0 m · 20 kg', status:'nativo',
     meses:[5,6,7,8,9,10], tecnica:'Fly fishing, plugs, isca viva',
-    // VALIDAR: o dourado do São Francisco é S. franciscanus; o do Paraguaçu/Chapada
-    // pode ser outra espécie do gênero. Confirmar antes de publicar.
     nota:'' },
-
-  { key:'matrinxa', nome:'Matrinxã', nomeNacional:'Matrinxã',
-    cientifico:'Brycon orthotaenia (bacia do São Francisco)', aliases:['jatuarana','piabanha'],
-    habitat:'dulcicola', porte:'até 60 cm · 5 kg', status:'nativo',
-    meses:[5,6,7,8,9], tecnica:'Fly fishing, isca vegetal, ceva',
-    nota:'A matrinxã do São Francisco é espécie distinta da matrinxã amazônica (Brycon amazonicus).' },
 
   { key:'traira', nome:'Traíra', nomeNacional:'Traíra',
     cientifico:'Hoplias malabaricus', aliases:['lobó','tarairá'],

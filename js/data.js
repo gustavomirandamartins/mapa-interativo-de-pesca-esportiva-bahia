@@ -24,7 +24,7 @@ const REGIONS = [
   { name: 'Caminhos do Oeste', lat: -12.20, lng: -45.30 },
   { name: 'Caminhos do Sertão', lat: -10.90, lng: -39.90 },
   { name: 'Costa do Cacau', lat: -14.95, lng: -39.10 },
-  { name: 'Caminhos do Jiquiriça', lat: -13.45, lng: -40.05 },
+  { name: 'Caminhos do Jiquiriçá', lat: -13.45, lng: -40.05 },
   { name: 'Costa do Descobrimento', lat: -16.55, lng: -39.15 },
   { name: 'Caminhos do Sudoeste', lat: -14.55, lng: -40.90 }
 ];
@@ -85,9 +85,12 @@ const POIS = [
 
   { id: 'p3', main: true, sig: 'SIG 003', name: 'Estuário do Rio Jaguaripe', region: 'Baía de Todos-os-Santos', lat: -13.10, lng: -38.86,
     loc: 'Manguezais de Nazaré e Jaguaripe', depth: 'Calhas estuarinas: 2 m a 10 m',
-    technique: 'Isco vivo (derivação) / Baitcasting', trophy: 'Camurim / Camurim-pena', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'mero', 'vermelho-caranha', 'traira'],
+    technique: 'Isco vivo (derivação) / Baitcasting', trophy: 'Camurim / Camurim-pena', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'vermelho-caranha', 'traira'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [11, 12, 1, 2, 3], season: 'Novembro a Março',
-    secondary: ['Carapeba', 'Mero', 'Vermelho-Caranha', 'Traíra'],
+    secondary: ['Carapeba', 'Vermelho-Caranha', 'Traíra'],
+    // Mero ocorre na área mas tem captura proibida por moratória federal — não é
+    // espécie-alvo nem secundária, e não pode aparecer misturado a elas.
+    ocorrenciaProtegida: ['mero'],
     operators: ['Charter Náutico — veleiros e lanchas 30–44 pés a partir de marinas de Salvador.'],
     lodging: ['Nazaré', 'Jaguaripe'],
     rules: 'Defeso do Robalo na desova (jun–ago). Restrições à apanha de isco vivo (caranguejo-uçá, camarão).',
@@ -118,8 +121,8 @@ const POIS = [
     technique: 'Baitcasting (hélice) / Espera de fundo', trophy: 'Tucunaré / Corvina', trophyKeys: ['tucunare', 'corvina-de-agua-doce'],
     dificuldade: 'Moderada', acesso: 'Exige sonda e GPS', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: ['Corvina de água doce'],
-    operators: ['Bases náuticas em Petrolina e Sobradinho.'],
-    lodging: ['Sobradinho', 'Petrolina'],
+    operators: ['Bases náuticas em Juazeiro e Sobradinho.'],
+    lodging: ['Sobradinho', 'Juazeiro'],
     rules: '',
     blurb: 'Mar interior de água doce (milhares de km²). Tucunaré (espécie introduzida, originária da Amazônia) nas margens da Ilha de Remanso na seca (mai–out), com poppers e sticks de superfície; Corvinas de fundo nas calhas profundas.' },
 
@@ -133,17 +136,7 @@ const POIS = [
     rules: 'Cânions basálticos afiados cortam a linha; a fricção do carreto é crítica no ataque do Surubim.',
     blurb: 'Água hiper-oxigenada abaixo das turbinas concentra Dourados e Surubins. Na pesca noturna, o Surubim engole o engodo letárgico e arranca de repente — travagem rígida rompe a linha.' },
 
-  { id: 'p8', main: true, sig: 'SIG 008', name: 'Alto Rio Paraguaçu', region: 'Chapada Diamantina', lat: -12.80, lng: -41.33,
-    loc: 'Andaraí / Poço do Gavião', depth: 'Cristalinidade extrema: 1 m a 15 m',
-    technique: 'Fly Fishing (classes #7 a #9)', trophy: 'Dourado-do-rio / Matrinxã', trophyKeys: ['dourado-do-rio', 'matrinxa'],
-    dificuldade: 'Alta', acesso: 'Guia local obrigatório', months: [5, 6, 7, 8, 9], season: 'Maio a Setembro',
-    secondary: ['Matrinxã'],
-    operators: ['Guias de fly fishing locais (região do Marimbus).'],
-    lodging: ['Andaraí', 'Lençóis'],
-    rules: 'Catch & Release rigoroso. Proibido filtro solar poluente — bioma de montanha frágil.',
-    blurb: 'Águas vítreas incolores permitem sight fishing: o pescador avista o alvo à distância antes do arremesso. Streamers rio acima em derivação natural; saltos acrobáticos do Dourado.' },
-
-  { id: 'p9', main: true, sig: 'SIG 009', name: 'Drop-off da Praia do Forte', region: 'Costa dos Coqueiros', lat: -12.52, lng: -37.85,
+  { id: 'p9', main: true, sig: 'SIG 008', name: 'Drop-off da Praia do Forte', region: 'Costa dos Coqueiros', lat: -12.52, lng: -37.85,
     loc: '7 a 10 milhas da linha de costa', depth: 'Depressão batimétrica: 45 m a 350 m',
     technique: 'Trolling em velocidade de cruzeiro (6–8 nós)', trophy: 'Dourado-do-mar / Wahoo / Albacora-laje', trophyKeys: ['dourado-do-mar', 'wahoo', 'albacora-laje', 'cavala', 'bonito-listrado', 'bicuda', 'albacorinha'],
     dificuldade: 'Baixa', acesso: 'Charter obrigatório', months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], season: 'Ano inteiro',
@@ -155,7 +148,7 @@ const POIS = [
     rules: '',
     blurb: 'Declives batimétricos dramáticos a poucas milhas da costa. Iscas arrastadas provocam pelágicos de topo; pacotes incluem material, alimentação e capitão.' },
 
-  { id: 'p10', main: true, sig: 'SIG 010', name: 'Rio Grande (Oeste)', region: 'Caminhos do Oeste', lat: -12.10, lng: -45.10,
+  { id: 'p10', main: true, sig: 'SIG 009', name: 'Rio Grande (Oeste)', region: 'Caminhos do Oeste', lat: -12.10, lng: -45.10,
     loc: 'Poço do Cedro — Barreiras', depth: 'Remansos fluviais: 4 m a 12 m',
     technique: 'Espera com ceva prévia (fruta / milho)', trophy: 'Pacu / Piau / Tucunaré', trophyKeys: ['pacu', 'piau', 'tucunare'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
@@ -172,14 +165,14 @@ const POIS = [
     loc: 'Maior baía navegável do Brasil', trophy: 'Camurim-pena / Xaréu', trophyKeys: ['camurim-pena', 'xareu', 'carapeba', 'curima'],
     dificuldade: 'Baixa', acesso: 'Acesso urbano', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Carapeba', 'Curimã'], operators: ['Charter Náutico (Bahia Marina, Porto de Salvador)'], lodging: [], rules: '',
-    blurb: 'Manguezais e canais de águas quentes o ano todo. Camarão vivo lançado nas raízes na maré enchente; rotas pela Ilha de Maré, Ilha dos Frades e Forte de São Marcelo.' },
+    blurb: 'Manguezais e canais de águas quentes o ano todo, ao longo de 1.233 km² de espelho d\'água. Camarão vivo lançado nas raízes na maré enchente; rotas pela Ilha de Maré, Ilha dos Frades e Forte de São Marcelo.' },
   { id: 's2', main: false, name: 'Baía de Aratu', region: 'Baía de Todos-os-Santos', lat: -12.80, lng: -38.42,
     loc: 'Ecossistema labiríntico ligado à BTS', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'camurim-pena', 'xareu'],
     dificuldade: 'Baixa', acesso: 'Acesso urbano', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Camurim-pena'], operators: [], lodging: [], rules: '',
     blurb: 'Canais mais profundos ideais para jig heads armados com shads macios. Substratos lodosos e manguezais servem de berçário.' },
   // VALIDAR: Cachoeira/São Félix são classificadas em Baía de Todos-os-Santos, mas
-  // a represa também é próxima de Caminhos do Jiquiriça — confirmar zona oficial.
+  // a represa também é próxima de Caminhos do Jiquiriçá — confirmar zona oficial.
   { id: 's3', main: false, name: 'Barragem Pedra do Cavalo', region: 'Baía de Todos-os-Santos', lat: -12.57, lng: -38.98,
     loc: 'Cachoeira / São Félix', trophy: 'Tucunaré / Traíra', trophyKeys: ['tucunare', 'traira', 'tambaqui', 'tilapia', 'corvina-de-agua-doce'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [4, 5, 6, 7, 8, 9, 10], season: 'Abril a Outubro',
@@ -209,7 +202,7 @@ const POIS = [
     // VALIDAR: Cioba adicionada por afinidade recifal com Pargo/Vermelho-Caranha na
     // mesma base de saída para Abrolhos — confirmar ocorrência real com operadores.
     secondary: ['Vermelho-Caranha', 'Cioba'], operators: ['Abrolhos Adventure', 'Horizonte Aberto'], lodging: [], rules: '',
-    blurb: 'A 870 km de Salvador, é a base das expedições Liveaboard de 3–4 noites rumo aos parcéis de Abrolhos.' },
+    blurb: 'A cerca de 850 km de Salvador, é a base das expedições Liveaboard de 3–4 noites rumo aos parcéis de Abrolhos.' },
   { id: 's8', main: false, name: 'Itacaré', region: 'Costa do Cacau', lat: -14.28, lng: -38.99,
     loc: 'Costão rochoso e cultura do surf', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'xareu'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
@@ -222,8 +215,10 @@ const POIS = [
     // junto com a Garoupa nos mesmos recifes — confirmar ocorrência real.
     secondary: ['Camurim-pena', 'Garoupa', 'Albacora-laje', 'Guaiúba'], operators: ['Tuna Pesca Maraú', 'Maraú Turismo'], lodging: [], rules: '',
     blurb: 'Recifes virgens perfeitos para surfcasting e spinning de praia direcionados ao Xaréu; ecoturismo integrado (escuna, mergulho, cachoeiras).' },
+  // VALIDAR: o reservatório de Itaparica é divisa BA/PE. Confirmar com a SETUR se o
+  // ponto deve permanecer no mapa e qual sede municipal baiana usar como referência.
   { id: 's10', main: false, name: 'Represa de Itaparica', region: 'Lagos e Cânions do São Francisco', lat: -9.15, lng: -38.31,
-    loc: 'Glória / Petrolândia', trophy: 'Tucunaré', trophyKeys: ['tucunare'],
+    loc: 'Glória / Rodelas', trophy: 'Tucunaré', trophyKeys: ['tucunare'],
     dificuldade: 'Moderada', acesso: 'Exige sonda e GPS', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: [], operators: [], lodging: [], rules: '',
     blurb: 'Lago que oculta florestas submersas. Isca artificial de hélice (surface prop) provoca boa resposta de ataque do Tucunaré, espécie introduzida na bacia.' },
@@ -247,10 +242,8 @@ const MUNICIPIOS = {
   'Camamu': { lat: -13.945, lng: -39.106 },
   'Maraú': { lat: -14.104, lng: -39.014 },
   'Sobradinho': { lat: -9.462, lng: -40.822 },
-  'Petrolina': { lat: -9.389, lng: -40.502 },
+  'Juazeiro': { lat: -9.416, lng: -40.498 },
   'Paulo Afonso': { lat: -9.406, lng: -38.216 },
-  'Andaraí': { lat: -12.807, lng: -41.331 },
-  'Lençóis': { lat: -12.561, lng: -41.390 },
   'Mata de São João': { lat: -12.531, lng: -38.300 },
   'Barreiras': { lat: -12.153, lng: -44.990 }
 };
@@ -266,7 +259,34 @@ const REGION_LABELS = {
   'Caminhos do Oeste': 'Caminhos do Oeste',
   'Caminhos do Sertão': 'Caminhos do Sertão',
   'Costa do Cacau': 'Costa do Cacau',
-  'Caminhos do Jiquiriça': 'Caminhos do Jiquiriça',
+  'Caminhos do Jiquiriçá': 'Caminhos do Jiquiriçá',
   'Costa do Descobrimento': 'Costa do Descobrimento',
   'Caminhos do Sudoeste': 'Caminhos do Sudoeste'
 };
+
+// ---------------------------------------------------------------------------
+// POI removido — 'p8', Alto Rio Paraguaçu (Chapada Diamantina)
+// ---------------------------------------------------------------------------
+// Removido do array POIS. Fundamentação:
+//
+// O levantamento da ictiofauna da APA Marimbus-Iraquara, no alto Paraguaçu
+// (UEFS, 2025), registrou 23 espécies em dez famílias, nenhuma delas
+// Bryconidae, que é a família do dourado (Salminus) e da matrinxã (Brycon). A
+// assembleia é dominada por characídeos de pequeno porte (Astyanax lorien,
+// Astyanax gr. fasciatus). O gênero Salminus não é nativo das bacias
+// costeiras do Leste, ocorrendo no Brasil nas bacias do Paraná, São
+// Francisco, Doce e Paraíba do Sul. Os grandes predadores hoje presentes no
+// Paraguaçu são introduzidos (Cichla pinima, Astronotus ocellatus). Conclusão:
+// o POI não descreve uma pescaria existente. Some-se que o trecho está
+// dentro de uma APA com ictiofauna endêmica e mal conhecida, o que torna a
+// divulgação de pesca esportiva ali inadequada em peça institucional.
+//
+// { id: 'p8', main: true, sig: 'SIG 008', name: 'Alto Rio Paraguaçu', region: 'Chapada Diamantina', lat: -12.80, lng: -41.33,
+//   loc: 'Andaraí / Poço do Gavião', depth: 'Cristalinidade extrema: 1 m a 15 m',
+//   technique: 'Fly Fishing (classes #7 a #9)', trophy: 'Dourado-do-rio / Matrinxã', trophyKeys: ['dourado-do-rio', 'matrinxa'],
+//   dificuldade: 'Alta', acesso: 'Guia local obrigatório', months: [5, 6, 7, 8, 9], season: 'Maio a Setembro',
+//   secondary: ['Matrinxã'],
+//   operators: ['Guias de fly fishing locais (região do Marimbus).'],
+//   lodging: ['Andaraí', 'Lençóis'],
+//   rules: 'Catch & Release rigoroso. Proibido filtro solar poluente — bioma de montanha frágil.',
+//   blurb: 'Águas vítreas incolores permitem sight fishing: o pescador avista o alvo à distância antes do arremesso. Streamers rio acima em derivação natural; saltos acrobáticos do Dourado.' },

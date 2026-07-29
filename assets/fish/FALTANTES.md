@@ -1,6 +1,6 @@
 # Imagens em `assets/fish/`
 
-**Situação atual: nenhuma imagem faltando.** As 44 espécies de `js/species.js` têm
+**Situação atual: nenhuma imagem faltando.** As 43 espécies de `js/species.js` têm
 arquivo `<chave>.avif` correspondente — confirmado por `node scripts/check-data.js`
 (itens 3 e 4 zerados).
 
@@ -19,3 +19,9 @@ quando as imagens foram entregues:
 A imagem do Badejo (*Mycteroperca bonaci*) chegou nomeada `robalo.avif` — nome de outra
 espécie, que no catálogo é o `camurim` (robalo-flecha) e já tinha foto própria. O arquivo
 foi renomeado para `badejo.avif`, que era a única chave ainda descoberta.
+
+`matrinxa.avif` foi removido do repositório (`git rm`) quando a espécie `matrinxa`
+saiu do catálogo, junto com a remoção do POI `p8` (Alto Rio Paraguaçu) — levantamento
+ictiológico da UEFS (2025) não confirma a ocorrência de Bryconidae (dourado, matrinxã)
+no alto Paraguaçu. A espécie pode retornar ao catálogo, com nova imagem, se houver um
+destino confirmado de matrinxã na bacia do São Francisco.

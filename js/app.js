@@ -104,6 +104,7 @@
       sig: p.sig || '',
       isMain: !!p.main,
       hasSecondary: (p.secondary || []).length > 0,
+      hasOcorrenciaProtegida: (p.ocorrenciaProtegida || []).length > 0,
       hasOperators: (p.operators || []).length > 0,
       hasLodging: (p.lodging || []).length > 0,
       hasRules: !!p.rules
@@ -464,6 +465,18 @@
     return `<span class="detail-fish-chip" data-species-key="${s.key}" role="button" tabindex="0">${fishImg(s.key, name)}<span>${name}</span></span>`;
   }
 
+  // Espécie que ocorre na área mas tem captura proibida (ex.: Mero em p3) — não é
+  // espécie-alvo nem secundária. `ocorrenciaProtegida` guarda chaves (mesmo
+  // vocabulário de trophyKeys), não nomes de exibição, então busca direto por key.
+  // Reaproveita o chip de espécie com foto (.detail-fish-chip) combinado com o selo
+  // vermelho de proibição já usado no card da espécie (.species-badge-proibida) —
+  // nenhuma classe nova, só uma combinação diferente de classes existentes.
+  function protectedFishChipHtml(key) {
+    const s = SPECIES.find((x) => x.key === key);
+    if (!s) return '';
+    return `<span class="detail-fish-chip species-badge species-badge-proibida" data-species-key="${s.key}" role="button" tabindex="0">${fishImg(s.key, s.nome)}<span>${s.nome}</span></span>`;
+  }
+
   function openSpeciesByKey(key) {
     const s = SPECIES.find((x) => x.key === key);
     if (!s) return;
@@ -516,6 +529,13 @@
         <div class="detail-section-label">Espécies secundárias</div>
         <div class="detail-pill-row">${p.secondary.map(speciesFishChipHtml).join('')}</div>
       </div>` : '';
+    // Nunca misturado com as espécies secundárias: bloco próprio, só para espécies
+    // de captura proibida que ocorrem na área (ex.: Mero).
+    const ocorrenciaProtegida = p.hasOcorrenciaProtegida ? `
+      <div class="detail-section">
+        <div class="detail-section-label">Ocorre na área, captura proibida</div>
+        <div class="detail-pill-row">${p.ocorrenciaProtegida.map(protectedFishChipHtml).join('')}</div>
+      </div>` : '';
     const operators = p.hasOperators ? `
       <div class="detail-section">
         <div class="detail-section-label">Operadoras / charters</div>
@@ -555,6 +575,7 @@
         <p class="detail-blurb">${p.blurb || ''}</p>
         ${grid}
         ${secondary}
+        ${ocorrenciaProtegida}
         ${operators}
         ${lodging}
         ${rules}
@@ -696,8 +717,12 @@
     selectPoi(p.id);
   }
 
+  // Deriva da posição na lista de POIs principais, não do id fixo ('p1'...'p10') —
+  // assim as teclas 1–9/0 continuam cobrindo exatamente os destinos principais
+  // existentes, mesmo que algum seja removido e a numeração de sig seja refeita.
   function jumpToMain(n) {
-    const p = POIS.find((x) => x.main && x.id === 'p' + n);
+    const mains = POIS.filter((x) => x.main);
+    const p = mains[n - 1];
     if (!p || !map) return;
     switchView('mapa');
     map.flyTo([p.lat, p.lng], 8, { duration: 1.2 });
@@ -806,7 +831,7 @@
     const hasFilters = !!(state.activeTrophy || state.activeMonth);
     el.matchLabel.textContent = hasFilters
       ? state.matchCount + (state.matchCount === 1 ? ' ponto corresponde' : ' pontos correspondem')
-      : '21 pontos mapeados';
+      : '20 pontos mapeados';
     el.clearFiltersBtn.hidden = !hasFilters;
   }
 
