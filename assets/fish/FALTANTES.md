@@ -1,8 +1,9 @@
 # Imagens em `assets/fish/`
 
-**Situação atual: nenhuma imagem faltando.** As 43 espécies de `js/species.js` têm
-arquivo `<chave>.avif` correspondente — confirmado por `node scripts/check-data.js`
-(itens 3 e 4 zerados).
+**Situação atual: 1 imagem faltando.** `meca` (Meca / Espadarte, *Xiphias gladius*)
+foi acrescentada ao catálogo (bloco de sugestões de inclusão, item H1) sem imagem
+própria — falta `meca.avif`. As demais 43 espécies de `js/species.js` têm arquivo
+`<chave>.avif` correspondente.
 
 O fallback para `_placeholder.svg` continua em `fishImg()` (`js/app.js`) como rede de
 segurança: se uma chave nova for criada em `js/species.js` antes da foto existir, o

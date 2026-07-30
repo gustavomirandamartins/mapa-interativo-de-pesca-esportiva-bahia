@@ -64,12 +64,15 @@ const POIS = [
   // embarcações).
   { id: 'p1', main: true, sig: 'SIG 001', name: 'Banco Royal Charlotte', region: 'Costa do Cacau', lat: -15.55, lng: -38.45,
     loc: '17 a 45 milhas offshore de Canavieiras', depth: 'Drop-off: 70 m a 300 m',
-    technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'dourado-do-mar', 'cherne'],
+    technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'dourado-do-mar', 'cherne', 'meca'],
     dificuldade: 'Extrema', acesso: 'Charter obrigatório', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     // VALIDAR: Cherne adicionado por compatibilidade de profundidade (habita quebra de
     // plataforma abaixo de 100 m, dentro da faixa de 70–300 m do drop-off) — confirmar
     // ocorrência real com operadores locais.
-    secondary: ['Marlin Branco', 'Peixe-Vela', 'Dourado-do-mar', 'Cherne'],
+    // Meca (Espadarte) adicionada por indicação da própria operadora (Charlote
+    // Fishing): pescaria de deep drop relativamente nova na área, distinta do
+    // corrico de superfície — ver H1 do bloco de sugestões de inclusão.
+    secondary: ['Marlin Branco', 'Peixe-Vela', 'Dourado-do-mar', 'Cherne', 'Meca'],
     operators: ['Charlote Fishing — píeres e escritório próprios; barcos Candela e Bazooka (até 4 pessoas), equipamento Accurate/Shimano/Penn.'],
     lodging: ['Canavieiras'],
     rules: 'Catch & Release obrigatório para todas as espécies de bico.',
@@ -241,9 +244,9 @@ const POIS = [
     blurb: 'A 8 milhas começa o reino do gigantesco Olho-de-boi e das Garoupas. Vertical/Speed Jigging arranca os peixes do leito marinho.' },
   // VALIDAR: ver nota de p1 sobre a zona de Canavieiras (Costa do Cacau x Costa das Baleias).
   { id: 's5', main: false, name: 'Canavieiras', region: 'Costa do Cacau', lat: -15.68, lng: -38.95,
-    loc: 'Rios Pardo, Patipe, Una e Jequitinhonha', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'camurim-pena', 'xareu'],
+    loc: 'Rios Pardo, Salsa, Patipe, Una e Jequitinhonha', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'camurim-pena', 'xareu'],
     dificuldade: 'Moderada', acesso: 'Base costeira', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
-    secondary: ['Camurim-pena', 'Xaréu'], operators: ['Charlote Fishing (base do Banco Royal Charlotte)'], lodging: [], rules: '',
+    secondary: ['Camurim-pena', 'Xaréu'], operators: ['Charlote Fishing — base do Banco Royal Charlotte, opera também pescaria fluvial nos rios Pardo e Salsa.'], lodging: [], rules: '',
     blurb: 'Porta de entrada para o Banco Royal Charlotte. O interior estuarino sustenta pesca costeira ao Robalo e Xaréu.' },
   // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
   // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
@@ -268,12 +271,15 @@ const POIS = [
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Xaréu'], operators: [], lodging: [], rules: '',
     blurb: 'Junta o apelo do surf à pesca nas proximidades rochosas do litoral sul.' },
+  // VALIDAR: Barra Grande Sport Fishing localizada em diretório especializado do
+  // setor (pescarias costeiras e oceânicas, estrutura própria na Península de
+  // Maraú) — indício, não confirmação direta por contato ou site oficial.
   { id: 's9', main: false, name: 'Península de Maraú / Barra Grande', region: 'Costa do Dendê', lat: -13.80, lng: -38.94,
     loc: 'Taipu de Fora e Algodões', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'camurim-pena', 'xareu', 'garoupa', 'albacora-laje', 'guaiuba'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [11, 12, 1, 2, 3], season: 'Novembro a Março',
     // VALIDAR: Guaiúba adicionada — recife virgem propício a pargos/vieiras pequenas
     // junto com a Garoupa nos mesmos recifes — confirmar ocorrência real.
-    secondary: ['Camurim-pena', 'Garoupa', 'Albacora-laje', 'Guaiúba'], operators: ['Tuna Pesca Maraú', 'Maraú Turismo'], lodging: [], rules: '',
+    secondary: ['Camurim-pena', 'Garoupa', 'Albacora-laje', 'Guaiúba'], operators: ['Tuna Pesca Maraú', 'Maraú Turismo', 'Barra Grande Sport Fishing — pescarias costeiras e oceânicas.'], lodging: [], rules: '',
     blurb: 'Recifes virgens perfeitos para surfcasting e spinning de praia direcionados ao Xaréu; ecoturismo integrado (escuna, mergulho, cachoeiras).' },
   // VALIDAR: o reservatório de Itaparica é divisa BA/PE. Confirmar com a SETUR se o
   // ponto deve permanecer no mapa e qual sede municipal baiana usar como referência.

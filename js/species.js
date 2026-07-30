@@ -67,6 +67,16 @@ const SPECIES = [
     meses:[4,5,6,7,8,9], tecnica:'Spinning costeiro, corrico leve',
     nota:'No Nordeste o nome corrente é "serra"; "sororoca" predomina no Sudeste/Sul.' },
 
+  // VALIDAR: porte, meses e status são estimativas gerais da espécie, não dados
+  // levantados com a operadora (Charlote Fishing) — confirmar porte típico capturado
+  // em Canavieiras, melhor época local e status na Portaria GM/MMA nº 1.667/2026
+  // (Anexo I) antes de publicar.
+  { key:'meca', nome:'Meca', nomeNacional:'Espadarte',
+    cientifico:'Xiphias gladius', aliases:['espadarte','swordfish'],
+    habitat:'oceanico', porte:'até 3,5 m · 300 kg', status:'nativo',
+    meses:[10,11,12,1,2,3], tecnica:'Deep drop (pesca de fundo profundo, iscas luminosas)',
+    nota:'Pescaria oceânica relativamente nova na costa de Canavieiras, com técnica de deep drop distinta do corrico de superfície usado para os peixes de bico.' },
+
   // ---------- RECIFAIS ----------
   { key:'garoupa', nome:'Garoupa', nomeNacional:'Garoupa-verdadeira',
     cientifico:'Epinephelus marginatus', aliases:['garoupa-legítima'],
