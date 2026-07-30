@@ -189,17 +189,6 @@
     m.setIcon(p.main ? mainIcon(p, isActive) : secIcon(p));
   }
 
-  function tileConfig() {
-    // Estilo náutico (Esri Ocean Basemap) — padrão do protótipo original.
-    // Cache local (gerado por scripts/fetch-tiles.js) primeiro, para funcionar sem rede
-    // na apresentação; cada tile que faltar localmente cai para a URL remota do Esri.
-    return {
-      localUrl: 'assets/tiles/{z}/{x}/{y}.jpg',
-      remoteUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
-      opts: { maxZoom: 13, attribution: '© Esri — Ocean Basemap' }
-    };
-  }
-
   // ---------- Map init ----------
 
   function initMap() {
@@ -213,12 +202,11 @@
     map.zoomControl.setPosition('bottomright');
     map.fitBounds(bounds, { padding: [20, 20] });
 
-    const t = tileConfig();
-    const tiles = L.tileLayer(t.localUrl, t.opts).addTo(map);
-    tiles.on('tileerror', (e) => {
-      const { z, x, y } = e.coords;
-      e.tile.src = t.remoteUrl.replace('{z}', z).replace('{y}', y).replace('{x}', x);
-    });
+    // Estilo náutico (Esri Ocean Basemap) — padrão do protótipo original. Consumido
+    // ao vivo, com atribuição visível, conforme exigência do serviço.
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 13, attribution: '© Esri — Ocean Basemap'
+    }).addTo(map);
     setTimeout(() => map.invalidateSize(), 120);
 
     regionLayer = L.layerGroup().addTo(map);

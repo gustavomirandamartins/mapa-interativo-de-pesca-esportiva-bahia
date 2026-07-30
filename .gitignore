@@ -1,5 +1,2 @@
 .DS_Store
 .claude/settings.local.json
-
-# Cache de tiles do mapa — artefato de build (gerado por scripts/fetch-tiles.js), não código.
-assets/tiles/
