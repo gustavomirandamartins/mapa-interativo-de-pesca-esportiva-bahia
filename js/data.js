@@ -42,9 +42,17 @@ const PROTECTED_AREAS = [
   { id: 'apa-litoral-norte', nome: 'APA Litoral Norte',
     tipo: 'restrita', lat: -12.30, lng: -37.70, raio: 30000,
     orgao: 'INEMA', nota: 'Uso sustentável. Pesca permitida com restrições.' },
+  // REGULATÓRIO: regras confirmadas no Acordo de Gestão da Resex publicado no DOU (Portaria
+  // ICMBio nº 313, de 12/04/2018): pesque e solte para não beneficiários, acompanhamento
+  // obrigatório por comunitário beneficiário, pesca esportiva proibida no estuário durante
+  // o defeso do robalo.
+  // VALIDAR: o folder oficial de Canavieiras (bloco L1) cita "Portaria ICMBio nº 1.124 de
+  // 2018" e o defeso como 15/05 a 31/07 (Portaria IBAMA nº 49-N de 1992). O instrumento
+  // localizado com esse conteúdo é a Portaria nº 313/2018. Confirmar com o ICMBio a norma
+  // vigente e as datas antes de imprimir número de portaria em peça.
   { id: 'resex-canavieiras', nome: 'RESEX Marinha de Canavieiras',
-    tipo: 'restrita', lat: -15.75, lng: -38.95, raio: 20000,
-    orgao: 'ICMBio', nota: 'Reserva extrativista. Pesca artesanal regulada.' }
+    tipo: 'restrita', lat: -15.68, lng: -38.95, raio: 30000,
+    orgao: 'ICMBio', nota: 'Uso sustentável. Pesca por não beneficiários apenas em pesque e solte, com acompanhamento de condutor beneficiário da Resex.' }
 ];
 // VALIDAR: geometrias circulares são aproximações. Substituir por polígonos
 // oficiais (shapefiles ICMBio/INEMA) antes da publicação institucional.
@@ -62,21 +70,39 @@ const POIS = [
   // AUDITADO: operadora Charlote Fishing confirmada como operação de pesca esportiva
   // ativa em Canavieiras (píer e escritório próprios, capitães licenciados, três
   // embarcações).
+  // FONTE: folder oficial SETUR-BA "Pesca Esportiva — Sinta a Adrenalina em Canavieiras,
+  // Costa do Cacau". A distância de 24 milhas substitui o dado anterior de 17 milhas, que
+  // vinha do material da operadora. Decisão de projeto: em conflito de fontes, prevalece a
+  // peça institucional.
+  // NOTA: o recorde mundial IGFA de marlim-azul (636 kg, Paulo Amorim, 1992) foi capturado
+  // ao largo de Vitória/ES e não neste banco. Deliberadamente não mencionado no texto:
+  // citá-lo exigiria uma errata que não cabe em peça promocional, e omiti-lo não afirma
+  // nada falso.
+  // DIVERGÊNCIA COM O FOLDER (registro interno, não replicar no texto visível): o folder
+  // equipara "Cavala" a Wahoo, atribuindo a ambos Acanthocybium solandri. São peixes
+  // distintos, e o catálogo já os traz em fichas separadas: cavala (Scomberomorus cavalla)
+  // e wahoo (Acanthocybium solandri). O folder também lista "Albacora" e "Yellowfin" como
+  // espécies distintas, sendo o mesmo peixe (Thunnus albacares) — já presente no catálogo
+  // como albacora-laje. Inclui "Bluefin" (Thunnus thynnus), de Atlântico Norte temperado,
+  // improvável na Bahia e deliberadamente não incluído. Atribui 900 kg ao marlim-azul,
+  // acima de qualquer registro documentado no Atlântico. Usa Tetrapturus albidus para o
+  // marlim-branco, gênero desatualizado. Reportar à SETUR para a próxima tiragem.
+  // Cherne removido: entrou por inferência de profundidade, nunca foi confirmado e não
+  // consta do folder oficial.
+  // Espadarte (folder de Canavieiras) e Meca (indicação da operadora Charlote Fishing, bloco
+  // H) são o mesmo peixe (Xiphias gladius). Consolidados numa única ficha, a `meca` já
+  // existente em js/species.js — ver comentário ali. Não foi criada uma segunda chave
+  // `espadarte` para não duplicar a espécie no catálogo. `arabaiana` é a chave já existente
+  // para o Olho-de-boi (Seriola spp.), citado pelo folder por esse nome comercial.
   { id: 'p1', main: true, sig: 'SIG 001', name: 'Banco Royal Charlotte', region: 'Costa do Cacau', lat: -15.55, lng: -38.45,
-    loc: '17 a 45 milhas offshore de Canavieiras', depth: 'Drop-off: 70 m a 300 m',
-    technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'dourado-do-mar', 'cherne', 'meca'],
-    dificuldade: 'Extrema', acesso: 'Charter obrigatório', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
-    // VALIDAR: Cherne adicionado por compatibilidade de profundidade (habita quebra de
-    // plataforma abaixo de 100 m, dentro da faixa de 70–300 m do drop-off) — confirmar
-    // ocorrência real com operadores locais.
-    // Meca (Espadarte) adicionada por indicação da própria operadora (Charlote
-    // Fishing): pescaria de deep drop relativamente nova na área, distinta do
-    // corrico de superfície — ver H1 do bloco de sugestões de inclusão.
-    secondary: ['Marlin Branco', 'Peixe-Vela', 'Dourado-do-mar', 'Cherne', 'Meca'],
+    loc: 'Banco Royal Charlotte — início a 24 milhas da costa de Canavieiras', depth: 'Drop-off: 70 m a 300 m',
+    technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'meca', 'dourado-do-mar', 'wahoo', 'albacora-laje', 'cavala', 'bonito-listrado', 'badejo', 'arabaiana'],
+    dificuldade: 'Extrema', acesso: 'Charter obrigatório — 115 km do aeroporto de Ilhéus, 43,6 km de Comandatuba; 426 km de Salvador via ferry-boat e BA-001, ou 569 km via BR-101', months: [9, 10, 11, 12, 1, 2, 3], season: 'Setembro a Março',
+    secondary: ['Marlin Branco', 'Peixe-Vela', 'Meca', 'Dourado-do-mar', 'Wahoo', 'Albacora-laje', 'Cavala', 'Bonito-listrado', 'Badejo', 'Arabaiana'],
     operators: ['Charlote Fishing — píeres e escritório próprios; barcos Candela e Bazooka (até 4 pessoas), equipamento Accurate/Shimano/Penn.'],
     lodging: ['Canavieiras'],
     rules: 'Catch & Release obrigatório para todas as espécies de bico.',
-    blurb: 'Planalto submarino cuja ressurgência concentra os maiores peixes de bico da América do Sul. O recorde mundial IGFA de Marlin Azul (636 kg) foi capturado ao largo de Vitória/ES em 1992 — não neste banco, que mantém reputação própria pela consistência de exemplares.' },
+    blurb: 'Planalto submarino cuja ressurgência concentra os maiores peixes de bico da América do Sul, reconhecido internacionalmente entre os melhores pontos do mundo para a modalidade. Marlim-azul, marlim-branco e agulhão-vela no corrico pesado, e o espadarte no deep drop, pescaria recente e ainda pouco disputada nesta costa.' },
 
   // VALIDAR: coordenada aproximada do Parcel das Paredes. Conferir limites oficiais do
   // PARNA Marinho dos Abrolhos (ICMBio) antes da publicação. O ponto original (-17.96,
@@ -272,11 +298,20 @@ const POIS = [
     secondary: ['Xaréu-branco', 'Guarajuba', 'Camurim', 'Dentão'], operators: ['Ilhéus Pesca Oceânica — corrico, jigging vertical e pargueira.', 'FF Pesca — saída do Ilhéus Iate Clube (7h30 às 17h), embarcações de 40 e 27 pés.'], lodging: [], rules: '',
     blurb: 'A 8 milhas começa o reino do gigantesco Olho-de-boi e das Garoupas. Vertical/Speed Jigging arranca os peixes do leito marinho.' },
   // VALIDAR: ver nota de p1 sobre a zona de Canavieiras (Costa do Cacau x Costa das Baleias).
+  // REGULATÓRIO: ver comentário sobre a RESEX Marinha de Canavieiras em PROTECTED_AREAS —
+  // mesmas regras de pesque-e-solte e condutor beneficiário se aplicam aqui, no estuário.
+  // TEMPORADA: o folder informa robalo e tarpon de janeiro a dezembro, mas o mesmo folder
+  // proíbe pesca esportiva no estuário durante o defeso (15/05 a 31/07). Contradição interna
+  // da peça, resolvida aqui pela janela legal: agosto a abril. Ainda assim amplia a
+  // temporada anterior, que era de outubro a março.
+  // VALIDAR: o folder promove o tucunaré-pinima (Cichla pinima) sem informar que é
+  // introduzido, originário da bacia amazônica. O catálogo registra a condição na ficha da
+  // espécie, sem alarde no texto do destino. Reportar à SETUR para a próxima tiragem.
   { id: 's5', main: false, name: 'Canavieiras', region: 'Costa do Cacau', lat: -15.68, lng: -38.95,
-    loc: 'Rios Pardo, Salsa, Patipe, Una e Jequitinhonha', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'camurim-pena', 'xareu'],
-    dificuldade: 'Moderada', acesso: 'Base costeira', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
-    secondary: ['Camurim-pena', 'Xaréu'], operators: ['Charlote Fishing — base do Banco Royal Charlotte, opera também pescaria fluvial nos rios Pardo e Salsa.'], lodging: [], rules: '',
-    blurb: 'Porta de entrada para o Banco Royal Charlotte. O interior estuarino sustenta pesca costeira ao Robalo e Xaréu.' },
+    loc: 'Manguezais da RESEX e rios Pardo, Patipe, Una e Jequitinhonha', trophy: 'Camurim / Tarpon', trophyKeys: ['camurim', 'camurupim', 'camurim-pena', 'xareu', 'pescada-amarela', 'tucunare'],
+    dificuldade: 'Moderada', acesso: 'Base costeira', months: [1, 2, 3, 4, 8, 9, 10, 11, 12], season: 'Agosto a abril',
+    secondary: ['Tarpon', 'Camurim-pena', 'Xaréu', 'Pescada-amarela', 'Tucunaré'], operators: ['Charlote Fishing — base do Banco Royal Charlotte, opera também pescaria fluvial nos rios Pardo e Salsa.'], lodging: ['Canavieiras'], rules: 'Área da RESEX Marinha de Canavieiras (ICMBio): pesque e solte, com acompanhamento de condutor beneficiário da Resex, que conhece os canais e faz parte da comunidade local. Estuário fechado à pesca esportiva no defeso do robalo (15 de maio a 31 de julho). Leve seu lixo na volta.',
+    blurb: 'Porta de entrada do Banco Royal Charlotte e destino por direito próprio. Nos manguezais da RESEX, condutores locais conhecem cada canal onde o robalo e o tarpon se escondem, e os rios da região guardam o tucunaré-pinima. Na volta, a lama negra medicinal e a gastronomia do mar de Canes.' },
   // AUDITADO: Porto Pesca confirmada em fonte primária, incluindo horário de saída
   // e ponto de partida.
   // VALIDAR: as espécies anunciadas pela operadora (marlins, wahoo, olho-de-boi,

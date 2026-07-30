@@ -25,17 +25,22 @@ const SPECIES = [
     meses:[10,11,12,1,2,3], tecnica:'Corrico com isca natural / bait & switch',
     nota:'Catch & Release obrigatório. Peixe mais veloz do oceano.' },
 
+  // NOTA: porte atualizado conforme o folder oficial "Pesca Esportiva — Sinta a Adrenalina
+  // em Canavieiras" (SETUR-BA), bloco L7 — mais próximo do registro documentado da espécie.
   { key:'dourado-do-mar', nome:'Dourado-do-mar', nomeNacional:'Dourado',
     cientifico:'Coryphaena hippurus', aliases:['doirado','mahi-mahi','delfim'],
-    habitat:'oceanico', porte:'até 1,5 m · 25 kg', status:'nativo',
+    habitat:'oceanico', porte:'até 2,1 m · 40 kg', status:'nativo',
     meses:[10,11,12,1,2,3,4], tecnica:'Corrico e spinning junto a objetos flutuantes',
     nota:'Associa-se a manchas de sargaço e objetos à deriva. Crescimento muito rápido.' },
 
+  // NOTA: porte e nota atualizados conforme o folder oficial de Canavieiras (bloco L8), que
+  // também promove esta espécie sob o nome "Albacora" — já catalogada aqui como
+  // albacora-laje, chave reaproveitada em vez de criar uma segunda ficha para o mesmo peixe.
   { key:'albacora-laje', nome:'Albacora-laje', nomeNacional:'Atum-de-barbatana-amarela',
-    cientifico:'Thunnus albacares', aliases:['albacora','yellowfin'],
-    habitat:'oceanico', porte:'até 2,0 m · 150 kg', status:'nativo',
+    cientifico:'Thunnus albacares', aliases:['albacora','albacora-de-laje','yellowfin','atum'],
+    habitat:'oceanico', porte:'até 2,4 m · 200 kg', status:'nativo',
     meses:[1,2,3,4,5,6,7,8,9,10,11,12], tecnica:'Corrico, jigging vertical, isca viva',
-    nota:'' },
+    nota:'O atum mais comum na costa baiana e o de briga mais longa: puxa para o fundo e obriga o pescador a trabalhar em círculos.' },
 
   { key:'albacorinha', nome:'Albacorinha', nomeNacional:'Atum-de-barbatana-negra',
     cientifico:'Thunnus atlanticus', aliases:['albacora-preta','blackfin'],
@@ -49,9 +54,12 @@ const SPECIES = [
     meses:[1,2,3,4,5,6,7,8,9,10,11,12], tecnica:'Corrico rápido / spinning em cardume',
     nota:'' },
 
+  // NOTA: porte atualizado conforme o folder oficial de Canavieiras (bloco L8) — mais
+  // próximo do registro documentado da espécie. Ficha já existente reaproveitada; o folder
+  // também equipara "Cavala" a Wahoo, o que não procede (ver divergência registrada em p1).
   { key:'wahoo', nome:'Wahoo', nomeNacional:'Cavala-empinge',
     cientifico:'Acanthocybium solandri', aliases:['guarapicu','cavala-da-índia','cavala-aipim'],
-    habitat:'oceanico', porte:'até 2,0 m · 60 kg', status:'nativo',
+    habitat:'oceanico', porte:'até 2,5 m · 80 kg', status:'nativo',
     meses:[1,2,3,4,5,6,7,8,9,10,11,12], tecnica:'Corrico em alta velocidade com líder de aço',
     nota:'Arranques explosivos. Exige líder de aço — dentição corta fluorocarbono.' },
 
@@ -67,13 +75,17 @@ const SPECIES = [
     meses:[4,5,6,7,8,9], tecnica:'Spinning costeiro, corrico leve',
     nota:'No Nordeste o nome corrente é "serra"; "sororoca" predomina no Sudeste/Sul.' },
 
-  // VALIDAR: porte, meses e status são estimativas gerais da espécie, não dados
-  // levantados com a operadora (Charlote Fishing) — confirmar porte típico capturado
-  // em Canavieiras, melhor época local e status na Portaria GM/MMA nº 1.667/2026
-  // (Anexo I) antes de publicar.
+  // FONTE: porte atualizado conforme o folder oficial "Pesca Esportiva — Sinta a
+  // Adrenalina em Canavieiras" (SETUR-BA, bloco L2), que promove a espécie como
+  // "Espadarte". Consolidada aqui na ficha `meca` já existente (bloco H, indicação da
+  // operadora Charlote Fishing) em vez de criar uma segunda chave `espadarte` para o
+  // mesmo peixe (Xiphias gladius) — ver comentário em p1, js/data.js.
+  // VALIDAR: meses e status seguem como estimativas gerais da espécie, não dados
+  // levantados com operadora ou folder — confirmar melhor época local e status na
+  // Portaria GM/MMA nº 1.667/2026 (Anexo I) antes de publicar.
   { key:'meca', nome:'Meca', nomeNacional:'Espadarte',
-    cientifico:'Xiphias gladius', aliases:['espadarte','swordfish'],
-    habitat:'oceanico', porte:'até 3,5 m · 300 kg', status:'nativo',
+    cientifico:'Xiphias gladius', aliases:['espadarte','peixe-espada','espada','swordfish'],
+    habitat:'oceanico', porte:'até 4,5 m · 650 kg', status:'nativo',
     meses:[10,11,12,1,2,3], tecnica:'Deep drop (pesca de fundo profundo, iscas luminosas)',
     nota:'Pescaria oceânica relativamente nova na costa de Canavieiras, com técnica de deep drop distinta do corrico de superfície usado para os peixes de bico.' },
 
