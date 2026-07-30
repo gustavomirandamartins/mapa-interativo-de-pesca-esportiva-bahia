@@ -72,23 +72,19 @@ const SPECIES = [
     cientifico:'Epinephelus marginatus', aliases:['garoupa-legítima'],
     habitat:'recifal', porte:'até 1,5 m · 60 kg', status:'ameacada',
     meses:[10,11,12,1,2,3], tecnica:'Jigging vertical, isca natural de fundo',
-    // VALIDAR: consta de lista de espécies ameaçadas do MMA — confirmar portaria
-    // vigente e eventuais restrições de captura antes da publicação.
-    nota:'' },
+    nota:'Espécie ameaçada, categoria Vulnerável na lista nacional oficial (Portaria GM/MMA nº 1.667/2026). Sujeita a restrições de captura definidas na Portaria GM/MMA nº 1.666/2026.' },
 
   { key:'badejo', nome:'Badejo', nomeNacional:'Badejo-quadrado',
     cientifico:'Mycteroperca bonaci', aliases:['badejo-preto','sirigado'],
     habitat:'recifal', porte:'até 1,3 m · 55 kg', status:'ameacada',
     meses:[10,11,12,1,2,3], tecnica:'Jigging vertical, isca de fundo',
-    // VALIDAR: verificar status na lista MMA vigente.
-    nota:'' },
+    nota:'Espécie ameaçada, categoria Em Perigo na lista nacional oficial (Portaria GM/MMA nº 1.667/2026). Sujeita a restrições de captura definidas na Portaria GM/MMA nº 1.666/2026.' },
 
   { key:'cherne', nome:'Cherne', nomeNacional:'Cherne-verdadeiro',
     cientifico:'Hyporthodus niveatus', aliases:['cherne-poveiro'],
     habitat:'recifal', porte:'até 1,2 m · 50 kg', status:'ameacada',
     meses:[5,6,7,8,9], tecnica:'Pesca de fundo profunda, carretilha elétrica',
-    // VALIDAR: verificar status na lista MMA vigente.
-    nota:'Habita a quebra da plataforma continental, abaixo dos 100 m de profundidade.' },
+    nota:'Habita a quebra da plataforma continental, abaixo dos 100 m de profundidade. Espécie ameaçada, categoria Vulnerável na lista nacional oficial (Portaria GM/MMA nº 1.667/2026). Sujeita a restrições de captura definidas na Portaria GM/MMA nº 1.666/2026.' },
 
   { key:'mero', nome:'Mero', nomeNacional:'Mero',
     cientifico:'Epinephelus itajara', aliases:['canapu','meroaçu'],
@@ -96,19 +92,19 @@ const SPECIES = [
     meses:[], tecnica:'—',
     // VALIDAR: confirmar a portaria de moratória vigente. Manter no mapa apenas com
     // selo de proibição — nunca apresentar como espécie-alvo.
-    nota:'PESCA PROIBIDA. Moratória federal desde 2002, sucessivamente renovada.' },
+    nota:'PESCA PROIBIDA em todo o Brasil. Moratória federal desde 2002 (Portaria IBAMA nº 121/2002), mantida por prazo indeterminado pela Portaria MMA nº 148/2022. Classificada como Criticamente em Perigo (CR) na lista nacional oficial (Portaria GM/MMA nº 1.667/2026). Proibido pescar, manter a bordo, transportar e comercializar.' },
 
   { key:'vermelho-caranha', nome:'Vermelho-Caranha', nomeNacional:'Caranha',
     cientifico:'Lutjanus cyanopterus', aliases:['caranha','caranho','cubera'],
-    habitat:'recifal', porte:'até 1,6 m · 60 kg', status:'nativo',
+    habitat:'recifal', porte:'até 1,6 m · 60 kg', status:'ameacada',
     meses:[10,11,12,1,2,3], tecnica:'Jigging pesado, isca natural',
-    nota:'' },
+    nota:'Espécie ameaçada, categoria Vulnerável na lista nacional oficial (Portaria GM/MMA nº 1.667/2026). Sujeita a restrições de captura definidas na Portaria GM/MMA nº 1.666/2026.' },
 
   { key:'pargo', nome:'Pargo', nomeNacional:'Pargo-vermelho',
     cientifico:'Lutjanus purpureus', aliases:['vermelho','pargo-verdadeiro'],
-    habitat:'recifal', porte:'até 1,0 m · 20 kg', status:'nativo',
+    habitat:'recifal', porte:'até 1,0 m · 20 kg', status:'ameacada',
     meses:[10,11,12,1,2,3], tecnica:'Pesca de fundo, jigging',
-    nota:'Nome "pargo" designa outra espécie no Sudeste/Sul (Pagrus pagrus). Aqui refere-se ao vermelho do Nordeste.' },
+    nota:'Nome "pargo" designa outra espécie no Sudeste/Sul (Pagrus pagrus). Aqui refere-se ao vermelho do Nordeste. Espécie ameaçada, categoria Em Perigo na lista nacional oficial (Portaria GM/MMA nº 1.667/2026). Sujeita a restrições de captura definidas na Portaria GM/MMA nº 1.666/2026.' },
 
   { key:'dentao', nome:'Dentão', nomeNacional:'Dentão',
     cientifico:'Lutjanus jocu', aliases:['caranha-dentão','vermelho-dentão'],
@@ -223,9 +219,9 @@ const SPECIES = [
   // ---------- DULCÍCOLAS ----------
   { key:'surubim', nome:'Surubim', nomeNacional:'Surubim / Pintado',
     cientifico:'Pseudoplatystoma corruscans', aliases:['pintado','surubim-do-são-francisco','moleque'],
-    habitat:'dulcicola', porte:'até 1,6 m · 80 kg', status:'nativo',
+    habitat:'dulcicola', porte:'até 1,6 m · 80 kg', status:'ameacada',
     meses:[6,7,8,9,10], tecnica:'Pesca de fundo noturna, plugs sub-superfície',
-    nota:'Na Bahia e no rio São Francisco o nome corrente é surubim; "pintado" designa o mesmo peixe no Pantanal e na bacia do Paraná.' },
+    nota:'Na Bahia e no rio São Francisco o nome corrente é surubim; "pintado" designa o mesmo peixe no Pantanal e na bacia do Paraná. Espécie ameaçada, categoria Vulnerável na lista nacional oficial (Portaria GM/MMA nº 1.667/2026). Sujeita a restrições de captura definidas na Portaria GM/MMA nº 1.666/2026.' },
 
   { key:'dourado-do-rio', nome:'Dourado-do-rio', nomeNacional:'Dourado',
     cientifico:'Salminus franciscanus', aliases:['dourado','piraju','valente'],
