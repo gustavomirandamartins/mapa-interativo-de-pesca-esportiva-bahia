@@ -1,11 +1,9 @@
 # Imagens em `assets/fish/`
 
-**Situação atual: 2 imagens faltando.** `meca` (Meca / Espadarte, *Xiphias gladius*)
-foi acrescentada ao catálogo (bloco de sugestões de inclusão, item H1) sem imagem
-própria — falta `meca.avif`. `apaiari` (Apaiari / Acará-açu / Oscar, *Astronotus
-ocellatus*) foi acrescentada no Bloco K (alinhamento ao folder oficial de Paulo
-Afonso) — falta `apaiari.avif`. As demais 43 espécies de `js/species.js` têm
-arquivo `<chave>.avif` correspondente.
+**Situação atual: nenhuma imagem faltando.** `meca.avif` (Meca / Espadarte, *Xiphias
+gladius*) e `apaiari.avif` (Apaiari / Acará-açu / Oscar, *Astronotus ocellatus*)
+foram entregues em 30/07/2026. Todas as 45 espécies de `js/species.js` têm arquivo
+`<chave>.avif` correspondente.
 
 O fallback para `_placeholder.svg` continua em `fishImg()` (`js/app.js`) como rede de
 segurança: se uma chave nova for criada em `js/species.js` antes da foto existir, o
