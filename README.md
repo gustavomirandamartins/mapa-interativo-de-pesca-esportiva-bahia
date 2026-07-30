@@ -54,13 +54,18 @@ projeto, e o app carrega normalmente por ele, tiles locais incluídos.
 ```
 index.html              Marcação da página inteira (cabeçalho, mapa, painéis, aba Espécies)
 css/styles.css          Todo o estilo, incluindo @font-face local e breakpoints responsivos
-js/species.js           Catálogo de 43 espécies — carregado ANTES de data.js
+js/species.js           Catálogo de 45 espécies — carregado ANTES de data.js
 js/data.js              Zonas turísticas, destinos (POIs), áreas protegidas, municípios
-js/app.js               Toda a lógica: mapa, filtros, cards, atalhos, modo apresentação
+js/app.js               Toda a lógica: mapa, filtros, cards, atalhos, modo apresentação, PWA
+manifest.json           Manifesto da PWA (nome, ícones, display standalone) — ver "PWA" abaixo
+sw.js                   Service worker: cache do app shell para instalar como app
 scripts/check-data.js   Verificação de integridade dos dados (Node puro)
+scripts/fetch-tiles.js  Baixa o cache de tiles do modo off-line de evento — ver "Modo off-line"
+scripts/serve-windows.* Servidor HTTP local em PowerShell puro, sem instalação (Windows)
 vendor/leaflet/         Leaflet vendorizado (js, css, images)
 assets/fonts/           Baloo 2 e Nunito em woff2, servidas localmente
 assets/fish/            Ilustrações das espécies (.avif), nomeadas pela chave da espécie
+assets/icons/           Ícones da PWA, derivados do logo oficial (ver "PWA" abaixo)
 assets/bahia.geojson    Contorno do estado
 assets/br_states/       Contornos dos demais estados (máscara cinza sobre terra)
 ```
@@ -234,6 +239,39 @@ usar o cache local mesmo que os arquivos continuem no disco, e volta a exigir o
 tile ao vivo (`OFFLINE_CACHE_EXPIRES` em `js/app.js`). Não apaga nada nem bloqueia
 o resto do app: só o basemap volta a depender de internet, como na instalação
 normal. Para estender o prazo num próximo evento, mude essa data.
+
+---
+
+## PWA (instalar como app)
+
+O site é uma PWA (`manifest.json` + `sw.js`): dá pra instalar como app, abrindo
+numa janela própria (sem barra de endereço), com ícone no Dock/Launchpad
+(Mac), no menu Iniciar (Windows) ou na tela inicial (Android). Continua sem
+nenhuma etapa de build — os dois arquivos são só mais estático servido junto
+com o resto.
+
+**Como instalar (Mac, Chrome ou Edge):** com o site aberto localmente
+(`python3 -m http.server`, ver "Rodando" acima), no menu do navegador →
+"Instalar Pesca Esportiva na Bahia..." (ou o ícone de instalação na barra de
+endereço, ⊕/monitor com seta). No Safari do macOS Sonoma ou mais recente:
+menu Arquivo → "Adicionar ao Dock".
+
+**O que o service worker faz:** no primeiro carregamento, guarda em cache todo
+o "app shell" — HTML/CSS/JS, Leaflet vendorizado, fontes, GeoJSON de contorno
+(Bahia + demais estados) e as ilustrações de espécie (~5 MB no total). Da
+segunda vez em diante, tudo isso carrega instantâneo do cache, e atualiza em
+segundo plano quando há rede. **Não inclui** `assets/tiles/` (o cache de tiles
+do modo off-line de evento, gerenciado à parte por `setupOfflineTiles()` em
+`js/app.js`) nem os tiles ao vivo do Esri — os dois passam direto pela rede,
+sem o service worker interceptar, pela mesma cautela institucional já
+registrada para `scripts/fetch-tiles.js`.
+
+**Cache versionada manualmente.** Sem build/hash de arquivo neste projeto,
+`CACHE_VERSION` em `sw.js` precisa ser incrementada à mão sempre que
+`index.html`, `css/`, `js/` ou algum arquivo em `assets/` mudar — assim o
+navegador descarta o cache antigo e baixa a versão nova. Esquecer de
+incrementar não quebra nada, só atrasa quando a mudança chega pra quem já
+instalou o app.
 
 ---
 

@@ -1131,8 +1131,24 @@
     setTimeout(() => waitForLeaflet(tries + 1), 60);
   }
 
+  // ---------- PWA ----------
+  //
+  // Service worker exige contexto seguro (https:, ou http://localhost/127.0.0.1
+  // — os dois jeitos já usados neste projeto para rodar localmente, ver README).
+  // Sem isso (ex.: aberto via file://, ou http:// puro num IP de rede local),
+  // simplesmente não registra — o site continua funcionando normal, só sem a
+  // opção de instalar como app.
+  function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.register('sw.js').catch(() => {
+      // best-effort: falha de registro (ex.: contexto não seguro) não deve
+      // quebrar o app, só deixa de oferecer o modo instalável.
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     bindUi();
     waitForLeaflet(0);
+    registerServiceWorker();
   });
 })();
