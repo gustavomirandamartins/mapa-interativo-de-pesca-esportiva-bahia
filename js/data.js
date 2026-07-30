@@ -101,31 +101,42 @@ const POIS = [
     rules: 'Pesca PROIBIDA dentro do Parque Nacional Marinho (ICMBio); permitida apenas nos parcéis periféricos.',
     blurb: 'Formações coralíneas em cogumelo ("chapeirões"), as mais complexas do Atlântico Sul. À mínima hesitação após o toque, o peixe refugia-se no coral e corta a linha.' },
 
-  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
-  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
-  // antes da próxima publicação.
+  // AUDITADO: "Charter Náutico" não corresponde a empresa identificável e foi
+  // removido. Destino confirmado pelo site oficial de turismo do município
+  // (santuário do robalo-flecha, afluente Mucujó, saída por volta das 7h, camarão
+  // vivo com boia "paulistinha").
+  // VALIDAR: confirmar se a Bahia Top Fishing, operação de pesca sediada em
+  // Jaguaripe especializada em robalo, segue ativa. Se sim, é a operadora natural
+  // deste POI.
+  // ATENÇÃO INSTITUCIONAL: o site oficial de turismo de Jaguaripe lista o Mero
+  // entre os alvos de pesca de fundo. O Mero tem captura proibida por moratória
+  // federal. Reportar à SETUR para tratativa com o município. Esta é a provável
+  // origem da inclusão indevida do Mero neste POI, corrigida no bloco A1.
   { id: 'p3', main: true, sig: 'SIG 003', name: 'Estuário do Rio Jaguaripe', region: 'Baía de Todos-os-Santos', lat: -13.10, lng: -38.86,
-    loc: 'Manguezais de Nazaré e Jaguaripe', depth: 'Calhas estuarinas: 2 m a 10 m',
+    loc: 'Manguezais de Nazaré e Jaguaripe; afluente Mucujó', depth: 'Calhas estuarinas: 2 m a 10 m',
     technique: 'Isco vivo (derivação) / Baitcasting', trophy: 'Camurim / Camurim-pena', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'vermelho-caranha', 'traira'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [11, 12, 1, 2, 3], season: 'Novembro a Março',
     secondary: ['Carapeba', 'Vermelho-Caranha', 'Traíra'],
     // Mero ocorre na área mas tem captura proibida por moratória federal — não é
     // espécie-alvo nem secundária, e não pode aparecer misturado a elas.
     ocorrenciaProtegida: ['mero'],
-    operators: ['Charter Náutico — veleiros e lanchas 30–44 pés a partir de marinas de Salvador.'],
+    operators: [],
     lodging: ['Nazaré', 'Jaguaripe'],
     rules: 'Defeso do Robalo na desova (jun–ago). Restrições à apanha de isco vivo (caranguejo-uçá, camarão).',
-    blurb: 'Santuário do Robalo-Flecha. Incursões matinais (06–10h) na maré enchente, com boia suspensa e camarão vivo graúdo ou caranguejo.' },
+    blurb: 'Santuário do Robalo-Flecha. Incursões matinais a partir das 7h na maré enchente, com boia suspensa e camarão vivo graúdo ou caranguejo.' },
 
-  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
-  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
-  // antes da próxima publicação.
+  // AUDITADO: acesso confirmado (travessia por Pontal/Indiaroba-SE e acesso
+  // baiano por Jandaíra/Costa Azul). O conteúdo que estava em operators era
+  // descrição de acesso e foi movido para loc.
+  // VALIDAR: não foi localizada operação de pesca esportiva em Mangue Seco. As
+  // embarcações locais fazem travessia e passeio. Confirmar com a SETUR e com a
+  // prefeitura de Jandaíra se existe guia de pesca ativo.
   { id: 'p4', main: true, sig: 'SIG 004', name: 'Foz do Rio Real / Mangue Seco', region: 'Costa dos Coqueiros', lat: -11.47, lng: -37.36,
-    loc: 'Mangue Seco — divisa BA/SE', depth: 'Canais de mangue: 2 m a 8 m',
+    loc: 'Mangue Seco, Jandaíra — divisa BA/SE. Travessia de barco a partir de Pontal (Indiaroba/SE) ou acesso por Jandaíra pela Costa Azul.', depth: 'Canais de mangue: 2 m a 8 m',
     technique: 'Baitcasting de precisão / Surfcasting', trophy: 'Camurupim / Camurim', trophyKeys: ['camurupim', 'camurim', 'camurim-pena', 'xareu', 'pescada-amarela'],
     dificuldade: 'Moderada', acesso: 'Travessia de lancha', months: [12, 1, 2, 3], season: 'Dezembro a Março',
     secondary: ['Camurim-pena', 'Xaréu', 'Pescada-amarela'],
-    operators: ['Travessia de lancha a partir de Indiaroba (SE) ou acesso via Jandaíra.'],
+    operators: [],
     lodging: ['Jandaíra'],
     rules: 'Defeso do Robalo (jun–ago).',
     blurb: 'Posicionar a embarcação a 45° da corrente para arremessar às margens sem enleios nas raízes. Canas 5,8–7 pés, multifilamento e líder de fluorocarbono 30 lb.' },
@@ -202,15 +213,23 @@ const POIS = [
     rules: '',
     blurb: 'Declives batimétricos dramáticos a poucas milhas da costa. Iscas arrastadas provocam pelágicos de topo; pacotes incluem material, alimentação e capitão.' },
 
-  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
-  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
-  // antes da próxima publicação.
+  // AUDITADO: repovoamento confirmado, mas o executor não é o INEMA e sim a
+  // Codevasf com a Prefeitura de Barreiras e apoio da Bahia Pesca. Corrigido.
+  // Espécies soltas documentadas: piau-verdadeiro (nativo, abundante nesses
+  // rios), curimatã, surubim, cari, pacu e pacamã, o que sustenta as
+  // espécies-alvo deste POI.
+  // VALIDAR: o pesqueiro "Poço do Cedro" não foi localizado em nenhuma fonte e
+  // foi removido do campo loc. Se for topônimo local legítimo, reinserir com
+  // confirmação da Secretaria de Meio Ambiente de Barreiras.
+  // VALIDAR: o Tucunaré consta como espécie-alvo deste POI mas não aparece nas
+  // campanhas de repovoamento nem como espécie nativa do rio Grande. Se
+  // ocorrer, é introduzido. Confirmar antes de publicar.
   { id: 'p10', main: true, sig: 'SIG 010', name: 'Rio Grande (Oeste)', region: 'Caminhos do Oeste', lat: -12.10, lng: -45.10,
-    loc: 'Poço do Cedro — Barreiras', depth: 'Remansos fluviais: 4 m a 12 m',
+    loc: 'Rio Grande e afluentes — Barreiras', depth: 'Remansos fluviais: 4 m a 12 m',
     technique: 'Espera com ceva prévia (fruta / milho)', trophy: 'Pacu / Piau / Tucunaré', trophyKeys: ['pacu', 'piau', 'tucunare'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: ['Piau', 'Tucunaré'],
-    operators: ['Campanhas INEMA / Codevasf de repovoamento alevínico.'],
+    operators: ['Campanhas de repovoamento alevínico da Codevasf com a Prefeitura de Barreiras (Secretaria de Meio Ambiente e Sustentabilidade), com apoio da Bahia Pesca. Alevinos produzidos no Centro de Xique-Xique.'],
     lodging: ['Barreiras'],
     rules: 'Defeso / piracema de novembro a março.',
     blurb: 'Rios do Cerrado com fundo de areia. Cevar o pesqueiro com fruta local e milho fermentado; o Pacu dá embates fortíssimos em equipamento de classe média.' },
@@ -300,11 +319,13 @@ const POIS = [
     dificuldade: 'Moderada', acesso: 'Exige sonda e GPS', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: [], operators: [], lodging: [], rules: '',
     blurb: 'Lago que oculta florestas submersas. Isca artificial de hélice (surface prop) provoca boa resposta de ataque do Tucunaré, espécie introduzida na bacia.' },
+  // AUDITADO: rios de Ondas e Ribeirão Boa Sorte confirmados como alvos das
+  // campanhas de repovoamento da Codevasf com a Prefeitura de Barreiras.
   { id: 's11', main: false, name: 'Luís Eduardo Magalhães', region: 'Caminhos do Oeste', lat: -12.09, lng: -45.80,
     loc: 'Rio de Ondas e Ribeirão Boa Sorte', trophy: 'Pacu / Tucunaré', trophyKeys: ['pacu', 'tucunare', 'piau'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: ['Piau'], operators: [], lodging: [], rules: '',
-    blurb: 'Polo agrícola do Cerrado, irrigado pelas artérias hídricas do oeste baiano. Alvo de campanhas de repovoamento do INEMA/Codevasf.' }
+    blurb: 'Polo agrícola do Cerrado, irrigado pelas artérias hídricas do oeste baiano. Alvo de campanhas de repovoamento da Codevasf com a Prefeitura de Barreiras.' }
 ];
 
 // Sedes dos municípios citados em `lodging`, para que cada item de Hospedagem
