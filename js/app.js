@@ -351,10 +351,26 @@
     } catch (e) { /* mantém limites estáticos como fallback */ }
   }
 
-  // Cobre apenas a porção terrestre dos estados vizinhos (dados oficiais por
+  // Cobre apenas a porção terrestre dos demais estados (dados oficiais por
   // estado, não o blob unificado que tinha auto-interseções). O mar permanece
   // sempre descoberto, já que essas features só existem sobre terra.
-  const NEIGHBOR_STATE_FILES = ['br_al', 'br_es', 'br_go', 'br_mg', 'br_pe', 'br_pi', 'br_se', 'br_to'];
+  //
+  // São todos os estados do Brasil menos a Bahia, exceto o Rio Grande do Sul: ele
+  // fica inteiro ao sul de -27°, e o mapa não alcança além de ~-24° de latitude
+  // nem no pior caso (o zoom mínimo é calculado para enquadrar a Bahia, então a
+  // faixa de latitude visível é sempre ~a altura do estado; só a longitude cresce
+  // com a largura da tela). Carregá-lo seria peso morto.
+  //
+  // Os 8 primeiros são os que fazem divisa com a Bahia e estão em precisão total,
+  // para casar exatamente com o contorno de assets/bahia.geojson. Os 17 restantes
+  // foram recortados num envelope (O -75, L -28, N 0, S -26) e arredondados para
+  // 4 casas decimais (~11 m, 0,3 px no zoom máximo) — sem simplificação de
+  // geometria, que abriria fendas de 1 px entre máscaras vizinhas.
+  const NEIGHBOR_STATE_FILES = [
+    'br_al', 'br_es', 'br_go', 'br_mg', 'br_pe', 'br_pi', 'br_se', 'br_to',
+    'br_ac', 'br_am', 'br_ap', 'br_ce', 'br_df', 'br_ma', 'br_ms', 'br_mt',
+    'br_pa', 'br_pb', 'br_pr', 'br_rj', 'br_rn', 'br_ro', 'br_rr', 'br_sc', 'br_sp'
+  ];
   async function loadNeighborMask() {
     try {
       const collections = await Promise.all(

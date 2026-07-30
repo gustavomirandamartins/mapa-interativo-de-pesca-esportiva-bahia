@@ -52,7 +52,7 @@ vendor/leaflet/         Leaflet vendorizado (js, css, images)
 assets/fonts/           Baloo 2 e Nunito em woff2, servidas localmente
 assets/fish/            Ilustrações das espécies (.avif), nomeadas pela chave da espécie
 assets/bahia.geojson    Contorno do estado
-assets/br_states/       Contornos dos estados vizinhos (máscara cinza sobre terra)
+assets/br_states/       Contornos dos demais estados (máscara cinza sobre terra)
 ```
 
 A ordem dos `<script>` no `index.html` importa: `species.js` → `data.js` →
@@ -251,6 +251,21 @@ Coisas não óbvias que já custaram depuração:
 - **Cabeçalho de uma linha no desktop.** `.header-row` e `.header-actions` usam
   `display: contents` por padrão; só abaixo de 860px viram caixas reais, para
   empilhar em duas linhas com o botão de "ver toda a Bahia" no canto.
+- **Máscara cinza dos demais estados** (`assets/br_states/`, um arquivo por UF,
+  origem [geodata-br-states](https://github.com/giuliano-oliveira/geodata-br-states)).
+  São 25 arquivos: todos os estados menos a Bahia e menos o Rio Grande do Sul, que
+  fica inteiro ao sul de -27° e nunca entra em quadro — o zoom mínimo é calculado
+  para enquadrar a Bahia, então a faixa de **latitude** visível é sempre ~a altura
+  do estado; só a **longitude** cresce com a largura da tela (numa tela 4K o mapa
+  chega a alcançar ~-72° de longitude, quase o Acre).
+  Os 8 que fazem divisa com a Bahia estão em precisão total, para casar exatamente
+  com o contorno de `assets/bahia.geojson`. Os 17 demais foram recortados num
+  envelope (O -75, L -28, N 0, S -26) e arredondados para 4 casas decimais (~11 m,
+  0,15 px no zoom máximo). **Não simplifique a geometria** desses polígonos: cada
+  estado é um arquivo separado, então mover vértices de uma divisa abre uma fenda
+  de 1px entre duas máscaras vizinhas, que aparece como um risco do basemap. O
+  arredondamento é seguro justamente por ser aplicado igual dos dois lados da
+  divisa. As features só existem sobre terra, então o mar continua descoberto.
 
 ---
 
