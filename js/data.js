@@ -166,21 +166,25 @@ const POIS = [
     rules: '',
     blurb: 'Mar interior de água doce (milhares de km²). Tucunaré (espécie introduzida, originária da Amazônia) nas margens da Ilha de Remanso na seca (mai–out), com poppers e sticks de superfície; Corvinas de fundo nas calhas profundas.' },
 
-  // AUDITADO: Pousada Ilha Bela existe em Paulo Afonso, mas é hospedagem comum,
-  // sem evidência de apoio à pesca. Removida de operators. Não há operadora de
-  // pesca confirmada para este ponto.
-  // VALIDAR: confirmar com a SETUR se existe guia ou operação de pesca ativa no
-  // canal de Paulo Afonso. Sem operadora, o ponto orienta o visitante sem dar a
-  // ele como chegar à água.
-  { id: 'p7', main: true, sig: 'SIG 007', name: 'Canal de Paulo Afonso', region: 'Lagos e Cânions do São Francisco', lat: -9.40, lng: -38.21,
-    loc: 'Base da hidroelétrica (PA-IV)', depth: 'Corredeiras hiper-oxigenadas (~10 m)',
-    technique: 'Fundo noturno / Plugs sub-superfície', trophy: 'Surubim / Dourado-do-rio', trophyKeys: ['surubim', 'dourado-do-rio'],
-    dificuldade: 'Alta', acesso: 'Acesso rodoviário', months: [6, 7, 8, 9, 10, 11, 12], season: 'Junho a Dezembro',
-    secondary: ['Dourado-do-rio'],
-    operators: [],
+  // FONTE: folder oficial "Descubra a Pesca Esportiva em Paulo Afonso" (SETUR-BA, parceria técnica
+  // Igarapesca Jungle Fishing). Espécies-alvo, acesso, atrativos e existência de aluguel de equipamento
+  // e guias vêm do folder e prevalecem sobre o levantamento anterior.
+  // VALIDAR: a Igarapesca é consultoria de turismo de pesca cujos destinos divulgados são Amazônia,
+  // Patagônia argentina e flats do México. Figura no folder como parceira técnica, não como operadora
+  // local. NÃO listar como operadora. Identificar com a SETUR o guia local disponível em Paulo Afonso.
+  // DIVERGÊNCIA COM O FOLDER (registro interno, não replicar no texto visível): o folder atribui ao
+  // dourado 1,4 m e 30 kg, medidas de Salminus brasiliensis (bacia do Prata) e não de S. franciscanus;
+  // e à traíra 70 cm e 5 kg, valores de trairão (Hoplias intermedius/lacerdae) e não de H. malabaricus.
+  // O catálogo mantém os valores corretos. Reportar à SETUR para a próxima tiragem.
+  { id: 'p7', main: true, sig: 'SIG 007', name: 'Paulo Afonso e reservatórios da CHESF', region: 'Lagos e Cânions do São Francisco', lat: -9.40, lng: -38.21,
+    loc: 'Rio São Francisco e reservatórios das usinas da CHESF', depth: 'Corredeiras hiper-oxigenadas (~10 m)',
+    technique: 'Fundo noturno / Plugs sub-superfície', trophy: 'Surubim / Tucunaré', trophyKeys: ['surubim', 'tucunare', 'dourado-do-rio', 'traira', 'piau', 'apaiari'],
+    dificuldade: 'Alta', acesso: 'Acesso rodoviário — 3h de Aracaju e Maceió; cerca de 500 km de Salvador e Recife', months: [6, 7, 8, 9, 10, 11, 12], season: 'Junho a Dezembro',
+    secondary: ['Dourado-do-rio', 'Traíra', 'Piau', 'Apaiari'],
+    operators: ['Rede local com aluguel de equipamentos e guias experientes (folder oficial SETUR-BA).'],
     lodging: ['Paulo Afonso'],
     rules: 'Cânions basálticos afiados cortam a linha; a fricção do carreto é crítica no ataque do Surubim.',
-    blurb: 'Água hiper-oxigenada abaixo das turbinas concentra Dourados e Surubins. Na pesca noturna, o Surubim engole o engodo letárgico e arranca de repente — travagem rígida rompe a linha.' },
+    blurb: 'Abaixo das turbinas a água hiper-oxigenada concentra peixe grande, e a pescaria se abre dos canais aos reservatórios da CHESF. O surubim ataca à noite: engole devagar e arranca de uma vez. Em volta, cânions de até 100 metros para navegar de catamarã, visita guiada ao complexo hidrelétrico e o Raso da Catarina. Sertão, água e adrenalina no mesmo roteiro.' },
 
   // Substitui o antigo POI de fly fishing para dourado, removido por não corresponder
   // à ictiofauna real do alto Paraguaçu. Base: estudo de conhecimento ictiológico

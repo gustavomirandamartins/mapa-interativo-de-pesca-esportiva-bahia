@@ -245,6 +245,10 @@ const SPECIES = [
     meses:[4,5,6,7,8,9,10], tecnica:'Plugs de superfície, isca viva',
     nota:'' },
 
+  // VALIDAR: o folder oficial da SETUR descreve o piau com três manchas escuras
+  // laterais, padrão de Leporinus friderici / Megaleporinus reinhardti. A ficha
+  // usa Megaleporinus obtusidens, que não tem esse padrão. Megaleporinus
+  // reinhardti é o piau do São Francisco. Confirmar com o INEMA.
   { key:'piau', nome:'Piau', nomeNacional:'Piau',
     cientifico:'Megaleporinus obtusidens', aliases:['piava','piapara','aracu','piau-verdadeiro'],
     habitat:'dulcicola', porte:'até 50 cm · 4 kg', status:'nativo',
@@ -282,7 +286,20 @@ const SPECIES = [
     cientifico:'Oreochromis niloticus', aliases:['saint peter','tilápia'],
     habitat:'dulcicola', porte:'até 50 cm · 3 kg', status:'introduzida',
     meses:[1,2,3,4,5,6,7,8,9,10,11,12], tecnica:'Isca vegetal, jig leve',
-    nota:'ESPÉCIE EXÓTICA INVASORA — de origem africana.' }
+    nota:'ESPÉCIE EXÓTICA INVASORA — de origem africana.' },
+
+  // VALIDAR: habitat, meses e técnica não constavam do folder oficial (que traz
+  // apenas nome, porte e valorização esportiva) — ajustados aqui ao padrão das
+  // demais fichas dulcícolas (o folder original trazia habitat:'agua-doce', fora
+  // da taxonomia do catálogo, e nenhum campo de meses/técnica) para não disparar
+  // a nota de "captura proibida o ano todo". Meses estimados pela janela do POI
+  // p7, onde a espécie é hoje divulgada. Confirmar melhor época e técnica local
+  // com a SETUR/Igarapesca antes de publicar.
+  { key:'apaiari', nome:'Apaiari', nomeNacional:'Apaiari / Acará-açu / Oscar',
+    cientifico:'Astronotus ocellatus', aliases:['acará-açu','oscar','apaiari'],
+    habitat:'dulcicola', porte:'até 40 cm · 1,5 kg', status:'introduzida',
+    meses:[6,7,8,9,10,11,12], tecnica:'Iscas artificiais de meia-água e superfície, spinning leve',
+    nota:'Peixe de ataque agressivo e briga curta e forte, muito valorizado na pesca esportiva dos reservatórios de Paulo Afonso. Originário da bacia amazônica, está estabelecido no São Francisco.' }
 ];
 
 // Array legado, para não quebrar o filtro atual (js/app.js consome TROPHIES).
