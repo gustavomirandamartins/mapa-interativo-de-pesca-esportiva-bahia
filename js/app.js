@@ -819,7 +819,7 @@
     const hasFilters = !!(state.activeTrophy || state.activeMonth);
     el.matchLabel.textContent = hasFilters
       ? state.matchCount + (state.matchCount === 1 ? ' ponto corresponde' : ' pontos correspondem')
-      : '20 pontos mapeados';
+      : '21 pontos mapeados';
     el.clearFiltersBtn.hidden = !hasFilters;
   }
 

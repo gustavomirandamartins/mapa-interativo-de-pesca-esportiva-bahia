@@ -55,6 +55,10 @@ const PROTECTED_AREAS = [
 const POIS = [
   // VALIDAR: Canavieiras costuma ser classificada em Costa do Cacau, mas é limítrofe
   // com Costa das Baleias — confirmar zona oficial do banco offshore.
+  // NOTA: o material comercial da operadora informa o recorde IGFA como 637 kg em
+  // 1978. O correto é 636 kg, Paulo Amorim, ao largo de Vitória/ES, em 29/02/1992.
+  // O percentual de marlins acima de 250 kg divulgado pela operadora é alegação
+  // comercial e não deve ser reproduzido como dado pela SETUR.
   { id: 'p1', main: true, sig: 'SIG 001', name: 'Banco Royal Charlotte', region: 'Costa do Cacau', lat: -15.55, lng: -38.45,
     loc: '17 a 45 milhas offshore de Canavieiras', depth: 'Drop-off: 70 m a 300 m',
     technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'dourado-do-mar', 'cherne'],
@@ -71,6 +75,9 @@ const POIS = [
   // VALIDAR: coordenada aproximada do Parcel das Paredes. Conferir limites oficiais do
   // PARNA Marinho dos Abrolhos (ICMBio) antes da publicação. O ponto original (-17.96,
   // -38.70) caía dentro do parque, onde a pesca é proibida — contradizendo o campo `rules`.
+  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
+  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
+  // antes da próxima publicação.
   { id: 'p2', main: true, sig: 'SIG 002', name: 'Parcéis periféricos de Abrolhos', region: 'Costa das Baleias', lat: -17.78, lng: -39.00,
     loc: 'Parcéis externos ao Parque Nacional — base em Caravelas', depth: 'Estruturas: 15 m a 60 m',
     technique: 'Vertical Jigging ultrapesado (jigs até 300 g, PE 4–6)', trophy: 'Garoupa / Vermelho-Caranha', trophyKeys: ['garoupa', 'vermelho-caranha', 'pargo', 'badejo'],
@@ -83,6 +90,9 @@ const POIS = [
     rules: 'Pesca PROIBIDA dentro do Parque Nacional Marinho (ICMBio); permitida apenas nos parcéis periféricos.',
     blurb: 'Formações coralíneas em cogumelo ("chapeirões"), as mais complexas do Atlântico Sul. À mínima hesitação após o toque, o peixe refugia-se no coral e corta a linha.' },
 
+  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
+  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
+  // antes da próxima publicação.
   { id: 'p3', main: true, sig: 'SIG 003', name: 'Estuário do Rio Jaguaripe', region: 'Baía de Todos-os-Santos', lat: -13.10, lng: -38.86,
     loc: 'Manguezais de Nazaré e Jaguaripe', depth: 'Calhas estuarinas: 2 m a 10 m',
     technique: 'Isco vivo (derivação) / Baitcasting', trophy: 'Camurim / Camurim-pena', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'vermelho-caranha', 'traira'],
@@ -96,6 +106,9 @@ const POIS = [
     rules: 'Defeso do Robalo na desova (jun–ago). Restrições à apanha de isco vivo (caranguejo-uçá, camarão).',
     blurb: 'Santuário do Robalo-Flecha. Incursões matinais (06–10h) na maré enchente, com boia suspensa e camarão vivo graúdo ou caranguejo.' },
 
+  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
+  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
+  // antes da próxima publicação.
   { id: 'p4', main: true, sig: 'SIG 004', name: 'Foz do Rio Real / Mangue Seco', region: 'Costa dos Coqueiros', lat: -11.47, lng: -37.36,
     loc: 'Mangue Seco — divisa BA/SE', depth: 'Canais de mangue: 2 m a 8 m',
     technique: 'Baitcasting de precisão / Surfcasting', trophy: 'Camurupim / Camurim', trophyKeys: ['camurupim', 'camurim', 'camurim-pena', 'xareu', 'pescada-amarela'],
@@ -106,12 +119,16 @@ const POIS = [
     rules: 'Defeso do Robalo (jun–ago).',
     blurb: 'Posicionar a embarcação a 45° da corrente para arremessar às margens sem enleios nas raízes. Canas 5,8–7 pés, multifilamento e líder de fluorocarbono 30 lb.' },
 
+  // VALIDAR: Camamu Adventure e Princesinha Turismo foram removidas de operators por
+  // não operarem pesca esportiva (são transporte e passeios marítimos). Se a SETUR
+  // quiser mantê-las no mapa, criar campo próprio de apoio náutico, separado de
+  // operadoras de pesca.
   { id: 'p5', main: true, sig: 'SIG 005', name: 'Baía de Camamu', region: 'Costa do Dendê', lat: -13.92, lng: -38.90,
     loc: 'Mangue de Camamu e Barra Grande', depth: '3 m a 18 m',
     technique: 'Isco vivo / Jig head / Plugs', trophy: 'Camurim / Carapeba', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'garoupa', 'curima', 'corvina', 'parati'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [12, 1, 2, 3], season: 'Dezembro a Março',
     secondary: ['Camurim-pena', 'Garoupa', 'Curimã', 'Corvina', 'Parati'],
-    operators: ['Tuna Pesca Maraú', 'Camamu Adventure', 'Princesinha Turismo'],
+    operators: ['Tuna Pesca Maraú — pesca esportiva de alto-mar, saída completa (7h às 16h) e meia saída (8h às 14h).'],
     lodging: ['Camamu', 'Maraú'],
     rules: '',
     blurb: 'Terceira maior baía do Brasil (segunda maior dentro da Bahia). Garoupas nas rochas da Ilha de Campinho; recifes virgens em Taipu de Fora e Algodões para surfcasting.' },
@@ -126,6 +143,9 @@ const POIS = [
     rules: '',
     blurb: 'Mar interior de água doce (milhares de km²). Tucunaré (espécie introduzida, originária da Amazônia) nas margens da Ilha de Remanso na seca (mai–out), com poppers e sticks de superfície; Corvinas de fundo nas calhas profundas.' },
 
+  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
+  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
+  // antes da próxima publicação.
   { id: 'p7', main: true, sig: 'SIG 007', name: 'Canal de Paulo Afonso', region: 'Lagos e Cânions do São Francisco', lat: -9.40, lng: -38.21,
     loc: 'Base da hidroelétrica (PA-IV)', depth: 'Corredeiras hiper-oxigenadas (~10 m)',
     technique: 'Fundo noturno / Plugs sub-superfície', trophy: 'Surubim / Dourado-do-rio', trophyKeys: ['surubim', 'dourado-do-rio'],
@@ -136,7 +156,25 @@ const POIS = [
     rules: 'Cânions basálticos afiados cortam a linha; a fricção do carreto é crítica no ataque do Surubim.',
     blurb: 'Água hiper-oxigenada abaixo das turbinas concentra Dourados e Surubins. Na pesca noturna, o Surubim engole o engodo letárgico e arranca de repente — travagem rígida rompe a linha.' },
 
-  { id: 'p9', main: true, sig: 'SIG 008', name: 'Drop-off da Praia do Forte', region: 'Costa dos Coqueiros', lat: -12.52, lng: -37.85,
+  // Substitui o antigo POI de fly fishing para dourado, removido por não corresponder
+  // à ictiofauna real do alto Paraguaçu. Base: estudo de conhecimento ictiológico
+  // tradicional dos pescadores da APA Marimbus-Iraquara e levantamento de ictiofauna
+  // da UEFS (2025), que registra assembleia dominada por characídeos de pequeno porte,
+  // erythrinídeos (traíras) e heptapterídeos, sem ocorrência de Bryconidae.
+  { id: 'p8', main: true, sig: 'SIG 008', name: 'Rios da Chapada Diamantina', region: 'Chapada Diamantina', lat: -12.56, lng: -41.39,
+    loc: 'Alto Paraguaçu e afluentes — entorno de Lençóis e Andaraí', depth: 'Poços entre corredeiras: 1 m a 6 m',
+    technique: 'Pesca leve: spinning ultraleve, fly de linha #4 a #6', trophy: 'Traíra', trophyKeys: ['traira', 'tucunare'],
+    dificuldade: 'Moderada', acesso: 'Guia local obrigatório', months: [5, 6, 7, 8, 9], season: 'Maio a Setembro',
+    secondary: ['Tucunaré'],
+    operators: [],
+    lodging: ['Lençóis', 'Andaraí'],
+    rules: 'Catch & Release rigoroso. Trecho inserido em Área de Proteção Ambiental: confirmar regras da APA Marimbus-Iraquara com o INEMA antes da saída. Respeitar as áreas de pesca das comunidades tradicionais.',
+    blurb: 'Não é destino de peixe grande, e é justamente esse o convite: água de quartzito transparente permite avistar o peixe antes do arremesso. A traíra nos poços entre cachoeiras responde bem a equipamento leve. O tucunaré presente na bacia é espécie introduzida. Pescaria que se combina com trilhas, cachoeiras e a estrutura de ecoturismo de Lençóis.' },
+
+  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
+  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
+  // antes da próxima publicação.
+  { id: 'p9', main: true, sig: 'SIG 009', name: 'Drop-off da Praia do Forte', region: 'Costa dos Coqueiros', lat: -12.52, lng: -37.85,
     loc: '7 a 10 milhas da linha de costa', depth: 'Depressão batimétrica: 45 m a 350 m',
     technique: 'Trolling em velocidade de cruzeiro (6–8 nós)', trophy: 'Dourado-do-mar / Wahoo / Albacora-laje', trophyKeys: ['dourado-do-mar', 'wahoo', 'albacora-laje', 'cavala', 'bonito-listrado', 'bicuda', 'albacorinha'],
     dificuldade: 'Baixa', acesso: 'Charter obrigatório', months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], season: 'Ano inteiro',
@@ -148,7 +186,10 @@ const POIS = [
     rules: '',
     blurb: 'Declives batimétricos dramáticos a poucas milhas da costa. Iscas arrastadas provocam pelágicos de topo; pacotes incluem material, alimentação e capitão.' },
 
-  { id: 'p10', main: true, sig: 'SIG 009', name: 'Rio Grande (Oeste)', region: 'Caminhos do Oeste', lat: -12.10, lng: -45.10,
+  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
+  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
+  // antes da próxima publicação.
+  { id: 'p10', main: true, sig: 'SIG 010', name: 'Rio Grande (Oeste)', region: 'Caminhos do Oeste', lat: -12.10, lng: -45.10,
     loc: 'Poço do Cedro — Barreiras', depth: 'Remansos fluviais: 4 m a 12 m',
     technique: 'Espera com ceva prévia (fruta / milho)', trophy: 'Pacu / Piau / Tucunaré', trophyKeys: ['pacu', 'piau', 'tucunare'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
@@ -178,6 +219,9 @@ const POIS = [
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [4, 5, 6, 7, 8, 9, 10], season: 'Abril a Outubro',
     secondary: ['Tambaqui', 'Tilápia', 'Corvina de água doce'], operators: [], lodging: [], rules: '',
     blurb: 'Represa alternativa à oscilação das marés, com populações robustas de Tucunarés, Traíras e Tambaquis.' },
+  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
+  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
+  // antes da próxima publicação.
   { id: 's4', main: false, name: 'Ilhéus', region: 'Costa do Cacau', lat: -14.79, lng: -39.03,
     loc: 'Rio Cachoeira e mar recifal (8 milhas)', trophy: 'Arabaiana / Garoupa', trophyKeys: ['arabaiana', 'garoupa', 'xareu-branco', 'guarajuba', 'camurim', 'dentao'],
     dificuldade: 'Alta', acesso: 'Charter obrigatório', months: [9, 10, 11, 12, 1, 2, 3], season: 'Setembro a Março',
@@ -191,6 +235,9 @@ const POIS = [
     dificuldade: 'Moderada', acesso: 'Base costeira', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Camurim-pena', 'Xaréu'], operators: ['Charlote Fishing (base do Banco Royal Charlotte)'], lodging: [], rules: '',
     blurb: 'Porta de entrada para o Banco Royal Charlotte. O interior estuarino sustenta pesca costeira ao Robalo e Xaréu.' },
+  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
+  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
+  // antes da próxima publicação.
   { id: 's6', main: false, name: "Porto Seguro / Arraial d'Ajuda", region: 'Costa do Descobrimento', lat: -16.45, lng: -39.07,
     loc: 'Recifes de Coroa Alta (5–15 km)', trophy: 'Camurim / Sororoca', trophyKeys: ['camurim', 'sororoca', 'biquara', 'ariaco', 'bicuda', 'bonito-listrado'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
@@ -244,6 +291,8 @@ const MUNICIPIOS = {
   'Sobradinho': { lat: -9.462, lng: -40.822 },
   'Juazeiro': { lat: -9.416, lng: -40.498 },
   'Paulo Afonso': { lat: -9.406, lng: -38.216 },
+  'Andaraí': { lat: -12.807, lng: -41.331 },
+  'Lençóis': { lat: -12.561, lng: -41.390 },
   'Mata de São João': { lat: -12.531, lng: -38.300 },
   'Barreiras': { lat: -12.153, lng: -44.990 }
 };
