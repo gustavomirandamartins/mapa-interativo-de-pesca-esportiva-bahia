@@ -252,10 +252,13 @@ Pensado para operação em tela cheia, por teclado, sem mouse.
 Os atalhos são ignorados quando o foco está num campo de texto. Qualquer tecla
 reinicia o timer de inatividade.
 
-**Modo automático (attract mode):** após 180 s sem interação, o mapa passa a
-percorrer os destinos principais sozinho, abrindo o card de cada um. Qualquer
-interação interrompe. `A` desliga permanentemente na sessão, com indicador
-discreto no canto.
+**Modo automático (attract mode):** desligado por padrão — é para
+apresentação/estande, não para o uso público do mapa. Quem quiser liga pelo
+botão ao lado de "Ver toda a Bahia" no cabeçalho (ícone de play) ou pela tecla
+`A`; os dois ficam em sincronia. Uma vez ligado, depois de 180 s sem interação
+o mapa passa a percorrer os destinos principais sozinho, abrindo o card de
+cada um. Qualquer interação interrompe (mas não desliga — volta a percorrer
+depois de outros 180 s parado). `A` ou o botão desligam de vez, na sessão.
 
 **Tela de abertura:** card sobre o mapa na carga inicial; fecha com clique, `Esc`
 ou qualquer tecla, e não reaparece na sessão.
