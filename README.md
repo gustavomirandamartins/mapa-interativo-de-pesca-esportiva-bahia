@@ -172,13 +172,14 @@ Estado atual: 43 espécies, 20 POIs, 43 imagens, zero pendências nos itens 1–
 
 ## Dependência de rede
 
-**Não há modo offline.** O mapa consome os tiles do Esri Ocean Basemap ao vivo,
-diretamente do serviço remoto (`server.arcgisonline.com`) — não há cache local
-de tiles no repositório nem em disco. A operação em evento (feira, apresentação)
-depende de conexão de internet dedicada e estável; sem rede, o mapa carrega sem
-o basemap náutico.
+**Por padrão não há modo offline.** O mapa consome os tiles do Esri Ocean Basemap
+ao vivo, diretamente do serviço remoto (`server.arcgisonline.com`) — a instalação
+normal do site não tem cache local de tiles no repositório. A operação depende de
+conexão de internet dedicada e estável; sem rede, o mapa carrega sem o basemap
+náutico (marcadores, filtros e fichas de espécie continuam funcionando).
 
-Recursos que **continuam** vendorizados e funcionam sem rede:
+Recursos que **já são** vendorizados e funcionam sem rede, mesmo sem o modo
+off-line abaixo:
 
 - **Leaflet** (js, css, images) em `vendor/leaflet/`.
 - **Fontes** (Baloo 2, Nunito) em `assets/fonts/`, declaradas com `@font-face`
@@ -187,12 +188,40 @@ Recursos que **continuam** vendorizados e funcionam sem rede:
   ilustrações de espécie (`assets/fish/`) são servidos do próprio repositório.
 
 A atribuição **`© Esri — Ocean Basemap`** é exigência do serviço e permanece
-sempre visível no canto do mapa.
+sempre visível no canto do mapa, com ou sem cache local.
 
-> Um cache local de tiles (gerado por um script próprio) existiu numa versão
-> anterior do projeto e foi removido por decisão de projeto — ver `CHANGELOG.md`.
-> A operação ao vivo evita o risco de redistribuição em massa dos tiles do Esri
-> sem confirmação prévia dos termos de uso do serviço para esse tipo de uso.
+### Modo off-line (estande do Fishing Show Brazil 2026)
+
+Um cache local de tiles já existiu numa versão anterior do projeto e foi
+removido por decisão de projeto (ver `CHANGELOG.md`, "Bloco C") — cache/
+redistribuição local dos tiles do Esri levanta questão de termos de uso que não
+tinha sido confirmada com a SETUR. Ele **voltou como recurso opt-in**, só para a
+máquina física do estande, com esse risco assumido conscientemente para esse uso
+pontual — não é o comportamento do site publicado normalmente.
+
+**Como preparar a máquina do estande, com internet disponível:**
+
+```bash
+node scripts/fetch-tiles.js
+```
+
+Isso baixa ~3.100 tiles (zooms 5–10, a mesma área alcançável pelo `maxBounds` do
+mapa) para `assets/tiles/` — uns 45 MB — e grava `assets/tiles/manifest.json` ao
+final. Repita o comando se ele terminar com erros: tiles já baixados são pulados.
+
+**Como isso liga sozinho:** `assets/tiles/` está no `.gitignore` — a instalação
+online nunca tem esse diretório, então nunca entra em modo off-line. Só quando o
+`manifest.json` existe em disco (ou seja, só depois de rodar o script acima nessa
+máquina) o mapa troca o tile ao vivo pelo cache local, silenciosamente, ao
+carregar. Depois disso a máquina pode ficar sem internet — o resto do site já
+era local (ver lista acima).
+
+**Como isso desliga sozinho:** a partir de **segunda-feira, 03/08/2026, 00h
+(horário da Bahia)** — ou seja, depois de domingo 02/08/2026 — o mapa para de
+usar o cache local mesmo que os arquivos continuem no disco, e volta a exigir o
+tile ao vivo (`OFFLINE_CACHE_EXPIRES` em `js/app.js`). Não apaga nada nem bloqueia
+o resto do app: só o basemap volta a depender de internet, como na instalação
+normal. Para estender o prazo num próximo evento, mude essa data.
 
 ---
 

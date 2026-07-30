@@ -1,2 +1,6 @@
 .DS_Store
 .claude/settings.local.json
+
+# Cache local de tiles do modo off-line de evento (scripts/fetch-tiles.js). Gerado só
+# na máquina que vai ficar off-line, nunca commitado — ver README, "Modo off-line".
+assets/tiles/

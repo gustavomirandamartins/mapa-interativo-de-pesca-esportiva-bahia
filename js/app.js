@@ -212,10 +212,11 @@
     // zoom além do que existe). Com maxNativeZoom, o Leaflet passa a reusar e
     // ampliar o tile de zoom 10 para qualquer zoom maior (`maxZoom` do mapa continua
     // 12, para rótulos/marcadores), em vez de pedir um tile que não existe.
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
+    const liveTiles = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 13, maxNativeZoom: 10, attribution: '© Esri — Ocean Basemap'
     }).addTo(map);
     setTimeout(() => map.invalidateSize(), 120);
+    setupOfflineTiles(map, liveTiles);
 
     regionLayer = L.layerGroup().addTo(map);
     REGIONS.forEach((r) => {
@@ -293,6 +294,39 @@
     updateDisclosure();
     loadBahia();
     resetIdle();
+  }
+
+  // ---------- Cache local de tiles (modo off-line de evento) ----------
+  //
+  // Fora do período de uso off-line combinado (estande do Fishing Show Brazil 2026),
+  // isto nunca faz nada: a instalação normal, online, não tem assets/tiles/manifest.json
+  // no disco (o diretório está no .gitignore, gerado só pela máquina que vai ficar
+  // off-line — ver scripts/fetch-tiles.js e a seção "Modo off-line" do README), então o
+  // fetch abaixo sempre falha e o app segue com o tile ao vivo já carregado.
+  //
+  // Quando o cache existe: troca silenciosamente o tile ao vivo pelo local (mesmo
+  // arranjo de zoom, mesma atribuição — ainda é o Esri Ocean Basemap, só servido do
+  // disco). Depois de OFFLINE_CACHE_EXPIRES, some a checagem de propósito: mesmo que os
+  // arquivos ainda estejam no disco depois do evento, o app volta a exigir o tile ao
+  // vivo, exatamente como a instalação normal.
+  const OFFLINE_CACHE_EXPIRES = new Date('2026-08-03T00:00:00-03:00'); // meia-noite de domingo (02/08) para segunda, horário da Bahia
+
+  async function setupOfflineTiles(map, liveLayer) {
+    if (new Date() >= OFFLINE_CACHE_EXPIRES) return;
+    let manifest;
+    try {
+      const res = await fetch('assets/tiles/manifest.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      manifest = await res.json();
+    } catch (e) {
+      return; // sem cache local nesta máquina — segue no tile ao vivo, normal
+    }
+    const localTiles = L.tileLayer('assets/tiles/{z}/{x}/{y}.jpg', {
+      maxZoom: 13, maxNativeZoom: manifest.zoomMax || 10, minZoom: manifest.zoomMin || 5,
+      attribution: '© Esri — Ocean Basemap'
+    }).addTo(map);
+    localTiles.bringToFront();
+    map.removeLayer(liveLayer);
   }
 
   // Altura do cabeçalho + do gatilho de Filtros (a pílula fechada, sempre visível,
