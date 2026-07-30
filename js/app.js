@@ -256,16 +256,22 @@
       });
       circle._areaType = area.tipo;
       // Mesma regra das zonas turísticas: sem card próprio, o clique só enquadra a
-      // área protegida e fecha o card aberto.
-      circle.on('click', () => { closeDetail(); map.flyToBounds(circle.getBounds(), { padding: [60, 60], duration: 1.6 }); });
+      // área protegida e fecha o card aberto. O mesmo handler vai no rótulo de texto
+      // logo abaixo — sem ele, o rótulo (que fica por cima do círculo, sobretudo no
+      // zoom do mapa geral, onde o círculo é minúsculo) intercepta o clique e não
+      // faz nada, já que updateDisclosure() aplica pointer-events:auto em todo
+      // elemento de protectedLayer só para controlar a visibilidade pela legenda.
+      const onAreaClick = () => { closeDetail(); map.flyToBounds(circle.getBounds(), { padding: [60, 60], duration: 1.6 }); };
+      circle.on('click', onAreaClick);
       const label = L.marker([area.lat, area.lng], {
         icon: L.divIcon({
           className: 'poi-icon', iconSize: [210, 20], iconAnchor: [105, 10],
-          html: '<div style="text-align:center;white-space:nowrap;font-family:var(--font-heading);font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:' + style.textColor + ';text-shadow:' + LABEL_HALO + '">' + area.nome + '</div>'
+          html: '<div style="text-align:center;white-space:nowrap;cursor:pointer;font-family:var(--font-heading);font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:' + style.textColor + ';text-shadow:' + LABEL_HALO + '">' + area.nome + '</div>'
         }),
-        interactive: false, keyboard: false
+        interactive: true, keyboard: false
       });
       label._areaType = area.tipo;
+      label.on('click', onAreaClick);
       circle.addTo(protectedLayer);
       label.addTo(protectedLayer);
     });
