@@ -155,15 +155,18 @@ const POIS = [
     rules: '',
     blurb: 'Mar interior de água doce (milhares de km²). Tucunaré (espécie introduzida, originária da Amazônia) nas margens da Ilha de Remanso na seca (mai–out), com poppers e sticks de superfície; Corvinas de fundo nas calhas profundas.' },
 
-  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
-  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
-  // antes da próxima publicação.
+  // AUDITADO: Pousada Ilha Bela existe em Paulo Afonso, mas é hospedagem comum,
+  // sem evidência de apoio à pesca. Removida de operators. Não há operadora de
+  // pesca confirmada para este ponto.
+  // VALIDAR: confirmar com a SETUR se existe guia ou operação de pesca ativa no
+  // canal de Paulo Afonso. Sem operadora, o ponto orienta o visitante sem dar a
+  // ele como chegar à água.
   { id: 'p7', main: true, sig: 'SIG 007', name: 'Canal de Paulo Afonso', region: 'Lagos e Cânions do São Francisco', lat: -9.40, lng: -38.21,
     loc: 'Base da hidroelétrica (PA-IV)', depth: 'Corredeiras hiper-oxigenadas (~10 m)',
     technique: 'Fundo noturno / Plugs sub-superfície', trophy: 'Surubim / Dourado-do-rio', trophyKeys: ['surubim', 'dourado-do-rio'],
     dificuldade: 'Alta', acesso: 'Acesso rodoviário', months: [6, 7, 8, 9, 10, 11, 12], season: 'Junho a Dezembro',
     secondary: ['Dourado-do-rio'],
-    operators: ['Pousada Ilha Bela — base de estadia e apoio.'],
+    operators: [],
     lodging: ['Paulo Afonso'],
     rules: 'Cânions basálticos afiados cortam a linha; a fricção do carreto é crítica no ataque do Surubim.',
     blurb: 'Água hiper-oxigenada abaixo das turbinas concentra Dourados e Surubins. Na pesca noturna, o Surubim engole o engodo letárgico e arranca de repente — travagem rígida rompe a linha.' },
@@ -232,15 +235,18 @@ const POIS = [
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [4, 5, 6, 7, 8, 9, 10], season: 'Abril a Outubro',
     secondary: ['Tambaqui', 'Tilápia', 'Corvina de água doce'], operators: [], lodging: [], rules: '',
     blurb: 'Represa alternativa à oscilação das marés, com populações robustas de Tucunarés, Traíras e Tambaquis.' },
-  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
-  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
-  // antes da próxima publicação.
+  // AUDITADO: as duas operadoras foram confirmadas em fonte primária. O dado
+  // anterior sobre embarcações ("ZETA 28 pés, carretos elétricos") estava
+  // incorreto e foi substituído pelos dados publicados pela operadora.
+  // VALIDAR: a operadora reporta captura de marlim-azul a 18 milhas de Ilhéus. O
+  // POI hoje descreve apenas "mar recifal (8 milhas)" e não inclui peixes de
+  // bico. Avaliar com a SETUR se cabe ampliar o escopo do ponto.
   { id: 's4', main: false, name: 'Ilhéus', region: 'Costa do Cacau', lat: -14.79, lng: -39.03,
     loc: 'Rio Cachoeira e mar recifal (8 milhas)', trophy: 'Arabaiana / Garoupa', trophyKeys: ['arabaiana', 'garoupa', 'xareu-branco', 'guarajuba', 'camurim', 'dentao'],
     dificuldade: 'Alta', acesso: 'Charter obrigatório', months: [9, 10, 11, 12, 1, 2, 3], season: 'Setembro a Março',
     // VALIDAR: Dentão adicionado por afinidade recifal com Garoupa/Arabaiana na mesma
     // jigada — confirmar ocorrência real com operadores locais.
-    secondary: ['Xaréu-branco', 'Guarajuba', 'Camurim', 'Dentão'], operators: ['Ilhéus Pesca Oceânica', 'FF Pesca — barcos ZETA 28 pés, carretos elétricos'], lodging: [], rules: '',
+    secondary: ['Xaréu-branco', 'Guarajuba', 'Camurim', 'Dentão'], operators: ['Ilhéus Pesca Oceânica — corrico, jigging vertical e pargueira.', 'FF Pesca — saída do Ilhéus Iate Clube (7h30 às 17h), embarcações de 40 e 27 pés.'], lodging: [], rules: '',
     blurb: 'A 8 milhas começa o reino do gigantesco Olho-de-boi e das Garoupas. Vertical/Speed Jigging arranca os peixes do leito marinho.' },
   // VALIDAR: ver nota de p1 sobre a zona de Canavieiras (Costa do Cacau x Costa das Baleias).
   { id: 's5', main: false, name: 'Canavieiras', region: 'Costa do Cacau', lat: -15.68, lng: -38.95,
@@ -248,14 +254,20 @@ const POIS = [
     dificuldade: 'Moderada', acesso: 'Base costeira', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Camurim-pena', 'Xaréu'], operators: ['Charlote Fishing — base do Banco Royal Charlotte, opera também pescaria fluvial nos rios Pardo e Salsa.'], lodging: [], rules: '',
     blurb: 'Porta de entrada para o Banco Royal Charlotte. O interior estuarino sustenta pesca costeira ao Robalo e Xaréu.' },
-  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
-  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
-  // antes da próxima publicação.
+  // AUDITADO: Porto Pesca confirmada em fonte primária, incluindo horário de saída
+  // e ponto de partida.
+  // VALIDAR: as espécies anunciadas pela operadora (marlins, wahoo, olho-de-boi,
+  // atum, dourado, badejo) não coincidem com as espécies hoje listadas neste POI
+  // (biquara, ariacó, bicuda, bonito-listrado). Revisar o perfil do destino com a
+  // SETUR: o ponto pode estar descrito como pescaria recifal leve quando a
+  // operação local é predominantemente oceânica.
+  // VALIDAR: operadoras "Arraial d'Ajuda Passeios" e "Porto Seguro Passeios" não
+  // confirmadas como operações de pesca nesta auditoria.
   { id: 's6', main: false, name: "Porto Seguro / Arraial d'Ajuda", region: 'Costa do Descobrimento', lat: -16.45, lng: -39.07,
     loc: 'Recifes de Coroa Alta (5–15 km)', trophy: 'Camurim / Sororoca', trophyKeys: ['camurim', 'sororoca', 'biquara', 'ariaco', 'bicuda', 'bonito-listrado'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
-    secondary: ['Biquara', 'Ariacó', 'Bicuda', 'Bonito-listrado'], operators: ["Arraial d'Ajuda Passeios", 'Porto Pesca (Cap. Robson)', 'Porto Seguro Passeios'], lodging: [], rules: '',
-    blurb: 'Microjigging (30–60 g) e fly marinho nos recifes calcários. Saídas às 04h para a atividade máxima; pacotes privativos para até dez pessoas.' },
+    secondary: ['Biquara', 'Ariacó', 'Bicuda', 'Bonito-listrado'], operators: ["Arraial d'Ajuda Passeios", 'Porto Pesca (Cap. Robson Saldanha) — duas lanchas equipadas, partida do píer do Hotel Quinta do Porto, em Arraial d\'Ajuda. Pescaria oceânica das 5h às 15h.', 'Porto Seguro Passeios'], lodging: [], rules: '',
+    blurb: 'Microjigging (30–60 g) e fly marinho nos recifes calcários. Saídas às 5h para a atividade máxima; pacotes privativos para até dez pessoas.' },
   // VALIDAR (BLOQUEANTE): mesmas operadoras de p2 (Abrolhos Adventure, Horizonte
   // Aberto) — ver a nota acima de p2: operam mergulho e visitação, não pesca
   // esportiva confirmada. Não há operadora de pesca confirmada para este ponto.
