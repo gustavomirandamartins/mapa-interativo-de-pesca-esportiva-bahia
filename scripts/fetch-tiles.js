@@ -32,6 +32,13 @@ const path = require('path');
 const BBOX = { latMin: -21.896, latMax: -5.204, lonMin: -49.828, lonMax: -34.072 };
 const ZOOM_MIN = 5;
 const ZOOM_MAX = 10; // acima disso o próprio Esri não tem imagem real nesta região — ver maxNativeZoom em js/app.js
+// MARGIN: o Leaflet pré-carrega um anel de tiles além do viewport visível
+// (keepBuffer, padrão 2) para paneamento suave, e zoomSnap:0.25 (zoom fracionário)
+// também pode pedir uma coluna/linha extra na borda do tile de zoom inteiro mais
+// próximo. Sem essa margem, esses tiles de borda dão 404 mesmo dentro do maxBounds —
+// foi exatamente o que aconteceu na primeira versão deste script (sem margem
+// nenhuma). Cobre isso com folga, independente do zoom.
+const MARGIN = 3;
 const TILE_URL = (z, x, y) => `https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/${z}/${y}/${x}`;
 const OUT_DIR = path.join(__dirname, '..', 'assets', 'tiles');
 const CONCURRENCY = 8;
@@ -48,10 +55,12 @@ function lat2y(lat, z) {
 function tileList() {
   const tiles = [];
   for (let z = ZOOM_MIN; z <= ZOOM_MAX; z++) {
-    const xMin = lon2x(BBOX.lonMin, z);
-    const xMax = lon2x(BBOX.lonMax, z);
-    const yMin = lat2y(BBOX.latMax, z);
-    const yMax = lat2y(BBOX.latMin, z);
+    const maxIndex = Math.pow(2, z) - 1;
+    const clamp = (v) => Math.max(0, Math.min(maxIndex, v));
+    const xMin = clamp(lon2x(BBOX.lonMin, z) - MARGIN);
+    const xMax = clamp(lon2x(BBOX.lonMax, z) + MARGIN);
+    const yMin = clamp(lat2y(BBOX.latMax, z) - MARGIN);
+    const yMax = clamp(lat2y(BBOX.latMin, z) + MARGIN);
     for (let x = xMin; x <= xMax; x++) {
       for (let y = yMin; y <= yMax; y++) {
         tiles.push({ z, x, y });

@@ -215,8 +215,10 @@ pontual — não é o comportamento do site publicado normalmente.
 node scripts/fetch-tiles.js
 ```
 
-Isso baixa ~3.100 tiles (zooms 5–10, a mesma área alcançável pelo `maxBounds` do
-mapa) para `assets/tiles/` — uns 45 MB — e grava `assets/tiles/manifest.json` ao
+Isso baixa ~4.460 tiles (zooms 5–10, a área alcançável pelo `maxBounds` do mapa
+mais uma margem de 3 tiles em cada zoom — o Leaflet pré-carrega um anel de tiles
+além do que está visível, para paneamento suave, e sem essa margem esse anel dá
+404) para `assets/tiles/` — uns 65 MB — e grava `assets/tiles/manifest.json` ao
 final. Repita o comando se ele terminar com erros: tiles já baixados são pulados.
 
 **Como isso liga sozinho:** `assets/tiles/` está no `.gitignore` — a instalação
