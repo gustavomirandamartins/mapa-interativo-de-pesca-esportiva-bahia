@@ -37,6 +37,16 @@ Depois, abra <http://localhost:5511>.
 O repositório já traz `.claude/launch.json` com essa configuração sob o nome
 `static`, para quem usa o preview integrado do Claude Code.
 
+**Windows sem Python e sem poder instalar nada (ex.: máquina do estande):** dê
+duplo-clique em `scripts/serve-windows.bat`. Ele roda um servidor HTTP local
+escrito em PowerShell puro (`scripts/serve-windows.ps1`) — nada para instalar,
+usa só o que já vem com o Windows — e já abre o navegador sozinho em
+`http://localhost:5511`. Deixe a janela preta aberta enquanto usar o mapa; para
+encerrar, feche a janela. Testado (com PowerShell 7, compatível com o Windows
+PowerShell 5.1 que já vem em qualquer Windows 10/11): serve HTML/JS/CSS/JSON/
+imagens com o `Content-Type` correto, bloqueia tentativa de sair da pasta do
+projeto, e o app carrega normalmente por ele, tiles locais incluídos.
+
 ---
 
 ## Estrutura
