@@ -69,7 +69,8 @@
     detailPanel: document.getElementById('detail-panel'),
     introScreen: document.getElementById('intro-screen'),
     introBtn: document.getElementById('intro-btn'),
-    attractIndicator: document.getElementById('attract-off-indicator')
+    attractIndicator: document.getElementById('attract-off-indicator'),
+    attractBtn: document.getElementById('btn-attract')
   };
 
   const state = {
@@ -81,7 +82,11 @@
     filtersOpen: false,
     legendOpen: false,
     matchCount: 21,
-    attractEnabled: true
+    // Desligado por padrão — precisa ser ligado pelo botão ao lado de "Ver toda a
+    // Bahia" (ou pela tecla A). Antes ligava sozinho depois de 180 s parado, o que
+    // não é o comportamento certo para o uso público do mapa (só para
+    // apresentação/estande).
+    attractEnabled: false
   };
 
   let map, regionLayer, poiLayer, markers = {}, protectedLayer, bahiaBounds;
@@ -732,7 +737,8 @@
     clearTimeout(attractSelectTimer);
     attracting = false;
   }
-  // Tecla A: liga/desliga o modo automático manualmente (independente do idle timer).
+  // Botão ao lado de "Ver toda a Bahia" e tecla A: liga/desliga o modo automático
+  // manualmente (independente do idle timer).
   function toggleAttract() {
     state.attractEnabled = !state.attractEnabled;
     if (!state.attractEnabled) {
@@ -742,6 +748,15 @@
       resetIdle();
     }
     el.attractIndicator.hidden = state.attractEnabled;
+    syncAttractBtn();
+  }
+  function syncAttractBtn() {
+    const on = state.attractEnabled;
+    el.attractBtn.classList.toggle('is-active', on);
+    el.attractBtn.setAttribute('aria-pressed', String(on));
+    const label = on ? 'Desativar modo automático' : 'Ativar modo automático';
+    el.attractBtn.title = label;
+    el.attractBtn.setAttribute('aria-label', label);
   }
 
   // ---------- Atalhos de teclado ----------
@@ -1071,6 +1086,8 @@
 
   function bindUi() {
     el.resetBtn.addEventListener('click', resetView);
+    el.attractBtn.addEventListener('click', toggleAttract);
+    syncAttractBtn();
     el.filterTrigger.addEventListener('click', toggleFilters);
     el.clearFiltersBtn.addEventListener('click', clearFilters);
     el.legendToggle.addEventListener('click', toggleLegend);
