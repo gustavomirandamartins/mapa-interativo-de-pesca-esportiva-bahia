@@ -59,6 +59,9 @@ const POIS = [
   // 1978. O correto é 636 kg, Paulo Amorim, ao largo de Vitória/ES, em 29/02/1992.
   // O percentual de marlins acima de 250 kg divulgado pela operadora é alegação
   // comercial e não deve ser reproduzido como dado pela SETUR.
+  // AUDITADO: operadora Charlote Fishing confirmada como operação de pesca esportiva
+  // ativa em Canavieiras (píer e escritório próprios, capitães licenciados, três
+  // embarcações).
   { id: 'p1', main: true, sig: 'SIG 001', name: 'Banco Royal Charlotte', region: 'Costa do Cacau', lat: -15.55, lng: -38.45,
     loc: '17 a 45 milhas offshore de Canavieiras', depth: 'Drop-off: 70 m a 300 m',
     technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'dourado-do-mar', 'cherne'],
@@ -75,9 +78,14 @@ const POIS = [
   // VALIDAR: coordenada aproximada do Parcel das Paredes. Conferir limites oficiais do
   // PARNA Marinho dos Abrolhos (ICMBio) antes da publicação. O ponto original (-17.96,
   // -38.70) caía dentro do parque, onde a pesca é proibida — contradizendo o campo `rules`.
-  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
-  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
-  // antes da próxima publicação.
+  // VALIDAR (BLOQUEANTE): as três operadoras antes listadas (Horizonte Aberto, Abrolhos
+  // Viagens/Mergulho, Abrolhos Adventure) operam mergulho e visitação, não pesca
+  // esportiva, e são credenciadas para o interior do Parque Nacional, onde a pesca é
+  // proibida. O dado "catamarãs até 81 pés" também estava errado (a maior embarcação
+  // tem 16 m). Não há operadora de pesca confirmada para os parcéis periféricos. Antes
+  // de publicar: confirmar com a SETUR se existe operação de pesca esportiva legal e
+  // ativa fora do polígono do parque. Se não existir, este POI deve ser removido pelo
+  // mesmo critério aplicado ao antigo POI da Chapada.
   { id: 'p2', main: true, sig: 'SIG 002', name: 'Parcéis periféricos de Abrolhos', region: 'Costa das Baleias', lat: -17.78, lng: -39.00,
     loc: 'Parcéis externos ao Parque Nacional — base em Caravelas', depth: 'Estruturas: 15 m a 60 m',
     technique: 'Vertical Jigging ultrapesado (jigs até 300 g, PE 4–6)', trophy: 'Garoupa / Vermelho-Caranha', trophyKeys: ['garoupa', 'vermelho-caranha', 'pargo', 'badejo'],
@@ -85,7 +93,7 @@ const POIS = [
     // VALIDAR: Badejo adicionado por afinidade de habitat com a Garoupa nas mesmas
     // estruturas recifais — confirmar ocorrência real com operadores locais.
     secondary: ['Pargo', 'Vermelho-Caranha', 'Badejo'],
-    operators: ['Abrolhos Viagens / Mergulho', 'Abrolhos Adventure', 'Horizonte Aberto — catamarãs até 81 pés, Liveaboard 3–4 noites.'],
+    operators: [],
     lodging: ['Caravelas'],
     rules: 'Pesca PROIBIDA dentro do Parque Nacional Marinho (ICMBio); permitida apenas nos parcéis periféricos.',
     blurb: 'Formações coralíneas em cogumelo ("chapeirões"), as mais complexas do Atlântico Sul. À mínima hesitação após o toque, o peixe refugia-se no coral e corta a linha.' },
@@ -123,6 +131,7 @@ const POIS = [
   // não operarem pesca esportiva (são transporte e passeios marítimos). Se a SETUR
   // quiser mantê-las no mapa, criar campo próprio de apoio náutico, separado de
   // operadoras de pesca.
+  // AUDITADO: Tuna Pesca Maraú confirmada como operação de pesca esportiva de alto-mar.
   { id: 'p5', main: true, sig: 'SIG 005', name: 'Baía de Camamu', region: 'Costa do Dendê', lat: -13.92, lng: -38.90,
     loc: 'Mangue de Camamu e Barra Grande', depth: '3 m a 18 m',
     technique: 'Isco vivo / Jig head / Plugs', trophy: 'Camurim / Carapeba', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'garoupa', 'curima', 'corvina', 'parati'],
@@ -171,9 +180,10 @@ const POIS = [
     rules: 'Catch & Release rigoroso. Trecho inserido em Área de Proteção Ambiental: confirmar regras da APA Marimbus-Iraquara com o INEMA antes da saída. Respeitar as áreas de pesca das comunidades tradicionais.',
     blurb: 'Não é destino de peixe grande, e é justamente esse o convite: água de quartzito transparente permite avistar o peixe antes do arremesso. A traíra nos poços entre cachoeiras responde bem a equipamento leve. O tucunaré presente na bacia é espécie introduzida. Pescaria que se combina com trilhas, cachoeiras e a estrutura de ecoturismo de Lençóis.' },
 
-  // VALIDAR: operadora/dado não confirmado em fonte primária nesta rodada de
-  // auditoria. Verificar existência, ramo de atuação e se opera pesca esportiva
-  // antes da próxima publicação.
+  // AUDITADO: Base Náutica Praia do Forte confirmada. Técnica, velocidade de corrico
+  // (6 a 8 nós), faixa batimétrica (45 m a 350 m), distância da costa (7 a 10 milhas)
+  // e embarcação (lancha 24 pés, motor Yamaha 200hp) conferem com a descrição
+  // publicada pela própria operadora.
   { id: 'p9', main: true, sig: 'SIG 009', name: 'Drop-off da Praia do Forte', region: 'Costa dos Coqueiros', lat: -12.52, lng: -37.85,
     loc: '7 a 10 milhas da linha de costa', depth: 'Depressão batimétrica: 45 m a 350 m',
     technique: 'Trolling em velocidade de cruzeiro (6–8 nós)', trophy: 'Dourado-do-mar / Wahoo / Albacora-laje', trophyKeys: ['dourado-do-mar', 'wahoo', 'albacora-laje', 'cavala', 'bonito-listrado', 'bicuda', 'albacorinha'],
@@ -243,12 +253,15 @@ const POIS = [
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Biquara', 'Ariacó', 'Bicuda', 'Bonito-listrado'], operators: ["Arraial d'Ajuda Passeios", 'Porto Pesca (Cap. Robson)', 'Porto Seguro Passeios'], lodging: [], rules: '',
     blurb: 'Microjigging (30–60 g) e fly marinho nos recifes calcários. Saídas às 04h para a atividade máxima; pacotes privativos para até dez pessoas.' },
+  // VALIDAR (BLOQUEANTE): mesmas operadoras de p2 (Abrolhos Adventure, Horizonte
+  // Aberto) — ver a nota acima de p2: operam mergulho e visitação, não pesca
+  // esportiva confirmada. Não há operadora de pesca confirmada para este ponto.
   { id: 's7', main: false, name: 'Caravelas', region: 'Costa das Baleias', lat: -17.73, lng: -39.26,
     loc: 'Rampa de lançamento para Abrolhos', trophy: 'Garoupa / Pargo', trophyKeys: ['garoupa', 'pargo', 'vermelho-caranha', 'cioba'],
     dificuldade: 'Alta', acesso: 'Base liveaboard', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     // VALIDAR: Cioba adicionada por afinidade recifal com Pargo/Vermelho-Caranha na
     // mesma base de saída para Abrolhos — confirmar ocorrência real com operadores.
-    secondary: ['Vermelho-Caranha', 'Cioba'], operators: ['Abrolhos Adventure', 'Horizonte Aberto'], lodging: [], rules: '',
+    secondary: ['Vermelho-Caranha', 'Cioba'], operators: [], lodging: [], rules: '',
     blurb: 'A cerca de 850 km de Salvador, é a base das expedições Liveaboard de 3–4 noites rumo aos parcéis de Abrolhos.' },
   { id: 's8', main: false, name: 'Itacaré', region: 'Costa do Cacau', lat: -14.28, lng: -38.99,
     loc: 'Costão rochoso e cultura do surf', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'xareu'],
