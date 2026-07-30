@@ -161,7 +161,7 @@ const POIS = [
   // Secundários
   // VALIDAR: months/season abaixo são propostos por analogia com a sazonalidade regional
   // e com os POIs principais próximos — confirmar com operadores locais antes de publicar.
-  { id: 's1', main: false, name: 'Salvador — Baía de Todos os Santos', region: 'Baía de Todos-os-Santos', lat: -12.97, lng: -38.51,
+  { id: 's1', main: false, name: 'Salvador — Baía de Todos-os-Santos', region: 'Baía de Todos-os-Santos', lat: -12.97, lng: -38.51,
     loc: 'Maior baía navegável do Brasil', trophy: 'Camurim-pena / Xaréu', trophyKeys: ['camurim-pena', 'xareu', 'carapeba', 'curima'],
     dificuldade: 'Baixa', acesso: 'Acesso urbano', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     secondary: ['Carapeba', 'Curimã'], operators: ['Charter Náutico (Bahia Marina, Porto de Salvador)'], lodging: [], rules: '',

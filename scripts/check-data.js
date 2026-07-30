@@ -54,8 +54,15 @@ console.log('Verificação de dados — Mapa Pesca Esportiva Bahia');
 line();
 
 // 1. Espécies declaradas sem nenhum POI (chip morto)
+// Conta trophyKeys (troféu/secundária) e também ocorrenciaProtegida — espécies
+// que ocorrem na área mas têm captura proibida (ex.: Mero) não são alvo de
+// pesca nem aparecem em trophyKeys, mas estão legitimamente referenciadas em
+// algum POI, então não são dado morto.
 const usedKeys = new Set();
-POIS.forEach((p) => (p.trophyKeys || []).forEach((k) => usedKeys.add(k)));
+POIS.forEach((p) => {
+  (p.trophyKeys || []).forEach((k) => usedKeys.add(k));
+  (p.ocorrenciaProtegida || []).forEach((k) => usedKeys.add(k));
+});
 const deadChips = speciesKeys.filter((k) => !usedKeys.has(k));
 
 console.log(`\n1) Espécies sem nenhum POI (chip morto): ${deadChips.length}`);
