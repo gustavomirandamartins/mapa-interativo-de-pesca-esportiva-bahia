@@ -204,8 +204,16 @@
 
     // Estilo náutico (Esri Ocean Basemap) — padrão do protótipo original. Consumido
     // ao vivo, com atribuição visível, conforme exigência do serviço.
+    //
+    // maxNativeZoom: 10 — o World_Ocean_Base só tem imagem real até o zoom 10 nesta
+    // região (testado em toda a Bahia, litoral e interior: zoom 11+ devolve sempre o
+    // mesmo tile-placeholder "Map data not yet available", com HTTP 200, então o
+    // Leaflet não detecta erro nenhum — ele só troca de aparência quando o app pede
+    // zoom além do que existe). Com maxNativeZoom, o Leaflet passa a reusar e
+    // ampliar o tile de zoom 10 para qualquer zoom maior (`maxZoom` do mapa continua
+    // 12, para rótulos/marcadores), em vez de pedir um tile que não existe.
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 13, attribution: '© Esri — Ocean Basemap'
+      maxZoom: 13, maxNativeZoom: 10, attribution: '© Esri — Ocean Basemap'
     }).addTo(map);
     setTimeout(() => map.invalidateSize(), 120);
 
