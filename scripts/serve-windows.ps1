@@ -1,4 +1,4 @@
-# Servidor HTTP local para rodar o mapa em Windows sem instalar nada.
+﻿# Servidor HTTP local para rodar o mapa em Windows sem instalar nada.
 #
 # Por que isto existe: o app usa fetch() para carregar os GeoJSON de contorno e (no
 # modo off-line) o cache de tiles. fetch() é bloqueado pelo navegador quando a página
@@ -50,7 +50,7 @@ Write-Host ""
 try {
   Start-Process $prefix | Out-Null
 } catch {
-  Write-Host "Nao consegui abrir o navegador sozinho — abra manualmente em $prefix"
+  Write-Host "Nao consegui abrir o navegador sozinho - abra manualmente em $prefix"
 }
 
 $mimeMap = @{
