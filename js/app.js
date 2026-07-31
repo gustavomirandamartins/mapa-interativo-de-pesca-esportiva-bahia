@@ -235,8 +235,15 @@
     // zoom além do que existe). Com maxNativeZoom, o Leaflet passa a reusar e
     // ampliar o tile de zoom 10 para qualquer zoom maior (`maxZoom` do mapa continua
     // 12, para rótulos/marcadores), em vez de pedir um tile que não existe.
+    // keepBuffer maior + updateWhenZooming:false — sem isso, cada nível de zoom
+    // inteiro cruzado durante a animação (flyTo ou scroll) dispara uma nova busca
+    // de tile pela rede; se ela não chega a tempo, o tile atual fica esticado
+    // (pixelizado) até a resposta, dando a impressão de travadinha a cada nível.
+    // Com updateWhenZooming:false o Leaflet só busca o tile do zoom final, uma
+    // vez, ao terminar a animação — troca única e mais suave, em vez de várias.
     const liveTiles = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 13, maxNativeZoom: 10, attribution: '© Esri — Ocean Basemap'
+      maxZoom: 13, maxNativeZoom: 10, attribution: '© Esri — Ocean Basemap',
+      keepBuffer: 4, updateWhenZooming: false
     }).addTo(map);
     setTimeout(() => map.invalidateSize(), 120);
     setupOfflineTiles(map, liveTiles);
@@ -346,6 +353,7 @@
     }
     const localTiles = L.tileLayer('assets/tiles/{z}/{x}/{y}.jpg', {
       maxZoom: 13, maxNativeZoom: manifest.zoomMax || 10, minZoom: manifest.zoomMin || 5,
+      keepBuffer: 4, updateWhenZooming: false,
       attribution: '© Esri — Ocean Basemap'
     }).addTo(map);
     localTiles.bringToFront();
