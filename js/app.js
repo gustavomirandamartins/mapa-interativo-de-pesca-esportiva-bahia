@@ -38,6 +38,24 @@
   // transformar cada nome de peixe do card de destino em link para o card da espécie.
   const SPECIES_BY_NAME = {};
   SPECIES.forEach((s) => { SPECIES_BY_NAME[normalize(s.nome)] = s; });
+  // `nomeNacional` também linka (ex.: "Tarpon" em vez de "Camurupim", mais
+  // reconhecido internacionalmente — texto promocional às vezes prefere o nome
+  // popular ao `nome` do catálogo), mas só quando é inequívoco: se o mesmo
+  // nomeNacional aparecer em mais de uma espécie (ex.: "Dourado", de
+  // dourado-do-mar e dourado-do-rio), nenhuma das duas fica indexada por ele —
+  // sem isso, dependendo da ordem, uma "roubaria" o link/imagem da outra.
+  const nomeNacionalCount = {};
+  SPECIES.forEach((s) => {
+    if (!s.nomeNacional) return;
+    const key = normalize(s.nomeNacional);
+    if (key) nomeNacionalCount[key] = (nomeNacionalCount[key] || 0) + 1;
+  });
+  SPECIES.forEach((s) => {
+    if (!s.nomeNacional) return;
+    const key = normalize(s.nomeNacional);
+    if (!key || SPECIES_BY_NAME[key] || nomeNacionalCount[key] > 1) return;
+    SPECIES_BY_NAME[key] = s;
+  });
 
   const el = {
     header: document.getElementById('header'),
