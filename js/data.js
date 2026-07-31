@@ -4,6 +4,21 @@
 
 const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
+// Categorias de técnica para o filtro do mapa — agrupadas a partir do texto livre
+// já existente em `technique` de cada POI principal (p1-p10; os secundários não
+// têm técnica cadastrada). Não introduz dado novo, só rotula o que já está descrito.
+const TECHNIQUES = [
+  { key: 'corrico', label: 'Corrico / Trolling' },
+  { key: 'jigging', label: 'Jigging vertical' },
+  { key: 'isca-viva', label: 'Isca viva' },
+  { key: 'baitcasting', label: 'Baitcasting' },
+  { key: 'surfcasting', label: 'Surfcasting' },
+  { key: 'arremesso-leve', label: 'Arremesso leve (jig head / plugs)' },
+  { key: 'espera-fundo', label: 'Espera de fundo' },
+  { key: 'fly-spinning', label: 'Fly / Spinning ultraleve' },
+  { key: 'ceva', label: 'Espera com isca / ceva' }
+];
+
 // VALIDAR: nomes e limites oficiais das 13 Zonas Turísticas da Bahia (SETUR) —
 // ver https://www.ba.gov.br/turismo/112/zonas-turisticas. As coordenadas abaixo
 // são centróides aproximados para posicionar o rótulo de cada zona no mapa,
@@ -96,7 +111,7 @@ const POIS = [
   // para o Olho-de-boi (Seriola spp.), citado pelo folder por esse nome comercial.
   { id: 'p1', main: true, sig: 'SIG 001', name: 'Banco Royal Charlotte', region: 'Costa do Cacau', lat: -15.55, lng: -38.45,
     loc: 'Banco Royal Charlotte — início a 24 milhas da costa de Canavieiras', depth: 'Drop-off: 70 m a 300 m',
-    technique: 'Corrico pesado (Trolling 80–130 lb)', trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'meca', 'dourado-do-mar', 'wahoo', 'albacora-laje', 'cavala', 'bonito-listrado', 'badejo', 'arabaiana'],
+    technique: 'Corrico pesado (Trolling 80–130 lb)', techniqueKeys: ['corrico'], trophy: 'Marlin Azul', trophyKeys: ['marlin-azul', 'marlin-branco', 'peixe-vela', 'meca', 'dourado-do-mar', 'wahoo', 'albacora-laje', 'cavala', 'bonito-listrado', 'badejo', 'arabaiana'],
     dificuldade: 'Extrema', acesso: 'Charter obrigatório — 115 km do aeroporto de Ilhéus, 43,6 km de Comandatuba; 426 km de Salvador via ferry-boat e BA-001, ou 569 km via BR-101', months: [9, 10, 11, 12, 1, 2, 3], season: 'Setembro a Março',
     secondary: ['Marlin Branco', 'Peixe-Vela', 'Meca', 'Dourado-do-mar', 'Wahoo', 'Albacora-laje', 'Cavala', 'Bonito-listrado', 'Badejo', 'Arabaiana'],
     operators: ['Charlote Fishing — píeres e escritório próprios; barcos Candela e Bazooka (até 4 pessoas), equipamento Accurate/Shimano/Penn.'],
@@ -117,7 +132,7 @@ const POIS = [
   // mesmo critério aplicado ao antigo POI da Chapada.
   { id: 'p2', main: true, sig: 'SIG 002', name: 'Parcéis periféricos de Abrolhos', region: 'Costa das Baleias', lat: -17.78, lng: -39.00,
     loc: 'Parcéis externos ao Parque Nacional — base em Caravelas', depth: 'Estruturas: 15 m a 60 m',
-    technique: 'Vertical Jigging ultrapesado (jigs até 300 g, PE 4–6)', trophy: 'Garoupa / Vermelho-Caranha', trophyKeys: ['garoupa', 'vermelho-caranha', 'pargo', 'badejo'],
+    technique: 'Vertical Jigging ultrapesado (jigs até 300 g, PE 4–6)', techniqueKeys: ['jigging'], trophy: 'Garoupa / Vermelho-Caranha', trophyKeys: ['garoupa', 'vermelho-caranha', 'pargo', 'badejo'],
     dificuldade: 'Alta', acesso: 'Base liveaboard', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     // VALIDAR: Badejo adicionado por afinidade de habitat com a Garoupa nas mesmas
     // estruturas recifais — confirmar ocorrência real com operadores locais.
@@ -140,7 +155,7 @@ const POIS = [
   // origem da inclusão indevida do Mero neste POI, corrigida no bloco A1.
   { id: 'p3', main: true, sig: 'SIG 003', name: 'Estuário do Rio Jaguaripe', region: 'Baía de Todos-os-Santos', lat: -13.10, lng: -38.86,
     loc: 'Manguezais de Nazaré e Jaguaripe; afluente Mucujó', depth: 'Calhas estuarinas: 2 m a 10 m',
-    technique: 'Isco vivo (derivação) / Baitcasting', trophy: 'Camurim / Camurim-pena', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'vermelho-caranha', 'traira'],
+    technique: 'Isco vivo (derivação) / Baitcasting', techniqueKeys: ['isca-viva', 'baitcasting'], trophy: 'Camurim / Camurim-pena', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'vermelho-caranha', 'traira'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [11, 12, 1, 2, 3], season: 'Novembro a Março',
     secondary: ['Carapeba', 'Vermelho-Caranha', 'Traíra'],
     // Mero ocorre na área mas tem captura proibida por moratória federal — não é
@@ -159,7 +174,7 @@ const POIS = [
   // prefeitura de Jandaíra se existe guia de pesca ativo.
   { id: 'p4', main: true, sig: 'SIG 004', name: 'Foz do Rio Real / Mangue Seco', region: 'Costa dos Coqueiros', lat: -11.47, lng: -37.36,
     loc: 'Mangue Seco, Jandaíra — divisa BA/SE. Travessia de barco a partir de Pontal (Indiaroba/SE) ou acesso por Jandaíra pela Costa Azul.', depth: 'Canais de mangue: 2 m a 8 m',
-    technique: 'Baitcasting de precisão / Surfcasting', trophy: 'Camurupim / Camurim', trophyKeys: ['camurupim', 'camurim', 'camurim-pena', 'xareu', 'pescada-amarela'],
+    technique: 'Baitcasting de precisão / Surfcasting', techniqueKeys: ['baitcasting', 'surfcasting'], trophy: 'Camurupim / Camurim', trophyKeys: ['camurupim', 'camurim', 'camurim-pena', 'xareu', 'pescada-amarela'],
     dificuldade: 'Moderada', acesso: 'Travessia de lancha', months: [12, 1, 2, 3], season: 'Dezembro a Março',
     secondary: ['Camurim-pena', 'Xaréu', 'Pescada-amarela'],
     operators: [],
@@ -174,7 +189,7 @@ const POIS = [
   // AUDITADO: Tuna Pesca Maraú confirmada como operação de pesca esportiva de alto-mar.
   { id: 'p5', main: true, sig: 'SIG 005', name: 'Baía de Camamu', region: 'Costa do Dendê', lat: -13.92, lng: -38.90,
     loc: 'Mangue de Camamu e Barra Grande', depth: '3 m a 18 m',
-    technique: 'Isco vivo / Jig head / Plugs', trophy: 'Camurim / Carapeba', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'garoupa', 'curima', 'corvina', 'parati'],
+    technique: 'Isco vivo / Jig head / Plugs', techniqueKeys: ['isca-viva', 'arremesso-leve'], trophy: 'Camurim / Carapeba', trophyKeys: ['camurim', 'camurim-pena', 'carapeba', 'garoupa', 'curima', 'corvina', 'parati'],
     dificuldade: 'Moderada', acesso: 'Charter / barco local', months: [12, 1, 2, 3], season: 'Dezembro a Março',
     secondary: ['Camurim-pena', 'Garoupa', 'Curimã', 'Corvina', 'Parati'],
     operators: ['Tuna Pesca Maraú — pesca esportiva de alto-mar, saída completa (7h às 16h) e meia saída (8h às 14h).'],
@@ -184,7 +199,7 @@ const POIS = [
 
   { id: 'p6', main: true, sig: 'SIG 006', name: 'Represa de Sobradinho', region: 'Vale do São Francisco', lat: -9.65, lng: -41.40,
     loc: 'Ilhas de Remanso e Canal do Salitre', depth: 'Variável: 10 m a 45 m',
-    technique: 'Baitcasting (hélice) / Espera de fundo', trophy: 'Tucunaré / Corvina', trophyKeys: ['tucunare', 'corvina-de-agua-doce'],
+    technique: 'Baitcasting (hélice) / Espera de fundo', techniqueKeys: ['baitcasting', 'espera-fundo'], trophy: 'Tucunaré / Corvina', trophyKeys: ['tucunare', 'corvina-de-agua-doce'],
     dificuldade: 'Moderada', acesso: 'Exige sonda e GPS', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: ['Corvina de água doce'],
     operators: ['Bases náuticas em Juazeiro e Sobradinho.'],
@@ -204,7 +219,7 @@ const POIS = [
   // O catálogo mantém os valores corretos. Reportar à SETUR para a próxima tiragem.
   { id: 'p7', main: true, sig: 'SIG 007', name: 'Paulo Afonso e reservatórios da CHESF', region: 'Lagos e Cânions do São Francisco', lat: -9.40, lng: -38.21,
     loc: 'Rio São Francisco e reservatórios das usinas da CHESF', depth: 'Corredeiras hiper-oxigenadas (~10 m)',
-    technique: 'Fundo noturno / Plugs sub-superfície', trophy: 'Surubim / Tucunaré', trophyKeys: ['surubim', 'tucunare', 'dourado-do-rio', 'traira', 'piau', 'apaiari'],
+    technique: 'Fundo noturno / Plugs sub-superfície', techniqueKeys: ['espera-fundo', 'arremesso-leve'], trophy: 'Surubim / Tucunaré', trophyKeys: ['surubim', 'tucunare', 'dourado-do-rio', 'traira', 'piau', 'apaiari'],
     dificuldade: 'Alta', acesso: 'Acesso rodoviário — 3h de Aracaju e Maceió; cerca de 500 km de Salvador e Recife', months: [6, 7, 8, 9, 10, 11, 12], season: 'Junho a Dezembro',
     secondary: ['Dourado-do-rio', 'Traíra', 'Piau', 'Apaiari'],
     operators: ['Rede local com aluguel de equipamentos e guias experientes (folder oficial SETUR-BA).'],
@@ -219,7 +234,7 @@ const POIS = [
   // erythrinídeos (traíras) e heptapterídeos, sem ocorrência de Bryconidae.
   { id: 'p8', main: true, sig: 'SIG 008', name: 'Rios da Chapada Diamantina', region: 'Chapada Diamantina', lat: -12.56, lng: -41.39,
     loc: 'Alto Paraguaçu e afluentes — entorno de Lençóis e Andaraí', depth: 'Poços entre corredeiras: 1 m a 6 m',
-    technique: 'Pesca leve: spinning ultraleve, fly de linha #4 a #6', trophy: 'Traíra', trophyKeys: ['traira', 'tucunare'],
+    technique: 'Pesca leve: spinning ultraleve, fly de linha #4 a #6', techniqueKeys: ['fly-spinning'], trophy: 'Traíra', trophyKeys: ['traira', 'tucunare'],
     dificuldade: 'Moderada', acesso: 'Guia local obrigatório', months: [5, 6, 7, 8, 9], season: 'Maio a Setembro',
     secondary: ['Tucunaré'],
     operators: [],
@@ -233,7 +248,7 @@ const POIS = [
   // publicada pela própria operadora.
   { id: 'p9', main: true, sig: 'SIG 009', name: 'Drop-off da Praia do Forte', region: 'Costa dos Coqueiros', lat: -12.52, lng: -37.85,
     loc: '7 a 10 milhas da linha de costa', depth: 'Depressão batimétrica: 45 m a 350 m',
-    technique: 'Trolling em velocidade de cruzeiro (6–8 nós)', trophy: 'Dourado-do-mar / Wahoo / Albacora-laje', trophyKeys: ['dourado-do-mar', 'wahoo', 'albacora-laje', 'cavala', 'bonito-listrado', 'bicuda', 'albacorinha'],
+    technique: 'Trolling em velocidade de cruzeiro (6–8 nós)', techniqueKeys: ['corrico'], trophy: 'Dourado-do-mar / Wahoo / Albacora-laje', trophyKeys: ['dourado-do-mar', 'wahoo', 'albacora-laje', 'cavala', 'bonito-listrado', 'bicuda', 'albacorinha'],
     dificuldade: 'Baixa', acesso: 'Charter obrigatório', months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], season: 'Ano inteiro',
     // VALIDAR: Albacorinha adicionada — é o atum mais frequente na plataforma baiana
     // (ver nota da espécie), plausível junto com Albacora-laje no mesmo trolling.
@@ -256,7 +271,7 @@ const POIS = [
   // ocorrer, é introduzido. Confirmar antes de publicar.
   { id: 'p10', main: true, sig: 'SIG 010', name: 'Rio Grande (Oeste)', region: 'Caminhos do Oeste', lat: -12.10, lng: -45.10,
     loc: 'Rio Grande e afluentes — Barreiras', depth: 'Remansos fluviais: 4 m a 12 m',
-    technique: 'Espera com ceva prévia (fruta / milho)', trophy: 'Pacu / Piau / Tucunaré', trophyKeys: ['pacu', 'piau', 'tucunare'],
+    technique: 'Espera com ceva prévia (fruta / milho)', techniqueKeys: ['ceva'], trophy: 'Pacu / Piau / Tucunaré', trophyKeys: ['pacu', 'piau', 'tucunare'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: [],
     operators: ['Campanhas de repovoamento alevínico da Codevasf com a Prefeitura de Barreiras (Secretaria de Meio Ambiente e Sustentabilidade), com apoio da Bahia Pesca. Alevinos produzidos no Centro de Xique-Xique.'],

@@ -18,7 +18,7 @@
 // rede pra atualizar a cache pra próxima visita. Ainda assim, se mudar algo em
 // index.html/css/js ou trocar/adicionar um arquivo em assets/, incremente este
 // número — isso cria um cache novo e descarta o antigo no próximo carregamento.
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = 'pesca-bahia-' + CACHE_VERSION;
 
 const PRECACHE_URLS = [

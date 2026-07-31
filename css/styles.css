@@ -225,6 +225,17 @@ h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: 0; margin: 0;
   font-size: 11px; letter-spacing: .13em; text-transform: uppercase; font-weight: 700;
   color: var(--sea-deep); margin-bottom: 12px;
 }
+.poi-search-wrap { position: relative; margin-bottom: 18px; }
+.poi-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--sea2); pointer-events: none; }
+.poi-search {
+  width: 100%; padding: 10px 14px 10px 38px; border-radius: 999px;
+  border: 1px solid rgba(34, 167, 216, .38); background: rgba(255, 255, 255, .72);
+  backdrop-filter: blur(10px); font-family: var(--font-body); font-size: 13px; color: #233240;
+  box-shadow: 0 3px 14px rgba(10, 90, 128, .12);
+}
+.poi-search::placeholder { color: #7d94a1; }
+.poi-search:focus { outline: none; border-color: var(--sea2); box-shadow: 0 0 0 3px rgba(34, 167, 216, .22); }
+
 .chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; }
 .chip-group-label { font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; color: var(--sea2); margin-bottom: 8px; }
 .month-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 18px; }

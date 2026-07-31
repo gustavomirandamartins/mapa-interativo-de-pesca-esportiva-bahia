@@ -72,8 +72,16 @@
       </button>
 
       <div id="filter-body" class="filter-body" hidden>
+        <div class="poi-search-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="poi-search-icon"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="poi-search" class="poi-search" type="search" placeholder="Buscar por espécie, localidade, técnica, profundidade...">
+        </div>
+
         <div class="filter-section-label">Filtrar por espécie-troféu</div>
         <div id="trophy-chips" class="chip-row"></div>
+
+        <div class="filter-section-label">Filtrar por técnica</div>
+        <div id="technique-chips" class="chip-row"></div>
 
         <div class="filter-section-label">Melhor época (mês)</div>
         <div id="month-chips" class="month-grid"></div>

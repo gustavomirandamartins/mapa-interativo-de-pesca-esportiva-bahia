@@ -33,6 +33,18 @@
     (SPECIES_POIS[k] = SPECIES_POIS[k] || []).push(p);
   }));
 
+  // id do POI -> texto normalizado de busca (espécie, localidade, técnica,
+  // profundidade). Só os POIs principais (p1-p10) têm technique/depth — os
+  // secundários entram na busca só por nome, zona, local e espécies.
+  const POI_SEARCH_TEXT = {};
+  POIS.forEach((p) => {
+    const parts = [
+      p.name, REGION_LABELS[p.region] || p.region, p.loc, p.technique, p.depth,
+      p.trophy, (p.secondary || []).join(' ')
+    ];
+    POI_SEARCH_TEXT[p.id] = normalize(parts.filter(Boolean).join(' '));
+  });
+
   // Nome de exibição normalizado -> espécie. Os campos `trophy` e `secondary` dos
   // POIs guardam rótulos legíveis, não chaves; este índice é o que permite
   // transformar cada nome de peixe do card de destino em link para o card da espécie.
@@ -73,7 +85,9 @@
     filterCount: document.getElementById('filter-count'),
     filterBody: document.getElementById('filter-body'),
     trophyChips: document.getElementById('trophy-chips'),
+    techniqueChips: document.getElementById('technique-chips'),
     monthChips: document.getElementById('month-chips'),
+    searchInput: document.getElementById('poi-search'),
     matchLabel: document.getElementById('match-label'),
     clearFiltersBtn: document.getElementById('btn-clear-filters'),
     legendToggle: document.getElementById('legend-toggle'),
@@ -95,6 +109,8 @@
     view: 'mapa',
     activeTrophy: null,
     activeMonth: null,
+    activeTechnique: null,
+    searchQuery: '',
     visible: { region: true, main: true, secondary: true, proibida: true, restrita: true },
     selectedId: null,
     filtersOpen: false,
@@ -118,7 +134,13 @@
   function matchesFilters(p) {
     if (state.activeTrophy && !(p.trophyKeys || []).includes(state.activeTrophy)) return false;
     if (state.activeMonth && !(p.months || []).includes(state.activeMonth)) return false;
+    if (state.activeTechnique && !(p.techniqueKeys || []).includes(state.activeTechnique)) return false;
+    if (state.searchQuery && !(POI_SEARCH_TEXT[p.id] || '').includes(state.searchQuery)) return false;
     return true;
+  }
+
+  function hasActiveFilters() {
+    return !!(state.activeTrophy || state.activeMonth || state.activeTechnique || state.searchQuery);
   }
 
   function enrich(p) {
@@ -466,7 +488,7 @@
     // Com um filtro de espécie/mês ativo, os pontos correspondentes aparecem mesmo
     // se o zoom ainda não chegou no nível normal de detalhe (ex.: enquanto o mapa
     // está voando para enquadrar pontos espalhados por regiões distantes).
-    const hasFilter = !!(state.activeTrophy || state.activeMonth);
+    const hasFilter = hasActiveFilters();
     let count = 0;
 
     Object.values(markers).forEach((m) => {
@@ -715,7 +737,7 @@
   // ao(s) filtro(s) ativo(s) — em vez de só alterar a visibilidade dos pinos.
   function focusOnMatches() {
     if (!map) return;
-    if (!(state.activeTrophy || state.activeMonth)) return;
+    if (!hasActiveFilters()) return;
     const matches = POIS.filter(matchesFilters);
     if (matches.length === 0) return;
     if (matches.length === 1) {
@@ -792,7 +814,7 @@
     if (!map) return [];
     const z = map.getZoom();
     const zoomOk = z >= Z_MAIN;
-    const hasFilter = !!(state.activeTrophy || state.activeMonth);
+    const hasFilter = hasActiveFilters();
     return POIS.filter((p) => {
       const categoryVisible = p.main ? state.visible.main : state.visible.secondary;
       return categoryVisible && matchesFilters(p) && (hasFilter || zoomOk);
@@ -870,9 +892,30 @@
     updateDisclosure();
     focusOnMatches();
   }
+  function toggleTechnique(k) {
+    state.activeTechnique = state.activeTechnique === k ? null : k;
+    renderChips();
+    renderFilterTrigger();
+    updateDisclosure();
+    focusOnMatches();
+  }
+  // Busca dispara a cada tecla (marcadores/contagem), mas o voo da câmera até os
+  // resultados só depois de uma pausa na digitação — senão o mapa ficaria voando
+  // a cada letra digitada.
+  let searchFocusTimer;
+  function onSearchInput() {
+    state.searchQuery = normalize(el.searchInput.value);
+    renderFilterTrigger();
+    updateDisclosure();
+    clearTimeout(searchFocusTimer);
+    searchFocusTimer = setTimeout(focusOnMatches, 500);
+  }
   function clearFilters() {
     state.activeTrophy = null;
     state.activeMonth = null;
+    state.activeTechnique = null;
+    state.searchQuery = '';
+    el.searchInput.value = '';
     renderChips();
     renderFilterTrigger();
     updateDisclosure();
@@ -918,10 +961,20 @@
       btn.addEventListener('click', () => toggleMonth(n));
       el.monthChips.appendChild(btn);
     });
+
+    el.techniqueChips.innerHTML = '';
+    TECHNIQUES.forEach((t) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pill' + (state.activeTechnique === t.key ? ' is-on' : '');
+      btn.textContent = t.label;
+      btn.addEventListener('click', () => toggleTechnique(t.key));
+      el.techniqueChips.appendChild(btn);
+    });
   }
 
   function renderMatchLabel() {
-    const hasFilters = !!(state.activeTrophy || state.activeMonth);
+    const hasFilters = hasActiveFilters();
     el.matchLabel.textContent = hasFilters
       ? state.matchCount + (state.matchCount === 1 ? ' ponto corresponde' : ' pontos correspondem')
       : '21 pontos mapeados';
@@ -929,8 +982,8 @@
   }
 
   function renderFilterTrigger() {
-    const hasFilters = !!(state.activeTrophy || state.activeMonth);
-    const count = (state.activeTrophy ? 1 : 0) + (state.activeMonth ? 1 : 0);
+    const hasFilters = hasActiveFilters();
+    const count = (state.activeTrophy ? 1 : 0) + (state.activeMonth ? 1 : 0) + (state.activeTechnique ? 1 : 0) + (state.searchQuery ? 1 : 0);
     el.filterTrigger.classList.toggle('is-open', state.filtersOpen);
     el.filterTrigger.classList.toggle('has-filters', hasFilters);
     el.filterTrigger.setAttribute('aria-expanded', String(state.filtersOpen));
@@ -1116,6 +1169,7 @@
     syncAttractBtn();
     el.filterTrigger.addEventListener('click', toggleFilters);
     el.clearFiltersBtn.addEventListener('click', clearFilters);
+    el.searchInput.addEventListener('input', onSearchInput);
     el.legendToggle.addEventListener('click', toggleLegend);
     el.legendRegion.addEventListener('click', () => toggleVisibility('region'));
     el.legendMain.addEventListener('click', () => toggleVisibility('main'));
