@@ -121,7 +121,7 @@ const POIS = [
     dificuldade: 'Alta', acesso: 'Base liveaboard', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
     // VALIDAR: Badejo adicionado por afinidade de habitat com a Garoupa nas mesmas
     // estruturas recifais — confirmar ocorrência real com operadores locais.
-    secondary: ['Pargo', 'Vermelho-Caranha', 'Badejo'],
+    secondary: ['Pargo', 'Badejo'],
     operators: [],
     lodging: ['Caravelas'],
     rules: 'Pesca PROIBIDA dentro do Parque Nacional Marinho (ICMBio); permitida apenas nos parcéis periféricos.',
@@ -258,7 +258,7 @@ const POIS = [
     loc: 'Rio Grande e afluentes — Barreiras', depth: 'Remansos fluviais: 4 m a 12 m',
     technique: 'Espera com ceva prévia (fruta / milho)', trophy: 'Pacu / Piau / Tucunaré', trophyKeys: ['pacu', 'piau', 'tucunare'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
-    secondary: ['Piau', 'Tucunaré'],
+    secondary: [],
     operators: ['Campanhas de repovoamento alevínico da Codevasf com a Prefeitura de Barreiras (Secretaria de Meio Ambiente e Sustentabilidade), com apoio da Bahia Pesca. Alevinos produzidos no Centro de Xique-Xique.'],
     lodging: ['Barreiras'],
     rules: 'Defeso / piracema de novembro a março.',
@@ -310,7 +310,7 @@ const POIS = [
   { id: 's5', main: false, name: 'Canavieiras', region: 'Costa do Cacau', lat: -15.68, lng: -38.95,
     loc: 'Manguezais da RESEX e rios Pardo, Patipe, Una e Jequitinhonha', trophy: 'Camurim / Tarpon', trophyKeys: ['camurim', 'camurupim', 'camurim-pena', 'xareu', 'pescada-amarela', 'tucunare'],
     dificuldade: 'Moderada', acesso: 'Base costeira', months: [1, 2, 3, 4, 8, 9, 10, 11, 12], season: 'Agosto a abril',
-    secondary: ['Tarpon', 'Camurim-pena', 'Xaréu', 'Pescada-amarela', 'Tucunaré'], operators: ['Charlote Fishing — base do Banco Royal Charlotte, opera também pescaria fluvial nos rios Pardo e Salsa.'], lodging: ['Canavieiras'], rules: 'Área da RESEX Marinha de Canavieiras (ICMBio): pesque e solte, com acompanhamento de condutor beneficiário da Resex, que conhece os canais e faz parte da comunidade local. Estuário fechado à pesca esportiva no defeso do robalo (15 de maio a 31 de julho). Leve seu lixo na volta.',
+    secondary: ['Camurim-pena', 'Xaréu', 'Pescada-amarela', 'Tucunaré'], operators: ['Charlote Fishing — base do Banco Royal Charlotte, opera também pescaria fluvial nos rios Pardo e Salsa.'], lodging: ['Canavieiras'], rules: 'Área da RESEX Marinha de Canavieiras (ICMBio): pesque e solte, com acompanhamento de condutor beneficiário da Resex, que conhece os canais e faz parte da comunidade local. Estuário fechado à pesca esportiva no defeso do robalo (15 de maio a 31 de julho). Leve seu lixo na volta.',
     blurb: 'Porta de entrada do Banco Royal Charlotte e destino por direito próprio. Nos manguezais da RESEX, condutores locais conhecem cada canal onde o robalo e o tarpon se escondem, e os rios da região guardam o tucunaré-pinima. Na volta, a lama negra medicinal e a gastronomia do mar de Canes.' },
   // AUDITADO: Porto Pesca confirmada em fonte primária, incluindo horário de saída
   // e ponto de partida.
@@ -339,7 +339,7 @@ const POIS = [
   { id: 's8', main: false, name: 'Itacaré', region: 'Costa do Cacau', lat: -14.28, lng: -38.99,
     loc: 'Costão rochoso e cultura do surf', trophy: 'Camurim / Xaréu', trophyKeys: ['camurim', 'xareu'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [10, 11, 12, 1, 2, 3], season: 'Outubro a Março',
-    secondary: ['Xaréu'], operators: [], lodging: [], rules: '',
+    secondary: [], operators: [], lodging: [], rules: '',
     blurb: 'Junta o apelo do surf à pesca nas proximidades rochosas do litoral sul.' },
   // VALIDAR: Barra Grande Sport Fishing localizada em diretório especializado do
   // setor (pescarias costeiras e oceânicas, estrutura própria na Península de
