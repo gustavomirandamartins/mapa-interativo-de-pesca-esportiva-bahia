@@ -131,10 +131,14 @@
 
   // ---------- Helpers ----------
 
-  function matchesFilters(p) {
-    if (state.activeTrophy && !(p.trophyKeys || []).includes(state.activeTrophy)) return false;
-    if (state.activeMonth && !(p.months || []).includes(state.activeMonth)) return false;
-    if (state.activeTechnique && !(p.techniqueKeys || []).includes(state.activeTechnique)) return false;
+  // `exclude` deixa de fora um dos filtros de chip na checagem — é o que permite
+  // calcular quais chips de espécie/técnica/mês ainda são alcançáveis sem que o
+  // próprio chip já ativo desapareça da lista (ver renderChips). A busca nunca é
+  // excluída: é ela quem dirige a omissão em tempo real enquanto o usuário digita.
+  function matchesFilters(p, exclude) {
+    if (exclude !== 'trophy' && state.activeTrophy && !(p.trophyKeys || []).includes(state.activeTrophy)) return false;
+    if (exclude !== 'month' && state.activeMonth && !(p.months || []).includes(state.activeMonth)) return false;
+    if (exclude !== 'technique' && state.activeTechnique && !(p.techniqueKeys || []).includes(state.activeTechnique)) return false;
     if (state.searchQuery && !(POI_SEARCH_TEXT[p.id] || '').includes(state.searchQuery)) return false;
     return true;
   }
@@ -738,7 +742,7 @@
   function focusOnMatches() {
     if (!map) return;
     if (!hasActiveFilters()) return;
-    const matches = POIS.filter(matchesFilters);
+    const matches = POIS.filter((p) => matchesFilters(p));
     if (matches.length === 0) return;
     if (matches.length === 1) {
       map.flyTo([matches[0].lat, matches[0].lng], 8, { duration: 1.4 });
@@ -905,6 +909,7 @@
   let searchFocusTimer;
   function onSearchInput() {
     state.searchQuery = normalize(el.searchInput.value);
+    renderChips();
     renderFilterTrigger();
     updateDisclosure();
     clearTimeout(searchFocusTimer);
@@ -921,11 +926,26 @@
     updateDisclosure();
   }
 
+  // Conjunto de chaves (espécie/técnica/mês) que ainda aparecem em algum POI
+  // compatível com os DEMAIS filtros ativos + a busca — excluindo o próprio filtro
+  // que o chip representa, senão o chip já selecionado sumiria da lista assim que
+  // deixasse de bater com ele mesmo. A busca nunca é excluída: como pedido, ela
+  // omite ao vivo (mesmo incompleta) tudo o que não corresponder, no filtro e no mapa.
+  function reachableKeys(exclude, getKeys) {
+    const set = new Set();
+    POIS.forEach((p) => {
+      if (!matchesFilters(p, exclude)) return;
+      (getKeys(p) || []).forEach((k) => set.add(k));
+    });
+    return set;
+  }
+
   function renderChips() {
+    const reachableTrophy = reachableKeys('trophy', (p) => p.trophyKeys);
     el.trophyChips.innerHTML = '';
     HABITAT_GROUPS.forEach(([habitatKey, label]) => {
       const items = SPECIES
-        .filter((s) => s.habitat === habitatKey)
+        .filter((s) => s.habitat === habitatKey && (reachableTrophy.has(s.key) || state.activeTrophy === s.key))
         .slice()
         .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
       if (!items.length) return;
@@ -951,9 +971,11 @@
       el.trophyChips.appendChild(group);
     });
 
+    const reachableMonths = reachableKeys('month', (p) => p.months);
     el.monthChips.innerHTML = '';
     MONTHS.forEach((label, i) => {
       const n = i + 1;
+      if (!reachableMonths.has(n) && state.activeMonth !== n) return;
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'pill-month' + (state.activeMonth === n ? ' is-on' : '');
@@ -962,8 +984,9 @@
       el.monthChips.appendChild(btn);
     });
 
+    const reachableTechnique = reachableKeys('technique', (p) => p.techniqueKeys);
     el.techniqueChips.innerHTML = '';
-    TECHNIQUES.forEach((t) => {
+    TECHNIQUES.filter((t) => reachableTechnique.has(t.key) || state.activeTechnique === t.key).forEach((t) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'pill' + (state.activeTechnique === t.key ? ' is-on' : '');
