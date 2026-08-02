@@ -379,7 +379,27 @@ const POIS = [
     loc: 'Rio de Ondas e Ribeirão Boa Sorte', trophy: 'Pacu / Tucunaré', trophyKeys: ['pacu', 'tucunare', 'piau'],
     dificuldade: 'Baixa', acesso: 'Acesso rodoviário', months: [5, 6, 7, 8, 9, 10], season: 'Maio a Outubro',
     secondary: ['Piau'], operators: [], lodging: [], rules: '',
-    blurb: 'Polo agrícola do Cerrado, irrigado pelas artérias hídricas do oeste baiano. Alvo de campanhas de repovoamento da Codevasf com a Prefeitura de Barreiras.' }
+    blurb: 'Polo agrícola do Cerrado, irrigado pelas artérias hídricas do oeste baiano. Alvo de campanhas de repovoamento da Codevasf com a Prefeitura de Barreiras.' },
+
+  // Zona Turística Caminhos do Sudoeste, até então sem nenhum POI no mapa.
+  // Base: CHESF (localização e características da UHE Pedra) e material turístico do município.
+  // VALIDAR (COORDENADA): aproximada, derivada de "18 km a montante de Jequié, trecho Pedra Santa".
+  // Conferir em base georreferenciada.
+  // VALIDAR (ESPÉCIES) — CAMINHO CURTO: a Estação de Piscicultura de Jequié (Bahia Pesca, Governo
+  // do Estado) fica na margem esquerda do rio de Contas, a jusante desta barragem, a 16 km do centro,
+  // acesso pela Estrada da Barragem de Pedras. Telefone (73) 3525-1299. Confirmar quais espécies
+  // ocorrem no reservatório, quais entram em campanhas de peixamento e se há tucunaré estabelecido.
+  // ATENÇÃO: rio de Contas é Bacia do Leste, como o Paraguaçu. NÃO atribuir espécies do São Francisco
+  // (dourado-do-rio, surubim) sem confirmação documental. Foi esse erro que levou à remoção do
+  // antigo POI do Alto Paraguaçu, preservado em bloco comentado ao final deste arquivo.
+  // VALIDAR (TEMPORADA): janela inferida do regime de chuvas e da operação do reservatório.
+  // VALIDAR (OPERADORA): nenhuma operação de pesca identificada em Jequié nesta rodada.
+  { id: 's12', main: false, name: 'Barragem da Pedra', region: 'Caminhos do Sudoeste', lat: -13.79, lng: -40.20,
+    loc: 'Rio de Contas, trecho Pedra Santa — 18 km a montante de Jequié', trophy: 'Traíra', trophyKeys: ['traira', 'tilapia'],
+    dificuldade: 'Baixa', acesso: 'Estrada vicinal a partir de Jequié — 365 km de Salvador pela BR-116', months: [4, 5, 6, 7, 8, 9, 10], season: 'Abril a Outubro',
+    secondary: ['Tilápia'], operators: [], lodging: ['Jequié'],
+    rules: 'Reservatório operado pela CHESF: nível e vazão mudam sem aviso. Confira as condições no dia e não deixe equipamento ou veículo na cota baixa da margem. Pesque e solte.',
+    blurb: 'A Cidade Sol tem água farta no meio do sertão. O reservatório da Pedra alaga um trecho encaixado do rio de Contas, entre Mata Atlântica e Caatinga, com margens de pedral e galhada onde a traíra se esconde. Pescaria de barranco, acessível, a menos de vinte minutos da cidade, que combina com a trilha da Pedra Santa.' }
 ];
 
 // Sedes dos municípios citados em `lodging`, para que cada item de Hospedagem
@@ -400,7 +420,8 @@ const MUNICIPIOS = {
   'Andaraí': { lat: -12.807, lng: -41.331 },
   'Lençóis': { lat: -12.561, lng: -41.390 },
   'Mata de São João': { lat: -12.531, lng: -38.300 },
-  'Barreiras': { lat: -12.153, lng: -44.990 }
+  'Barreiras': { lat: -12.153, lng: -44.990 },
+  'Jequié': { lat: -13.858, lng: -40.084 }
 };
 
 const REGION_LABELS = {
