@@ -399,7 +399,32 @@ const POIS = [
     dificuldade: 'Baixa', acesso: 'Estrada vicinal a partir de Jequié — 365 km de Salvador pela BR-116', months: [4, 5, 6, 7, 8, 9, 10], season: 'Abril a Outubro',
     secondary: ['Tilápia'], operators: [], lodging: ['Jequié'],
     rules: 'Reservatório operado pela CHESF: nível e vazão mudam sem aviso. Confira as condições no dia e não deixe equipamento ou veículo na cota baixa da margem. Pesque e solte.',
-    blurb: 'A Cidade Sol tem água farta no meio do sertão. O reservatório da Pedra alaga um trecho encaixado do rio de Contas, entre Mata Atlântica e Caatinga, com margens de pedral e galhada onde a traíra se esconde. Pescaria de barranco, acessível, a menos de vinte minutos da cidade, que combina com a trilha da Pedra Santa.' }
+    blurb: 'A Cidade Sol tem água farta no meio do sertão. O reservatório da Pedra alaga um trecho encaixado do rio de Contas, entre Mata Atlântica e Caatinga, com margens de pedral e galhada onde a traíra se esconde. Pescaria de barranco, acessível, a menos de vinte minutos da cidade, que combina com a trilha da Pedra Santa.' },
+
+  // Zona Turística Costa das Baleias. Sistema estuarino do rio Jucuruçu (Itamaraju–Prado), do rio
+  // Itanhém (Alcobaça) e da enseada de Guaratiba. Âncora factual: descrição regional de robalo
+  // abundante em Guaratiba e de manguezais preservados no Jucuruçu.
+  // VALIDAR (BLOQUEANTE — ÁREAS PROTEGIDAS): o entorno concentra RESEX Marinha do Corumbau,
+  // PARNA do Monte Pascoal e Terra Indígena Pataxó. O projeto já aprendeu em Canavieiras que uma
+  // RESEX impõe obrigação legal ao visitante. Confirmar com ICMBio e INEMA quais unidades incidem
+  // sobre os pontos aqui descritos e se cabe entrada em PROTECTED_AREAS. Enquanto não confirmado,
+  // o campo rules permanece genérico e o POI não deve ir para material impresso.
+  // VALIDAR (ZONA TURÍSTICA): as fontes divergem sobre Itamaraju. Parte inclui o município na Costa
+  // das Baleias, parte lista apenas Prado, Alcobaça, Caravelas, Nova Viçosa e Mucuri. Confirmar na
+  // base oficial da SETUR. Prado e Alcobaça são pacíficos.
+  // VALIDAR (ESPÉCIES): camurupim, xaréu, carapeba e pescada-amarela são plausíveis por analogia com
+  // Canavieiras e Mangue Seco, mas não confirmados para Jucuruçu, Itanhém ou Guaratiba. Confirmar
+  // com a Colônia Z-23 de Prado antes de acrescentar.
+  // VALIDAR (COORDENADA): aponta a foz do Jucuruçu em Prado. Avaliar migrar para Guaratiba, que é a
+  // âncora factual da pescaria.
+  // VALIDAR (OPERADORA): nenhuma operação de pesca esportiva identificada em Prado, Alcobaça ou
+  // Itamaraju nesta rodada. A pesca descrita nas fontes é artesanal.
+  { id: 's13', main: false, name: 'Estuários do Extremo Sul', region: 'Costa das Baleias', lat: -17.34, lng: -39.22,
+    loc: 'Rio Jucuruçu (Prado), rio Itanhém (Alcobaça) e enseada de Guaratiba', trophy: 'Camurim', trophyKeys: ['camurim', 'camurim-pena'],
+    dificuldade: 'Moderada', acesso: 'Barco local recomendado — Prado a 47 km de Itamaraju pela BA-489, 200 km de Porto Seguro, com aeroporto regional', months: [1, 2, 3, 4, 9, 10, 11, 12], season: 'Setembro a Abril',
+    secondary: ['Camurim-pena'], operators: [], lodging: ['Prado', 'Alcobaça', 'Itamaraju'],
+    rules: 'Pesque e solte. Região com áreas protegidas no entorno e pesca artesanal ativa: confirme os limites e as regras vigentes antes da saída e respeite as áreas de trabalho das colônias de pescadores.',
+    blurb: 'O Jucuruçu corre entre a cidade e o mar cercado de mangue quase intocado, com trapiches de madeira e barco colorido de pescador. Mais ao sul, a enseada de Guaratiba abre uma baía extensa onde o robalo é abundante. Arremesso em água rasa, na mesma viagem em que se vê baleia jubarte e se chega a Abrolhos por Alcobaça.' }
 ];
 
 // Sedes dos municípios citados em `lodging`, para que cada item de Hospedagem
@@ -421,7 +446,10 @@ const MUNICIPIOS = {
   'Lençóis': { lat: -12.561, lng: -41.390 },
   'Mata de São João': { lat: -12.531, lng: -38.300 },
   'Barreiras': { lat: -12.153, lng: -44.990 },
-  'Jequié': { lat: -13.858, lng: -40.084 }
+  'Jequié': { lat: -13.858, lng: -40.084 },
+  'Prado': { lat: -17.341, lng: -39.221 },
+  'Alcobaça': { lat: -17.519, lng: -39.196 },
+  'Itamaraju': { lat: -17.038, lng: -39.532 }
 };
 
 const REGION_LABELS = {
