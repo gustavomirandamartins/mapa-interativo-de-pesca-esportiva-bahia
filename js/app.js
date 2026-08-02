@@ -1000,7 +1000,7 @@
     const hasFilters = hasActiveFilters();
     el.matchLabel.textContent = hasFilters
       ? state.matchCount + (state.matchCount === 1 ? ' ponto corresponde' : ' pontos correspondem')
-      : '23 pontos mapeados';
+      : POIS.length + ' pontos mapeados';
     el.clearFiltersBtn.hidden = !hasFilters;
   }
 
